@@ -38,17 +38,18 @@ ifeq ($(EXECMODE),$(DEBUG))
 endif
 
 ifeq ($(EXECMODE),$(OPT_SPEED)) 
-    USE_OPT =  -Ofast -flto  -Wall -Wextra \
+    USE_OPT =  -Ofast -flto=4  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	     $(GCC_DIAG)
 endif
 
 ifeq ($(EXECMODE),$(OPT_SIZE)) 
-    USE_OPT =  -Os  -flto  -Wall -Wextra \
+    USE_OPT =  -Os  -flto=4  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
             --specs=nano.specs \
 	     $(GCC_DIAG)
 endif
+
 
 
 # C specific options here (added to USE_OPT).
@@ -58,7 +59,7 @@ endif
 
 # C++ specific options here (added to USE_OPT).
 ifeq ($(USE_CPPOPT),)
-  USE_CPPOPT = -std=gnu++17 -fno-rtti -fno-exceptions -fno-threadsafe-statics
+  USE_CPPOPT = -std=c++2a -fno-rtti -fno-exceptions -fno-threadsafe-statics
 endif
 
 # Enable this if you want the linker to remove unused code and data
@@ -92,7 +93,11 @@ endif
 # Stack size to be allocated to the Cortex-M process stack. This stack is
 # the stack used by the main() thread.
 ifeq ($(USE_PROCESS_STACKSIZE),)
-  USE_PROCESS_STACKSIZE = 0x400
+ifeq ($(EXECMODE),$(DEBUG))
+  USE_PROCESS_STACKSIZE = 0x1A00
+else
+  USE_PROCESS_STACKSIZE = 0x600
+endif
 endif
 
 # Stack size to the allocated to the Cortex-M main/exceptions stack. This
@@ -142,6 +147,8 @@ STMSRC = $(RELATIVE)/COMMON/stm
 VARIOUS = $(RELATIVE)/COMMON/various
 USBD_LIB = $(VARIOUS)/Chibios-USB-Devices
 ETL_LIB = ../../../../etl/include
+FROZEN_LIB = ../../../../frozen/include
+CTRE_LIB = ../../../.././compile-time-regular-expressions/single-header
 
 
 
@@ -208,7 +215,7 @@ ASMXSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 
 INCDIR = $(CONFDIR) $(ALLINC) \
          $(CHIBIOS)/os/various $(VARIOUS) $(VARIOUS_INCL) \
-         $(ETL_LIB) 
+         $(CTRE_LIB) $(ETL_LIB) $(FROZEN_LIB) 
 
 #
 # Project, sources and paths
@@ -259,16 +266,22 @@ CPPWARN = -Wall -Wextra -Wundef
 
 # List all user C define here, like -D_DEBUG=1
 ifeq ($(EXECMODE),$(DEBUG))
-UDEFS = -DTRACE -DCHDEBUG_ENABLE=1
+UDEFS = -DTRACE  -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 -DCH_DBG_ENABLE_CHECKS=1 \
+        -DCH_DBG_ENABLE_ASSERTS=1
 else
-UDEFS = -DCHDEBUG_ENABLE=0
+UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
+        -DCH_DBG_ENABLE_ASSERTS=0
 endif
+
+UDEFS += -DCTRE_STRING_IS_UTF8=1 -DFROZEN_NO_EXCEPTIONS=1
 
 # Define ASM defines here
 ifeq ($(EXECMODE),$(DEBUG))
-UADEFS =-DCHDEBUG_ENABLE=1
+UADEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 -DCH_DBG_ENABLE_CHECKS=1 \
+         -DCH_DBG_ENABLE_ASSERTS=1
 else
-UADEFS =-DCHDEBUG_ENABLE=0
+UADEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
+         -DCH_DBG_ENABLE_ASSERTS=0
 endif
 
 
