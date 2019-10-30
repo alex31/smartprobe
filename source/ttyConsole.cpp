@@ -7,7 +7,6 @@
 #include "hal.h"
 #include "microrl/microrlShell.h"
 #include "stdutil.h"
-#include "globalVar.h"
 #include "printf.h"
 #include "ttyConsole.hpp"
 #include "etl/cstring.h"
