@@ -19,8 +19,7 @@
 /*
  * Board identifier.
  */
-#define BOARD_DEVBOARDM7
-#define BOARD_NAME                  "SmartProbe by M.Gorraz"
+#define BOARD_NAME                  "SmartProbe Drones@ENAC"
 
 /*
  * Board oscillators-related settings.

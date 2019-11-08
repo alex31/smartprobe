@@ -168,6 +168,8 @@ include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
 # Auto-build files in ./source recursively.
 include $(CHIBIOS)/tools/mk/autobuild.mk
 # Other files (optional).
+include $(CHIBIOS)/os/various/fatfs_bindings/fatfs.mk
+include $(VARIOUS)/tlsf_bku/tlsf.mk
 
 
 # Define linker script file here
@@ -177,6 +179,7 @@ LDSCRIPT= ${STARTUPLD}/STM32F76xxI.ld
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
 CSRC = $(ALLCSRC) \
+       $(TLSFSRC) \
        $(CHIBIOS)/os/various/syscalls.c \
        $(VARIOUS)/stdutil.c \
        $(VARIOUS)/printf.c \
@@ -214,6 +217,7 @@ TCPPSRC =
 ASMXSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 
 INCDIR = $(CONFDIR) $(ALLINC) \
+	 $(TLSFINC) \
          $(CHIBIOS)/os/various $(VARIOUS) $(VARIOUS_INCL) \
          $(CTRE_LIB) $(ETL_LIB) $(FROZEN_LIB) 
 

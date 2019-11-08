@@ -257,7 +257,7 @@
 /*
  * SDC driver system settings.
  */
-#define STM32_SDC_USE_SDMMC1                FALSE
+#define STM32_SDC_USE_SDMMC1                TRUE
 #define STM32_SDC_SDMMC_UNALIGNED_SUPPORT   TRUE
 #define STM32_SDC_SDMMC_WRITE_TIMEOUT       250
 #define STM32_SDC_SDMMC_READ_TIMEOUT        25
@@ -388,13 +388,22 @@
  */
 #define STM32_WDG_USE_IWDG                  FALSE
 
-#define CH_HEAP_SIZE (32*1024)
-#define CH_HEAP_USE_TLSF 0 // if 0 or undef, chAlloc will be used
+#define CH_HEAP_SIZE (64*1024)
+#define CH_HEAP_USE_TLSF 1 // if 0 or undef, chAlloc will be used
 #define CONSOLE_DEV_SD SD1
+
+
+/*
+  sdlog message buffer and queue configuration
+ */
+#define SDLOG_QUEUE_BUCKETS  1024
+#define SDLOG_MAX_MESSAGE_LEN 384
+#define SDLOG_NUM_FILES 1
+#define SDLOG_ALL_BUFFERS_SIZE (SDLOG_NUM_FILES*1024*64)
 
 #define CHPRINTF_USE_STDLIB		    0
 #define CHPRINTF_BUFFER_SIZE		    160
-#define USERLIB_USE_HD44780		    TRUE
+#define USERLIB_USE_HD44780		    FALSE
 #define HD44780_USE_4_BIT_MODE		    FALSE
 #define HD44780_USE_DIMMABLE_BACKLIGHT	    TRUE
 
