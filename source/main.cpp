@@ -5,6 +5,7 @@
 #include "ttyConsole.hpp"       // fichier d'entête du shell
 #include "confFile.hpp"
 #include "hardwareConf.hpp"
+#include "barometer.hpp"
 #include "printf.h"
 
 
@@ -46,6 +47,9 @@ int main (void)
   chThdCreateStatic(waBlinker, sizeof(waBlinker), NORMALPRIO+2, &blinker, NULL); // lancement du thread
 
   consoleLaunch();  // lancement du shell
+  if (barometer::launchThd() == false) {
+    chSysHalt("barometer fail");
+  }
 
   // main thread does nothing
   chThdSleep(TIME_INFINITE);
