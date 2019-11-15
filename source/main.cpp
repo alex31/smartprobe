@@ -1,11 +1,13 @@
 #include <ch.h>
 #include <hal.h>
 #include <cstdio>
-#include "stdutil.h"		// necessaire pour initHeap
-#include "ttyConsole.hpp"       // fichier d'entête du shell
+#include "stdutil.h"		
+#include "ttyConsole.hpp"       
 #include "confFile.hpp"
 #include "hardwareConf.hpp"
+#include "workerClass.hpp"
 #include "barometer.hpp"
+#include "differentialPressure.hpp"
 #include "printf.h"
 
 
@@ -51,6 +53,7 @@ int main (void)
     chSysHalt("barometer fail");
   }
 
+  testToutCa();
   // main thread does nothing
   chThdSleep(TIME_INFINITE);
 }
