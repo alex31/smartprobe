@@ -185,6 +185,7 @@ CSRC = $(ALLCSRC) \
        $(VARIOUS)/printf.c \
        $(VARIOUS)/microrl/microrlShell.c \
        $(VARIOUS)/microrl/microrl.c \
+       $(VARIOUS)/sdLog.c \
        $(VARIOUS)/rtcAccess.c 
 
 
