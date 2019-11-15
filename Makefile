@@ -170,6 +170,7 @@ include $(CHIBIOS)/tools/mk/autobuild.mk
 # Other files (optional).
 include $(CHIBIOS)/os/various/fatfs_bindings/fatfs.mk
 include $(VARIOUS)/tlsf_bku/tlsf.mk
+include $(STMSRC)/STMems.mk
 
 
 # Define linker script file here
@@ -186,6 +187,8 @@ CSRC = $(ALLCSRC) \
        $(VARIOUS)/microrl/microrlShell.c \
        $(VARIOUS)/microrl/microrl.c \
        $(VARIOUS)/sdLog.c \
+       $(VARIOUS)/i2cMaster.c \
+       $(VARIOUS)/spiPeriphICM20600.c \
        $(VARIOUS)/rtcAccess.c 
 
 
@@ -217,9 +220,9 @@ TCPPSRC =
 # List ASM source files here
 ASMXSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 
-INCDIR = $(CONFDIR) $(ALLINC) \
-	 $(TLSFINC) \
+INCDIR = $(CONFDIR) $(ALLINC) $(TLSFINC) \
          $(CHIBIOS)/os/various $(VARIOUS) $(VARIOUS_INCL) \
+         $(STMEMSLPS33HWDIR) \
          $(CTRE_LIB) $(ETL_LIB) $(FROZEN_LIB) 
 
 #

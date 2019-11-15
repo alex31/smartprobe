@@ -3,6 +3,8 @@
 #include <cstdio>
 #include "stdutil.h"		// necessaire pour initHeap
 #include "ttyConsole.hpp"       // fichier d'entête du shell
+#include "confFile.hpp"
+#include "hardwareConf.hpp"
 #include "printf.h"
 
 

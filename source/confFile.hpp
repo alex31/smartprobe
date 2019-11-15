@@ -1,4 +1,7 @@
 #pragma once
+#include <ch.h>
+#include <hal.h>
+
 
 /*
   dependance : un log ouvert.
@@ -30,14 +33,8 @@
 
     range pourait être un variant 
     ° std::pair(min max)
-    ° etl::vector<int> (constexprisable ?) : liste de valeur autorisées
-    ° struct no_tange_t {} : pas de range
+    ° frozen::set<int, 1..16>
+    ° std::monostate (dans variant)
 
  */
 
-
-/*
-
-  TODO : tester si etl::vector est constexprisableq
-
- */
