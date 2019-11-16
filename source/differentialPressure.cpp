@@ -1,5 +1,6 @@
 #include "differentialPressure.hpp"
 #include "stdutil.h"	
+#include "cpp_heap_alloc.hpp"
 
 namespace {
 
