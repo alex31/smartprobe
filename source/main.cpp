@@ -8,6 +8,7 @@
 #include "workerClass.hpp"
 #include "barometer.hpp"
 #include "differentialPressure.hpp"
+#include "blinker.hpp"
 #include "printf.h"
 
 
@@ -21,21 +22,7 @@
 
  */
 
-
-
-
-static THD_WORKING_AREA(waBlinker, 304);	// declaration de la pile du thread blinker
-static void blinker (void *arg)			// fonction d'entrée du thread blinker
-{
-  (void)arg;					// on dit au compilateur que "arg" n'est pas utilisé
-  chRegSetThreadName("blinker");		// on nomme le thread
   
-  while (true) {				// boucle infinie
-    palToggleLine(LINE_LED1);			// clignotement de la led
-    chThdSleepMilliseconds(500);
-  }
-}
-   
 void _init_chibios() __attribute__ ((constructor(101)));
 void _init_chibios() {
   halInit();
@@ -45,16 +32,27 @@ void _init_chibios() {
 
 int main (void)
 {
+  DifferentialPressure dp(NORMALPRIO);
+  Blinker bl(NORMALPRIO);
+
+  bl.run();
   consoleInit();	// initialisation des objets liés au shell
-  chThdCreateStatic(waBlinker, sizeof(waBlinker), NORMALPRIO+2, &blinker, NULL); // lancement du thread
 
   consoleLaunch();  // lancement du shell
+
   if (barometer::launchThd() == false) {
-    chSysHalt("barometer fail");
+    DebugTrace("barometer fail");
+    goto fail;
   }
 
-  testToutCa();
-  // main thread does nothing
+  // if (dp.run() != true) {
+  //    DebugTrace("differential pressure fail");
+  //    goto fail;
+  // }
+
+
+
+ fail:
   chThdSleep(TIME_INFINITE);
 }
 

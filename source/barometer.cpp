@@ -80,7 +80,8 @@ namespace barometer {
   bool    launchThd(void)
   {
     bool retVal = true;
-    
+
+    i2cStart(&BaroI2CD, &i2ccfg_1000);
     if ((retVal = baroInit()) == true) {
       chThdCreateStatic(waBaroIt, sizeof(waBaroIt),
 			NORMALPRIO, baroIt, nullptr);

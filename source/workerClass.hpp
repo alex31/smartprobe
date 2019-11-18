@@ -7,11 +7,11 @@ template<size_t WSS>
 class WorkerThread
 {
 public:
-  WorkerThread(const tprio_t m_prio) : prio(m_prio) {};
-  bool run(void);
+  WorkerThread(const char *m_name, const tprio_t m_prio) : name(m_name), prio(m_prio) {};
+  bool run();
   WorkerThread& terminate();
   WorkerThread& join();
-  virtual ~WorkerThread() {terminate().join();};
+  ~WorkerThread() {terminate().join();};
   
 protected:
   static void threadFunc(void *o);
@@ -20,9 +20,11 @@ private:
   virtual bool init(void) = 0;
   virtual bool loop(void) = 0;
 
-  tprio_t prio;
+  const char *name;
+  const tprio_t prio;
 
   static thread_t *handle;
+
   static THD_WORKING_AREA(ws, WSS);
 };
 
@@ -33,13 +35,14 @@ bool WorkerThread<WSS>::run(void)
 {
   // this will force that only one process can be run
   // in the same time
-  if (handle == nullptr)
+  if (handle != nullptr)
     return false;
     
   if (init() == false)
     return false;
     
-  chThdCreateStatic(ws, WSS, prio, threadFunc, this);
+  handle = chThdCreateStatic(ws, sizeof(ws), prio, threadFunc, this);
+  chRegSetThreadNameX (handle, name);
   return true;
 }
 
@@ -64,14 +67,17 @@ WorkerThread<WSS>& WorkerThread<WSS>::terminate(void)
     chThdTerminate(handle);
   }
   return *this;
+  
 }
 
 
 template<size_t WSS>
 void WorkerThread<WSS>::threadFunc(void *o) {
   while (!chThdShouldTerminateX()) {
-    ((WorkerThread<WSS>*) o)->loop();
+    if (((WorkerThread<WSS>*) o)->loop() == false)
+      break;
   }
+  chThdExit(0);
 }
 
 template<size_t WSS>

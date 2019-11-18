@@ -405,6 +405,7 @@
    I2C slave managed by i2cMaster module
  */
 #define  I2C_USE_LPS33HW       TRUE
+#define  I2C_USE_SDP3X         TRUE
 #define  I2C_USE_IMU9250       FALSE
 #define  I2C_USE_MPL3115A2     FALSE
 
