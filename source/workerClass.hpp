@@ -73,8 +73,9 @@ WorkerThread<WSS, T>& WorkerThread<WSS, T>::terminate(void)
 
 template<size_t WSS, typename T>
 void WorkerThread<WSS, T>::threadFunc(void *o) {
+  WorkerThread<WSS, T> * const self = (WorkerThread<WSS, T>*) o;
   while (!chThdShouldTerminateX()) {
-    if (((WorkerThread<WSS, T>*) o)->loop() == false)
+    if (self->loop() == false)
       break;
   }
   chThdExit(0);

@@ -8,6 +8,7 @@
 #include "workerClass.hpp"
 #include "barometer.hpp"
 #include "adc.hpp"
+#include "imu.hpp"
 #include "differentialPressure.hpp"
 #include "blinker.hpp"
 #include "printf.h"
@@ -33,10 +34,11 @@ void _init_chibios() {
 
 int main (void)
 {
+  Blinker bl(NORMALPRIO);
   DifferentialPressure dp(NORMALPRIO);
   Barometer baro(NORMALPRIO);
-  Blinker bl(NORMALPRIO);
   Adc adc(NORMALPRIO);
+  Imu imu(NORMALPRIO);
 
   bl.run();
   consoleInit();	// initialisation des objets liés au shell
@@ -44,19 +46,24 @@ int main (void)
   consoleLaunch();  // lancement du shell
 
   if (baro.run() == false) {
-    DebugTrace("barometer fail");
+    DebugTrace("BARO fail");
     goto fail;
   }
 
   if (adc.run() == false) {
-    DebugTrace("adc fail");
+    DebugTrace("ADC fail");
     goto fail;
   }
 
-  // if (dp.run() != true) {
-  //    DebugTrace("differential pressure fail");
-  //    goto fail;
-  // }
+  if (imu.run() == false) {
+    DebugTrace("IMU fail");
+    goto fail;
+  }
+
+  if (dp.run() != true) {
+     DebugTrace("DIFF PRESS fail");
+     goto fail;
+  }
 
  fail:
   chThdSleep(TIME_INFINITE);
