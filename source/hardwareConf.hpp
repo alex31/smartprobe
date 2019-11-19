@@ -32,11 +32,18 @@ static constexpr uint32_t operator"" _mhz (unsigned long long int freq)
 {
   return freq * 1000_khz;
 }
+static constexpr long double operator"" _ohm (long double resistance)
+{
+  return resistance;
+}
+static constexpr long double operator"" _kohm (long double resistance)
+{
+  return resistance * 1000UL;
+}
 static constexpr uint32_t operator"" _percent (unsigned long long int freq)
 {
   return freq * 100UL;
 }
-
 
 /*
 #                 _                          _                                           

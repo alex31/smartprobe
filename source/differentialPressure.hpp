@@ -3,9 +3,16 @@
 #include "workerClass.hpp"
 #include "i2cMaster.h"
 
-class DifferentialPressure : public WorkerThread<512U> {
+namespace TH_DIFFPRESS {
+static constexpr size_t threadStackSize = 512U;
+}
+
+
+class DifferentialPressure :
+  public WorkerThread<TH_DIFFPRESS::threadStackSize, DifferentialPressure> {
 public:
-  DifferentialPressure(const tprio_t m_prio) : WorkerThread<512U>("diff pressure", m_prio) {};
+  DifferentialPressure(const tprio_t m_prio) :
+    WorkerThread<TH_DIFFPRESS::threadStackSize, DifferentialPressure>("diff pressure", m_prio) {};
 private:
   bool init(void) final;
   bool loop(void) final;

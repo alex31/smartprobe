@@ -7,6 +7,7 @@
 #include "hardwareConf.hpp"
 #include "workerClass.hpp"
 #include "barometer.hpp"
+#include "adc.hpp"
 #include "differentialPressure.hpp"
 #include "blinker.hpp"
 #include "printf.h"
@@ -35,6 +36,7 @@ int main (void)
   DifferentialPressure dp(NORMALPRIO);
   Barometer baro(NORMALPRIO);
   Blinker bl(NORMALPRIO);
+  Adc adc(NORMALPRIO);
 
   bl.run();
   consoleInit();	// initialisation des objets liés au shell
@@ -43,6 +45,11 @@ int main (void)
 
   if (baro.run() == false) {
     DebugTrace("barometer fail");
+    goto fail;
+  }
+
+  if (adc.run() == false) {
+    DebugTrace("adc fail");
     goto fail;
   }
 

@@ -3,7 +3,7 @@
 #include <hal.h>
 
 
-template<size_t WSS>
+template<size_t WSS, typename T>
 class WorkerThread
 {
 public:
@@ -30,8 +30,8 @@ private:
 
 
   
-template<size_t WSS>
-bool WorkerThread<WSS>::run(void)
+template<size_t WSS, typename T>
+bool WorkerThread<WSS, T>::run(void)
 {
   // this will force that only one process can be run
   // in the same time
@@ -46,8 +46,8 @@ bool WorkerThread<WSS>::run(void)
   return true;
 }
 
-template<size_t WSS>
-WorkerThread<WSS>& WorkerThread<WSS>::join(void)
+template<size_t WSS, typename T>
+WorkerThread<WSS, T>& WorkerThread<WSS, T>::join(void)
 {
   // this will force that only one process can be run
   // in the same time
@@ -58,8 +58,8 @@ WorkerThread<WSS>& WorkerThread<WSS>::join(void)
   return *this;
 }
 
-template<size_t WSS>
-WorkerThread<WSS>& WorkerThread<WSS>::terminate(void)
+template<size_t WSS, typename T>
+WorkerThread<WSS, T>& WorkerThread<WSS, T>::terminate(void)
 {
   // this will force that only one process can be run
   // in the same time
@@ -71,17 +71,17 @@ WorkerThread<WSS>& WorkerThread<WSS>::terminate(void)
 }
 
 
-template<size_t WSS>
-void WorkerThread<WSS>::threadFunc(void *o) {
+template<size_t WSS, typename T>
+void WorkerThread<WSS, T>::threadFunc(void *o) {
   while (!chThdShouldTerminateX()) {
-    if (((WorkerThread<WSS>*) o)->loop() == false)
+    if (((WorkerThread<WSS, T>*) o)->loop() == false)
       break;
   }
   chThdExit(0);
 }
 
-template<size_t WSS>
-ALIGNED_VAR(32) stkalign_t WorkerThread<WSS>::ws[THD_WORKING_AREA_SIZE(WSS) / sizeof(stkalign_t)];
+template<size_t WSS, typename T>
+ALIGNED_VAR(32) stkalign_t WorkerThread<WSS, T>::ws[THD_WORKING_AREA_SIZE(WSS) / sizeof(stkalign_t)];
 
-template<size_t WSS>
-thread_t *WorkerThread<WSS>::handle = nullptr;
+template<size_t WSS, typename T>
+thread_t *WorkerThread<WSS, T>::handle = nullptr;

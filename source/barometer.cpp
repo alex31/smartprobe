@@ -22,7 +22,7 @@ namespace {
   {
     LPS33HWDriver * lpsDriver = static_cast<LPS33HWDriver *>(arg);
     
-    chRegSetThreadName("baro acquire");
+    chRegSetThreadName("barometer: fetch on drdy");
     palEnableLineEvent(LINE_BARO_DRDY, PAL_EVENT_MODE_FALLING_EDGE);
     
     while (true) {
