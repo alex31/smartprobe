@@ -33,6 +33,7 @@ void _init_chibios() {
 int main (void)
 {
   DifferentialPressure dp(NORMALPRIO);
+  Barometer baro(NORMALPRIO);
   Blinker bl(NORMALPRIO);
 
   bl.run();
@@ -40,7 +41,7 @@ int main (void)
 
   consoleLaunch();  // lancement du shell
 
-  if (barometer::launchThd() == false) {
+  if (baro.run() == false) {
     DebugTrace("barometer fail");
     goto fail;
   }
@@ -49,8 +50,6 @@ int main (void)
   //    DebugTrace("differential pressure fail");
   //    goto fail;
   // }
-
-
 
  fail:
   chThdSleep(TIME_INFINITE);
