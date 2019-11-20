@@ -34,8 +34,9 @@ bool DifferentialPressure::loop()
     DebugTrace("diffPress[%u] = press=%.3f temp=%.2f",
 	       &sdpd-sensorsd.begin(),
 	       sdp3xGetPressure(&sdpd),
-	        sdp3xGetTemp(&sdpd));
+	       sdp3xGetTemp(&sdpd));
   }
+  chThdSleepSeconds(4);
   
   return true;
 }

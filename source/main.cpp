@@ -58,15 +58,15 @@ int main (void)
     goto fail;
   }
 
-  // if (imu.run() == false) {
-  //   DebugTrace("IMU fail");
-  //   goto fail;
-  // }
+  if (imu.run() == false) {
+    DebugTrace("IMU fail");
+    goto fail;
+  }
 
-  // if (dp.run() != true) {
-  //    DebugTrace("DIFF PRESS fail");
-  //    goto fail;
-  // }
+  if (dp.run() != true) {
+     DebugTrace("DIFF PRESS fail");
+     goto fail;
+  }
 
   if (sdcard.run() != true) {
      DebugTrace("SDCARD fail");

@@ -100,7 +100,7 @@ SdioError SdCard::logSensors (const char* fmt, ...)
   va_list ap;
 
   va_start(ap, fmt);
-  return sdLogvWriteLog(sensorsFd, fmt, ap);
+  return sdLogvWriteLog(self->sensorsFd, fmt, ap);
   va_end(ap);
 }
 
@@ -109,9 +109,10 @@ SdioError SdCard::logSyslog (const char* fmt, ...)
   va_list ap;
 
   va_start(ap, fmt);
-  return sdLogvWriteLog(syslogFd, fmt, ap);
+  return sdLogvWriteLog(self->syslogFd, fmt, ap);
   va_end(ap);
 }
 
 
 
+SdCard  *SdCard::self = nullptr;

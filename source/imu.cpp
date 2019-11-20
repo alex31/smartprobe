@@ -13,7 +13,8 @@ namespace {
 			    .ssline = LINE_SPI1_NSS,
 			    /* 6.25 Mhz, 8 bits word, CPHA= second (rising) edge, 
 			       CPOL= high level idle state */
-			    .cr1 = SPI_CR1_CPHA | SPI_CR1_CPOL | SPI_CR1_BR_1 | SPI_CR1_BR_0,
+			    .cr1 = SPI_CR1_CPHA | SPI_CR1_CPOL |
+			           SPI_CR1_BR_1 | SPI_CR1_BR_0,
 			    .cr2 = 0
   };
 
@@ -22,7 +23,7 @@ namespace {
 			   .sampleRate = 100,
 			   .config = ICM20600_GYRO_RATE_8K_BW_3281,
 			   .gyroConfig = ICM20600_FCHOICE_RATE_32K_BW_8173 |
-			   ICM20600_RANGE_250_DPS,
+			                 ICM20600_RANGE_250_DPS,
 			   .accelConf = ICM20600_RANGE_2G,
 			   .accelConf2 = ICM20600_ACC_RATE_4K_BW_1046
   };
@@ -72,7 +73,7 @@ bool Imu::loop()
   
   
   
-  chThdSleepMilliseconds(2000);
+  chThdSleepSeconds(3);
   return true;
 }
 
