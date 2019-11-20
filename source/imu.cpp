@@ -53,7 +53,6 @@ bool Imu::init()
     DebugTrace ("IMU factory FAIL");
     return false;
   }
-
   
   return true;
 }

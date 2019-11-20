@@ -184,6 +184,8 @@ CSRC = $(ALLCSRC) \
        $(STMEMSLPS33HWSRC) \
        $(CHIBIOS)/os/various/syscalls.c \
        $(VARIOUS)/stdutil.c \
+       $(VARIOUS)/msg_queue.c \
+       $(VARIOUS)/sdio.c \
        $(VARIOUS)/printf.c \
        $(VARIOUS)/microrl/microrlShell.c \
        $(VARIOUS)/microrl/microrl.c \

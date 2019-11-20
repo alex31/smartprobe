@@ -10,6 +10,7 @@
 #include "adc.hpp"
 #include "imu.hpp"
 #include "differentialPressure.hpp"
+#include "sdcard.hpp"
 #include "blinker.hpp"
 #include "printf.h"
 
@@ -39,6 +40,8 @@ int main (void)
   Barometer baro(NORMALPRIO);
   Adc adc(NORMALPRIO);
   Imu imu(NORMALPRIO);
+  SdCard sdcard(NORMALPRIO);
+  
 
   bl.run();
   consoleInit();	// initialisation des objets liés au shell
@@ -55,13 +58,18 @@ int main (void)
     goto fail;
   }
 
-  if (imu.run() == false) {
-    DebugTrace("IMU fail");
-    goto fail;
-  }
+  // if (imu.run() == false) {
+  //   DebugTrace("IMU fail");
+  //   goto fail;
+  // }
 
-  if (dp.run() != true) {
-     DebugTrace("DIFF PRESS fail");
+  // if (dp.run() != true) {
+  //    DebugTrace("DIFF PRESS fail");
+  //    goto fail;
+  // }
+
+  if (sdcard.run() != true) {
+     DebugTrace("SDCARD fail");
      goto fail;
   }
 
