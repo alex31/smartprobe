@@ -10,11 +10,12 @@
 
    ° écrire des modules
 
-	* lecture du baro
-	* lecture des 3 capteurs de pression differentielle
-	* lecture de l'IMU
-	* lecture de l'ADC
-	* avec envoi de traces sur le liaison série
+	* mettre en place le whiteboard pour tous les capteurs
+	* mettre en place usb storage
+	* coder lecture fichier de conf
+	* version qui envoie les données brutes sur la liaison série et la sdcard pour Murat
+	* integrer ahrs 2 angles (sans compas)
+	* integrer eigen ?
 
 
 

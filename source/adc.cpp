@@ -9,8 +9,8 @@ namespace {
   void adcErrorCb(ADCDriver *adcp, adcerror_t err);
   
   constexpr adcsample_t psVoltToSample(const float voltage)  {
-    return (voltage * SAMPLE_MAX * DIVIDER_R4) /
-      ((VCC_33 * (DIVIDER_R4 + DIVIDER_R14)));
+    return (voltage * SAMPLE_MAX * DIVIDER_R6) /
+      ((VCC_33 * (DIVIDER_R6 + DIVIDER_R7)));
   }
 
   constexpr ADCConversionGroup adcgrpcfg = {
@@ -102,7 +102,7 @@ bool Adc::loop()
 float Adc::getPowerSupplyVoltage(void) const
 {
   return (VCC_33 * samples[0] / SAMPLE_MAX) *
-    ((DIVIDER_R4+DIVIDER_R14) / DIVIDER_R4);
+    ((DIVIDER_R6+DIVIDER_R7) / DIVIDER_R7);
 }
 
 float Adc::getCoreTemp(void) const

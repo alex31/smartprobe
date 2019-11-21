@@ -61,8 +61,8 @@ static constexpr uint32_t operator"" _percent (unsigned long long int freq)
 */
 
 
-static constexpr float DIVIDER_R4 = 1.5_kohm;
-static constexpr float DIVIDER_R14 = 2.2_kohm;
+static constexpr float DIVIDER_R6 = 2.2_kohm;
+static constexpr float DIVIDER_R7 = 2.2_kohm;
 static constexpr float VCC_33 = 3.3f;
 static constexpr size_t ADC_RESOLUTION_IN_BITS = 12U;
 static constexpr uint32_t SAMPLE_MAX = (1<<ADC_RESOLUTION_IN_BITS) - 1;
@@ -130,5 +130,5 @@ static inline void stopAllPeripherals (void) {
 #                |  __/ | (_| |  | |  \ |_   | (_| | | |_) | | |  |  __/        
 #                 \___|  \__,_|  |_|   \__|   \__,_| |_.__/  |_|   \___|        
 */
-static constexpr float PS_VOLTAGE_THRESHOLD = 5.8f;
+static constexpr float PS_VOLTAGE_THRESHOLD = 4.6f;
 
