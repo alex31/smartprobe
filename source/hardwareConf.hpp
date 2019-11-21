@@ -1,6 +1,6 @@
 #pragma once
 #include <stdint.h>
-
+#include <array>
 
 
 
@@ -61,6 +61,13 @@ static constexpr uint32_t operator"" _percent (unsigned long long int freq)
 */
 
 
+static constexpr float DIVIDER_R4 = 1.5_kohm;
+static constexpr float DIVIDER_R14 = 2.2_kohm;
+static constexpr float VCC_33 = 3.3f;
+static constexpr size_t ADC_RESOLUTION_IN_BITS = 12U;
+static constexpr uint32_t SAMPLE_MAX = (1<<ADC_RESOLUTION_IN_BITS) - 1;
+
+
 static constexpr I2CDriver& BaroI2CD      = I2CD2;
 static constexpr I2CDriver& DiffPressI2CD = I2CD4;
 static constexpr SPIDriver& ImuSPID	  = SPID1;
@@ -83,7 +90,27 @@ static constexpr I2CConfig i2ccfg_1000 = {
   .cr2 = 0 // Only the ADD10 bit can eventually be specified here (10-bit addressing mode)
 } ;
 
-
+// static const std::array<ioline_t, 12>
+// LineToStopInCaseOfPowerFailure= {LINE_SPI1_NSS,
+// 				 LINE_IMU_SPI_SCK1,	
+// 				 LINE_IMU_SPI_MISO1,	
+// 				 LINE_IMU_SPI_MOSI1,
+// 				 LINE_AP_TX1,		
+// 				 LINE_AP_RX1,		
+// 				 LINE_PRESS_SCL4,	
+// 				 LINE_PRESS_SDA4,	
+// 				 LINE_BARO_SCL2,	
+// 				 LINE_BARO_SDA2,	
+// 				 LINE_LED2,	
+// 				 LINE_LED1
+// };
+static const std::array<ioline_t, 5>
+LineToStopInCaseOfPowerFailure= {LINE_SPI1_NSS,
+				 LINE_AP_TX1,		
+				 LINE_AP_RX1,		
+				 LINE_LED2,	
+				 LINE_LED1
+};
 
 /*
 #                                                    
@@ -99,3 +126,4 @@ static constexpr I2CConfig i2ccfg_1000 = {
 #                |  __/ | (_| |  | |  \ |_   | (_| | | |_) | | |  |  __/        
 #                 \___|  \__,_|  |_|   \__|   \__,_| |_.__/  |_|   \___|        
 */
+static constexpr float PS_VOLTAGE_THRESHOLD = 4.8f;

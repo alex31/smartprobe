@@ -9,9 +9,7 @@ static constexpr size_t threadStackSize = 1024U;
 class SdCard : public WorkerThread<TH_SDCARD::threadStackSize, SdCard> {
 public:
   SdCard(const tprio_t m_prio) :
-    WorkerThread<TH_SDCARD::threadStackSize, SdCard>("sdcard", m_prio) {
-    SdCard::self = this;
-  };
+    WorkerThread<TH_SDCARD::threadStackSize, SdCard>("sdcard", m_prio) {};
   static SdioError logSensors (const char* fmt, ...)
     __attribute__ ((format (printf, 1, 2)));
   static SdioError logSyslog (const char* fmt, ...)

@@ -17,7 +17,13 @@ static constexpr uint32_t operator"" _megabyte (unsigned long long int size)
 
 bool SdCard::init()
 {
-  return sdLogInit();
+  bool retVal = sdLogInit();
+  if (retVal)
+    self = this;
+  else
+    self = nullptr;
+
+  return retVal;
 }
 
 
@@ -43,7 +49,7 @@ bool SdCard::loop()
     default: break;
   }
   
-  chThdSleepMilliseconds(500);
+  chThdSleepMilliseconds(1);
   return true;
 }
 
@@ -68,7 +74,7 @@ bool  SdCard::sdLogInit(void)
   }
 
   se = sdLogOpenLog(&syslogFd, "SMARTPROBE", "syslog.txt", 1_seconde,
-		    LOG_APPEND_TAG_AT_CLOSE_DISABLED, 1_megabyte,
+		    LOG_APPEND_TAG_AT_CLOSE_ENABLED, 0,
 		    LOG_PREALLOCATION_DISABLED);
   switch (se) {
   case SDLOG_OK : DebugTrace("sdOpenLog syslog Ok"); break;
@@ -80,8 +86,8 @@ bool  SdCard::sdLogInit(void)
   }
 
   se = sdLogOpenLog(&sensorsFd, "SMARTPROBE", "sensors.txt", 1_seconde,
-		    LOG_APPEND_TAG_AT_CLOSE_DISABLED, 1_megabyte,
-		    LOG_PREALLOCATION_ENABLED);
+		    LOG_APPEND_TAG_AT_CLOSE_DISABLED, 0,
+		    LOG_PREALLOCATION_DISABLED);
   switch (se) {
   case SDLOG_OK : DebugTrace("sdOpenLog sensors Ok"); break;
   case SDLOG_FATFS_ERROR : DebugTrace("sdOpenLog sensors: Fatfs error");
@@ -99,20 +105,27 @@ SdioError SdCard::logSensors (const char* fmt, ...)
 {
   va_list ap;
 
-  va_start(ap, fmt);
-  return sdLogvWriteLog(self->sensorsFd, fmt, ap);
-  va_end(ap);
+  if (self != nullptr) {
+    va_start(ap, fmt);
+    return sdLogvWriteLog(self->sensorsFd, fmt, ap);
+    va_end(ap);
+  } else {
+    return SDLOG_NOT_READY;
+  }
 }
 
 SdioError SdCard::logSyslog (const char* fmt, ...)
 {
   va_list ap;
 
-  va_start(ap, fmt);
-  return sdLogvWriteLog(self->syslogFd, fmt, ap);
-  va_end(ap);
+  if (self != nullptr) {
+    va_start(ap, fmt);
+    return sdLogvWriteLog(self->syslogFd, fmt, ap);
+    va_end(ap);
+  } else {
+    return SDLOG_NOT_READY;
+  }
 }
-
 
 
 SdCard  *SdCard::self = nullptr;
