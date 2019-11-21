@@ -9,6 +9,8 @@
 #include "stdutil.h"
 #include "printf.h"
 #include "ttyConsole.hpp"
+#include "sdcard.hpp"
+#include "hardwareConf.hpp"
 #include "etl/cstring.h"
 #include <etl/vector.h>
 
@@ -20,7 +22,7 @@
 // declaration des prototypes de fonction
 // ces declarations sont necessaires pour remplir le tableau commands[] ci-dessous
 using cmd_func_t =  void  (BaseSequentialStream *lchp, int argc,const char * const argv[]);
-static cmd_func_t cmd_mem, cmd_uid, cmd_restart, cmd_param;
+static cmd_func_t cmd_mem, cmd_uid, cmd_restart, cmd_param, cmd_close;
 #if CH_DBG_THREADS_PROFILING
 static cmd_func_t cmd_threads;
 #endif
@@ -37,6 +39,7 @@ static const ShellCommand commands[] = {
 				//   paramètres qui lui sont passés
 
   {"restart", cmd_restart},	// reboot MCU
+  {"close", cmd_close},	// reboot MCU
   {NULL, NULL}			// marqueur de fin de tableau
 };
 
@@ -66,6 +69,25 @@ static void cmd_param(BaseSequentialStream *lchp, int argc,const char* const arg
       chprintf(lchp, "atoi(%s) = %d ;; atof(%s) = %.3f\r\n",
 		argv[argn], entier, argv[argn], flottant);
     }
+  }
+}
+
+static void cmd_close(BaseSequentialStream *lchp, int argc,const char* const argv[])
+{
+  if (argc < 2) {  // si aucun paramètre n'a été passé à la commande param 
+    chprintf(lchp, "il faut deux paramètres en entrée\r\n");
+  } else {
+    const size_t ms = atoi(argv[1]);
+    if (toupper(argv[0][0]) == 'F') {
+      DebugTrace("close all (FLUSH) wait %u milliseconds", ms);
+      sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
+    } else {
+      DebugTrace("close all (DO NOT flush) wait %u milliseconds", ms);
+      sdLogCloseAllLogs(LOG_DONT_FLUSH_BUFFER);
+    }
+    //    stopPeripheralInCaseOfPowerFailure();
+    chThdSleepMilliseconds(ms);
+    sdLogFinish();
   }
 }
 

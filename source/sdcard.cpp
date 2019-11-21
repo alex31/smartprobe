@@ -29,24 +29,26 @@ bool SdCard::init()
 
 bool SdCard::loop()
 {
-  static int i = 0;
-  SdioError se;
-  se = logSensors("i = %d", i++);
-    switch (se) {
-    case SDLOG_FATFS_ERROR : DebugTrace("sdWrite sensors: Fatfs error");
-      return false;
-    case SDLOG_INTERNAL_ERROR : DebugTrace("sdWrite sensors: Internal error");
-      return false;
-    default: break;
+  static int i = 0, j= 0;
+  SdioError se = logSensors("i = %d\n", i++);
+  
+  switch (se) {
+  case SDLOG_FATFS_ERROR : DebugTrace("sdWrite sensors: Fatfs error");
+    return false;
+  case SDLOG_INTERNAL_ERROR : DebugTrace("sdWrite sensors: Internal error");
+    return false;
+  default: break;
   }
-
-  se = logSyslog("i = %d", i++);
+  
+  if ((i % 1000) == 0) {
+    se = logSyslog("j = %d\n", j++);
     switch (se) {
     case SDLOG_FATFS_ERROR : DebugTrace("sdWrite syslog: Fatfs error");
       return false;
     case SDLOG_INTERNAL_ERROR : DebugTrace("sdWrite syslog: Internal error");
       return false;
     default: break;
+    }
   }
   
   chThdSleepMilliseconds(1);
@@ -61,7 +63,7 @@ bool  SdCard::sdLogInit(void)
   SdioError se;
 
   if (not sdioIsCardResponding()) {
-    DebugTrace("sensors OK but µSD card not present, or not reponding\r\n");
+    DebugTrace("µSD card not present, or not reponding\r\n");
     return false;
   }
   
@@ -73,7 +75,7 @@ bool  SdCard::sdLogInit(void)
   default: break;
   }
 
-  se = sdLogOpenLog(&syslogFd, "SMARTPROBE", "syslog.txt", 1_seconde,
+  se = sdLogOpenLog(&syslogFd, "SMARTPROBE", "syslog", 1_seconde,
 		    LOG_APPEND_TAG_AT_CLOSE_ENABLED, 0,
 		    LOG_PREALLOCATION_DISABLED);
   switch (se) {
@@ -85,7 +87,7 @@ bool  SdCard::sdLogInit(void)
   default: break;
   }
 
-  se = sdLogOpenLog(&sensorsFd, "SMARTPROBE", "sensors.txt", 1_seconde,
+  se = sdLogOpenLog(&sensorsFd, "SMARTPROBE", "sensors", 10_seconde,
 		    LOG_APPEND_TAG_AT_CLOSE_DISABLED, 0,
 		    LOG_PREALLOCATION_DISABLED);
   switch (se) {

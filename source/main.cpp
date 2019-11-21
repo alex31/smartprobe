@@ -44,13 +44,12 @@ int main (void)
   
 
   bl.run();
-  consoleInit();	// initialisation des objets liés au shell
-
+  consoleInit();    // initialisation des objets liés au shell
   consoleLaunch();  // lancement du shell
 
-  if (baro.run() == false) {
-    DebugTrace("BARO fail");
-    goto fail;
+  if (sdcard.run() != true) {
+     DebugTrace("SDCARD fail");
+     goto fail;
   }
 
   if (adc.run() == false) {
@@ -58,6 +57,14 @@ int main (void)
     goto fail;
   }
 
+  goto fail;
+  
+  if (baro.run() == false) {
+    DebugTrace("BARO fail");
+    goto fail;
+  }
+
+ 
   if (imu.run() == false) {
     DebugTrace("IMU fail");
     goto fail;
@@ -68,10 +75,6 @@ int main (void)
      goto fail;
   }
 
-  if (sdcard.run() != true) {
-     DebugTrace("SDCARD fail");
-     goto fail;
-  }
 
  fail:
   chThdSleep(TIME_INFINITE);

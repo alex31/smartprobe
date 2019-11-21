@@ -27,12 +27,15 @@ namespace {
   .ltr          = psVoltToSample(PS_VOLTAGE_THRESHOLD),
   .sqr1         = 0,
   .sqr2         = 0,                                       
-  .sqr3         = ADC_SQR3_SQ1_N(ADC_CHANNEL_SENSOR) |
-		  ADC_SQR3_SQ2_N(ADC_CHANNEL_IN9)
+  .sqr3         = ADC_SQR3_SQ1_N(ADC_CHANNEL_IN9) |
+		  ADC_SQR3_SQ2_N(ADC_CHANNEL_SENSOR)
 };
 
   BSEMAPHORE_DECL(adcWatchDogSem, true);
-  static THD_WORKING_AREA(waAdcWatchdog, 512);
+  THD_WORKING_AREA(waAdcWatchdog, 512);
+  IN_DMA_SECTION_NOINIT(adcsample_t samples[Adc::ADC_GRP1_NUM_CHANNELS * Adc::ADC_GRP1_BUF_DEPTH]);
+
+
 
   void adcErrorCb(ADCDriver *adcp, adcerror_t err)
 {
@@ -52,17 +55,24 @@ namespace {
     chRegSetThreadName("surveyAdc");
 
     chBSemWait(&adcWatchDogSem);
-    for (const ioline_t line : LineToStopInCaseOfPowerFailure) {
-      palSetLineMode(line, PAL_MODE_INPUT);
-    }
+    //    palSetLine(LINE_LED2);    while(1);
 
-    sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
+    stopAllPeripherals();
+    /*
+      Do no try to flush file, with 4.5 volts as condensator voltage, there is
+      only 20 ms before hitting 3V, not enough time to flush buffer, but enough to
+      cleanly umount to avoid dirty bit
+ 
+    sdLogCloseAllLogs(LOG_DONT_FLUSH_BUFFER);
+    chThdSleepMilliseconds(25);
+   */
+    
+
     sdLogFinish();
+    chThdSleepMilliseconds(10);
     systemDeepSleep();
     while (true);
   }
-  
-  
 }
 
 bool Adc::init()
@@ -79,26 +89,25 @@ bool Adc::init()
 
 bool Adc::loop()
 {
-  DebugTrace("ADC = %.2f; temp = %.1f",
-	     getPowerSupplyVoltage(), getCoreTemp());
+  DebugTrace("ADC = %.2f [%d:min{%d}]; temp = %.1f",
+	     getPowerSupplyVoltage(),
+	     samples[0], psVoltToSample(PS_VOLTAGE_THRESHOLD),
+	     getCoreTemp());
   chThdSleepMilliseconds(2500);
   
   return true;
 }
 
   
-adcsample_t Adc::samples[Adc::ADC_GRP1_NUM_CHANNELS * Adc::ADC_GRP1_BUF_DEPTH];
-
-
 float Adc::getPowerSupplyVoltage(void) const
 {
-  return (VCC_33 * samples[1] / SAMPLE_MAX) *
+  return (VCC_33 * samples[0] / SAMPLE_MAX) *
     ((DIVIDER_R4+DIVIDER_R14) / DIVIDER_R4);
 }
 
 float Adc::getCoreTemp(void) const
 {
-  return scaleTemp(samples[0]);
+  return scaleTemp(samples[1]);
 }
 
 

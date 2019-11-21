@@ -90,27 +90,31 @@ static constexpr I2CConfig i2ccfg_1000 = {
   .cr2 = 0 // Only the ADD10 bit can eventually be specified here (10-bit addressing mode)
 } ;
 
-// static const std::array<ioline_t, 12>
-// LineToStopInCaseOfPowerFailure= {LINE_SPI1_NSS,
-// 				 LINE_IMU_SPI_SCK1,	
-// 				 LINE_IMU_SPI_MISO1,	
-// 				 LINE_IMU_SPI_MOSI1,
-// 				 LINE_AP_TX1,		
-// 				 LINE_AP_RX1,		
-// 				 LINE_PRESS_SCL4,	
-// 				 LINE_PRESS_SDA4,	
-// 				 LINE_BARO_SCL2,	
-// 				 LINE_BARO_SDA2,	
-// 				 LINE_LED2,	
-// 				 LINE_LED1
-// };
-static const std::array<ioline_t, 5>
-LineToStopInCaseOfPowerFailure= {LINE_SPI1_NSS,
-				 LINE_AP_TX1,		
-				 LINE_AP_RX1,		
-				 LINE_LED2,	
-				 LINE_LED1
+static const std::array<ioline_t, 10>
+LineToStopInCaseOfPowerFailure= {LINE_LED1,	
+				 LINE_LED2,
+				 LINE_SPI1_NSS,
+				 LINE_IMU_SPI_SCK1,	
+				 LINE_IMU_SPI_MISO1,	
+				 LINE_IMU_SPI_MOSI1,
+				 //				 LINE_AP_TX1,		
+				 //				 LINE_AP_RX1,		
+				 LINE_PRESS_SCL4,	
+				 LINE_PRESS_SDA4,	
+				 LINE_BARO_SCL2,	
+				 LINE_BARO_SDA2	
 };
+
+static inline void stopAllPeripherals (void) {
+  i2cStop(&DiffPressI2CD);
+  i2cStop(&BaroI2CD);
+  spiStop(&ImuSPID);
+  adcStop(&ADCD1);
+  //  sdStop(&CONSOLE_DEV_SD);
+  for (const ioline_t line : LineToStopInCaseOfPowerFailure) {
+    palSetLineMode(line, PAL_MODE_INPUT);
+  }
+}
 
 /*
 #                                                    
@@ -126,4 +130,5 @@ LineToStopInCaseOfPowerFailure= {LINE_SPI1_NSS,
 #                |  __/ | (_| |  | |  \ |_   | (_| | | |_) | | |  |  __/        
 #                 \___|  \__,_|  |_|   \__|   \__,_| |_.__/  |_|   \___|        
 */
-static constexpr float PS_VOLTAGE_THRESHOLD = 4.8f;
+static constexpr float PS_VOLTAGE_THRESHOLD = 5.8f;
+

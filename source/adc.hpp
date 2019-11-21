@@ -15,15 +15,11 @@ public:
 
   static constexpr uint32_t  ADC_GRP1_NUM_CHANNELS = 2U;
   static constexpr uint32_t  ADC_GRP1_BUF_DEPTH = 1U;
-  static constexpr adcsample_t psVoltToSample(const float voltage);
-
 
 private:
   bool init(void) final;
   bool loop(void) final;
   static float scaleTemp (int fromTmp);
-
-  static adcsample_t samples[ADC_GRP1_NUM_CHANNELS * ADC_GRP1_BUF_DEPTH];
 };
 
 
