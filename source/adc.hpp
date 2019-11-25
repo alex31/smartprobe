@@ -6,13 +6,15 @@ namespace TH_ADC {
 static constexpr size_t threadStackSize = 320U;
 }
 
+
 class Adc : public WorkerThread<TH_ADC::threadStackSize, Adc> {
 public:
   Adc(const tprio_t m_prio) :
     WorkerThread<TH_ADC::threadStackSize, Adc>("adc", m_prio) {};
   float getPowerSupplyVoltage(void) const;
   float getCoreTemp(void) const;
-
+  void  registerEvt(event_listener_t *lst, const eventmask_t events) const;
+  
   static constexpr uint32_t  ADC_GRP1_NUM_CHANNELS = 2U;
   static constexpr uint32_t  ADC_GRP1_BUF_DEPTH = 1U;
 

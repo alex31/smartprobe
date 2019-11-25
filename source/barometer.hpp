@@ -24,7 +24,7 @@ public:
 private:
   bool init(void) final;
   bool loop(void) final;
-  BarometerData data = {0,0};
+  BarometerData wdata = {};
   LPS33HWDriver lpsDriver;
 };
 

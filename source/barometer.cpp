@@ -45,9 +45,9 @@ bool Barometer::loop()
     DebugTrace("lps33hw init FAIL");
     return false;
   }
-  data.pressure = lps33GetPressure(&lpsDriver);
-  data.temp = lps33GetTemp(&lpsDriver);
-  blackBoard.write(data);
+  wdata.pressure = lps33GetPressure(&lpsDriver);
+  wdata.temp = lps33GetTemp(&lpsDriver);
+  blackBoard.write(wdata);
 
   return true;
 }

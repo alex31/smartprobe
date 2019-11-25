@@ -32,7 +32,8 @@ namespace {
 };
 
   BSEMAPHORE_DECL(adcWatchDogSem, true);
-  THD_WORKING_AREA(waAdcWatchdog, 512);
+  EVENTSOURCE_DECL(eventSource);
+
   IN_DMA_SECTION_NOINIT(adcsample_t samples[Adc::ADC_GRP1_NUM_CHANNELS * Adc::ADC_GRP1_BUF_DEPTH]);
 
 
@@ -48,40 +49,13 @@ namespace {
   }
 }
   
-[[ noreturn ]]
-  static void adcWatchdog (void *arg)
-  {
-    (void)arg;
-    chRegSetThreadName("surveyAdc");
-
-    chBSemWait(&adcWatchDogSem);
-    //    palSetLine(LINE_LED2);    while(1);
-
-    stopAllPeripherals();
-    /*
-      Do no try to flush file, with 4.5 volts as condensator voltage, there is
-      only 20 ms before hitting 3V, not enough time to flush buffer, but enough to
-      cleanly umount to avoid dirty bit
- 
-    sdLogCloseAllLogs(LOG_DONT_FLUSH_BUFFER);
-    chThdSleepMilliseconds(25);
-   */
-    
-
-    sdLogFinish();
-    chThdSleepMilliseconds(10);
-    systemDeepSleep();
-    while (true);
-  }
-}
+} // end of anonymous namespace 
 
 bool Adc::init()
 {
   adcStart(&ADCD1, NULL);
   adcSTM32EnableTSVREFE();
   adcStartConversion(&ADCD1, &adcgrpcfg, samples, ADC_GRP1_BUF_DEPTH);
-  chThdCreateStatic(waAdcWatchdog, sizeof(waAdcWatchdog), HIGHPRIO,
-		    &adcWatchdog, NULL);
 
   return true;
 }
@@ -89,12 +63,23 @@ bool Adc::init()
 
 bool Adc::loop()
 {
-  DebugTrace("ADC = %.2f [%d:min{%d}]; temp = %.1f",
-	     getPowerSupplyVoltage(),
-	     samples[0], psVoltToSample(PS_VOLTAGE_THRESHOLD),
-	     getCoreTemp());
-  chThdSleepMilliseconds(2500);
+  chBSemWait(&adcWatchDogSem);
+  //    palSetLine(LINE_LED2);    while(1);
+  stopAllPeripherals();
   
+  /*
+    Do no try to flush file, with 4.5 volts as condensator voltage, there is
+    only 20 ms before hitting 3V, not enough time to flush buffer, but enough to
+    cleanly umount to avoid dirty bit
+    
+    sdLogCloseAllLogs(LOG_DONT_FLUSH_BUFFER);
+    chThdSleepMilliseconds(25);
+  */
+  
+  sdLogFinish();
+  chThdSleepMilliseconds(PowerLossAwakeTimeBeforeDeepSleep);
+  systemDeepSleep();
+
   return true;
 }
 
@@ -110,7 +95,10 @@ float Adc::getCoreTemp(void) const
   return scaleTemp(samples[1]);
 }
 
-
+void  Adc::registerEvt(event_listener_t *lst, const eventmask_t events) const
+{
+  chEvtRegisterMask(&eventSource, lst, events);
+}
 
 float Adc::scaleTemp (int fromTmp) 
 {

@@ -41,7 +41,8 @@ class BlackBoard {
 public:
   void write(const T &c);
   void read(T &c) const;
-  void read(T &c, const eventmask_t events) const;
+  void read(T &c, const eventmask_t events,
+	    const sysinterval_t timout = TIME_INFINITE) const;
   void registerEvt(event_listener_t *lst, const eventmask_t events) const;
   
 private:
@@ -80,8 +81,9 @@ void BlackBoard<T, ub>::write(const T &c) {
 };
 
 template<typename T, UpdateBehavior ub>
-void BlackBoard<T, ub>::read(T &c, const eventmask_t events) const {
-  chEvtWaitOne(events);
+void BlackBoard<T, ub>::read(T &c, const eventmask_t events,
+			     const sysinterval_t timout) const {
+  chEvtWaitOneTimeout(events, timout);
   read(c);
 } ;
 

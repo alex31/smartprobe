@@ -90,6 +90,9 @@ static constexpr I2CConfig i2ccfg_1000 = {
   .cr2 = 0 // Only the ADD10 bit can eventually be specified here (10-bit addressing mode)
 } ;
 
+
+static constexpr uint32_t PowerLossAwakeTimeBeforeDeepSleep = 8U;
+
 static const std::array<ioline_t, 10>
 LineToStopInCaseOfPowerFailure= {LINE_LED1,	
 				 LINE_LED2,

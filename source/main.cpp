@@ -6,12 +6,10 @@
 #include "confFile.hpp"
 #include "hardwareConf.hpp"
 #include "workerClass.hpp"
-#include "barometer.hpp"
-#include "adc.hpp"
-#include "imu.hpp"
-#include "differentialPressure.hpp"
+#include "sensorsDecl.hpp"
 #include "sdcard.hpp"
 #include "blinker.hpp"
+#include "showBlackboard.hpp"
 #include "printf.h"
 
 
@@ -33,15 +31,12 @@ void _init_chibios() {
   initHeap ();
 }
 
+
 int main (void)
 {
   Blinker bl(NORMALPRIO);
-  DifferentialPressure dp(NORMALPRIO);
-  Barometer baro(NORMALPRIO);
-  Adc adc(NORMALPRIO);
-  Imu imu(NORMALPRIO);
   SdCard sdcard(NORMALPRIO);
-  
+  ShowBlackboard showBB(NORMALPRIO);
 
   bl.run();
   consoleInit();    // initialisation des objets liés au shell
@@ -57,24 +52,31 @@ int main (void)
     goto fail;
   }
 
-  goto fail;
   
   if (baro.run() == false) {
     DebugTrace("BARO fail");
     goto fail;
   }
 
- 
+  if (dp.run() != true) {
+    DebugTrace("DIFF PRESS fail");
+    goto fail;
+  }
+  
+  goto end;
+  
   if (imu.run() == false) {
     DebugTrace("IMU fail");
     goto fail;
   }
 
-  if (dp.run() != true) {
-     DebugTrace("DIFF PRESS fail");
+
+ end:
+   if (showBB.run() != true) {
+     DebugTrace("Show Blackboard fail");
      goto fail;
   }
-
+ 
 
  fail:
   chThdSleep(TIME_INFINITE);

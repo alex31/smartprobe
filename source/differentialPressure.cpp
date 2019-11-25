@@ -29,14 +29,16 @@ bool DifferentialPressure::init()
 bool DifferentialPressure::loop()
 {
   for (Sdp3xDriver &sdpd : sensorsd) {
-    if ((sdp3xFetch(&sdpd, SDP3X_pressure_temp)) != MSG_OK)
+    if ((sdp3xFetch(&sdpd, SDP3X_pressure_temp)) != MSG_OK) {
+      DebugTrace("sdp3xFetch failed");
       return false;
-    DebugTrace("diffPress[%u] = press=%.3f temp=%.2f",
-	       &sdpd-sensorsd.begin(),
-	       sdp3xGetPressure(&sdpd),
-	       sdp3xGetTemp(&sdpd));
+    }
+    const size_t index = &sdpd - sensorsd.begin();
+    wdata[index].pressure = sdp3xGetPressure(&sdpd);
+    wdata[index].temp = sdp3xGetTemp(&sdpd);
+    blackBoard.write(wdata);
+    chThdSleepMilliseconds(1); // TODO : valeur à regler via fichier de conf
   }
-  chThdSleepSeconds(4);
   
   return true;
 }
