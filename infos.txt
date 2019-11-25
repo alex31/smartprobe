@@ -16,6 +16,7 @@
 	* version qui envoie les données brutes sur la liaison série et la sdcard pour Murat
 	* integrer ahrs 2 angles (sans compas)
 	* integrer eigen ?
+	* recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
 
 
 

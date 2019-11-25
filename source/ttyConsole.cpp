@@ -8,6 +8,7 @@
 #include "microrl/microrlShell.h"
 #include "stdutil.h"
 #include "printf.h"
+#include "rtcAccess.h"
 #include "ttyConsole.hpp"
 #include "sdcard.hpp"
 #include "hardwareConf.hpp"
@@ -22,7 +23,7 @@
 // declaration des prototypes de fonction
 // ces declarations sont necessaires pour remplir le tableau commands[] ci-dessous
 using cmd_func_t =  void  (BaseSequentialStream *lchp, int argc,const char * const argv[]);
-static cmd_func_t cmd_mem, cmd_uid, cmd_restart, cmd_param, cmd_close;
+static cmd_func_t cmd_mem, cmd_uid, cmd_restart, cmd_param, cmd_close, cmd_rtc;
 #if CH_DBG_THREADS_PROFILING
 static cmd_func_t cmd_threads;
 #endif
@@ -34,6 +35,7 @@ static const ShellCommand commands[] = {
 #if  CH_DBG_THREADS_PROFILING
   {"threads", cmd_threads},	// affiche pour chaque thread le taux d'utilisation de la pile et du CPU
 #endif
+  {"rtc", cmd_rtc},		// affiche l'heure contenue par la RTC
   {"uid", cmd_uid},		// affiche le numéro d'identification unique du MCU
   {"param", cmd_param},		// fonction à but pedagogique qui affiche les
 				//   paramètres qui lui sont passés
@@ -213,6 +215,87 @@ static void cmd_mem(BaseSequentialStream *lchp, int argc,const char* const argv[
 
   free_m (ptr1);
   free_m (ptr2);
+}
+
+static void cmd_rtc(BaseSequentialStream *lchp, int argc,const char* const argv[])
+{
+  if ((argc != 0) && (argc != 2) && (argc != 6)) {
+     DebugTrace ("Usage: rtc [Hour Minute Second Year monTh Day day_of_Week Adjust] value or");
+     DebugTrace ("Usage: rtc  Hour Minute Second Year monTh Day");
+     return;
+  }
+ 
+  if (argc == 2) {
+    const char timeVar = (char) tolower ((int) *(argv[0]));
+    const int32_t varVal = strtol (argv[1], NULL, 10);
+    
+    switch (timeVar) {
+    case 'h':
+      setHour ((uint32_t)(varVal));
+      break;
+      
+    case 'm':
+       setMinute ((uint32_t)(varVal));
+      break;
+      
+    case 's':
+      setSecond ((uint32_t)(varVal));
+      break;
+      
+    case 'y':
+       setYear ((uint32_t)(varVal));
+      break;
+      
+    case 't':
+       setMonth ((uint32_t)(varVal));
+      break;
+      
+    case 'd':
+       setMonthDay ((uint32_t)(varVal));
+      break;
+
+    case 'w':
+       setWeekDay ((uint32_t)(varVal));
+      break;
+
+    case 'a':
+      {
+	int32_t newSec =(int)(getSecond()) + varVal;
+	if (newSec > 59) {
+	  int32_t newMin =(int)(getMinute()) + (newSec/60);
+	  if (newMin > 59) {
+	    setHour ((getHour()+((uint32_t)(newMin/60))) % 24);
+	    newMin %= 60;
+	  }
+	  setMinute ((uint32_t)newMin);
+	}
+	if (newSec < 0) {
+	  int32_t newMin =(int)getMinute() + (newSec/60)-1;
+	  if (newMin < 0) {
+	    setHour ((getHour()-((uint32_t)newMin/60)-1) % 24);
+	    newMin %= 60;
+	  }
+	  setMinute ((uint32_t)newMin);
+	}
+	setSecond ((uint32_t)newSec % 60);
+      }
+      break;
+      
+    default:
+      DebugTrace ("Usage: rtc [Hour Minute Second Year monTh Day Weekday Adjust] value");
+    }
+  } else if (argc == 6) {
+    setYear ((uint32_t) atoi(argv[3]));
+    setMonth ((uint32_t) atoi(argv[4]));
+    setMonthDay ((uint32_t) atoi(argv[5]));
+    setHour ((uint32_t) atoi(argv[0]));
+    setMinute ((uint32_t) atoi(argv[1]));
+    setSecond ((uint32_t) atoi(argv[2]));
+  }
+
+  chprintf (lchp, "RTC : %s %.02lu/%.02lu/%.04lu  %.02lu:%.02lu:%.02lu\r\n",
+	    getWeekDayAscii(), getMonthDay(), getMonth(), getYear(),
+	    getHour(), getMinute(), getSecond());
 }
 
 
