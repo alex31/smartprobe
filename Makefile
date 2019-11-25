@@ -15,24 +15,21 @@ EXECMODE := $(DEBUG)
 #EXECMODE := $(OPT_SIZE)
 
 
-GCCVERSIONGTEQ7 := $(shell expr `arm-none-eabi-gcc -dumpversion | cut -f1 -d.` \>= 7)
 GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
             -Wno-error=cpp \
             -Wno-error=unused-function \
             -Wunused -Wpointer-arith \
             -Werror=sign-compare \
             -Wshadow -Wparentheses -fmax-errors=5 \
-            -ftrack-macro-expansion=2 -Wno-error=strict-overflow -Wstrict-overflow=2
+            -ftrack-macro-expansion=2 -Wno-error=strict-overflow -Wstrict-overflow=2 \
+            -Wvla-larger-than=128 -Wduplicated-branches -Wdangling-else \
+            -Wformat-overflow=2 -Wformat-truncation=2
 
-ifeq "$(GCCVERSIONGTEQ7)" "1"
-    GCC_DIAG += -Wvla-larger-than=128 -Wduplicated-branches -Wdangling-else \
-                -Wformat-overflow=2 -Wformat-truncation=2
-endif
 
 
 
 ifeq ($(EXECMODE),$(DEBUG)) 
-  USE_OPT =  -O0  -ggdb3  -Wall -Wextra \
+  USE_OPT =  -Og -ggdb3  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	    $(GCC_DIAG)
 endif
@@ -96,7 +93,7 @@ ifeq ($(USE_PROCESS_STACKSIZE),)
 ifeq ($(EXECMODE),$(DEBUG))
   USE_PROCESS_STACKSIZE = 0x1A00
 else
-  USE_PROCESS_STACKSIZE = 0x600
+  USE_PROCESS_STACKSIZE = 0x1000
 endif
 endif
 
