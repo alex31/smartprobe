@@ -52,21 +52,3 @@ bool Barometer::loop()
   return true;
 }
 
-
-#ifdef OLD_VERSION
-bool Barometer::loop()
-{
-  while (true) {				
-    DebugTrace("BARO pressure [hPa]:%4.2f", lps33GetPressure(&lpsDriver));
-    DebugTrace("BARO temperature [degC]:%3.2f", lps33GetTemp(&lpsDriver));
-    DebugTrace("BARO freq = %ld", baroFreq);
-    chThdSleepMilliseconds(1000);
-    baroFreq=baroCount;
-    baroCount=0;
-  }
-  return true;
-}
-#endif
-  
-
-

@@ -47,10 +47,9 @@ bool ShowBlackboard::loop()
      DebugTrace("IMU temp= %.2f\r\n"
 	     "IMU gyro=[x=%.2f, y=%.2f, z=%.2f]\r\n"
 	     "IMU acc= [x=%.2f, y=%.2f, z=%.2f]",
-	     imuData.temp,  imuData.gyro.v[0],  imuData.gyro.v[1],   imuData.gyro.v[2],
-	      imuData.acc.v[0],  imuData.acc.v[1],   imuData.acc.v[2]);
-
-     chThdSleepSeconds(2);
+	     imuData.temp,
+		imuData.gyro.v[0],  imuData.gyro.v[1], imuData.gyro.v[2],
+		imuData.acc.v[0],  imuData.acc.v[1], imuData.acc.v[2]);
   }
   return false;
 }

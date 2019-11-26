@@ -36,42 +36,42 @@ int main (void)
   Blinker bl(NORMALPRIO);
   UsbStorage usbStorage(NORMALPRIO);
 
-  bl.run();
+  bl.run(TIME_MS2I(500));
   consoleInit();    // initialisation des objets liés au shell
   consoleLaunch();  // lancement du shell
 
-  if (sdcard.run() != true) {
+  if (sdcard.run(TIME_IMMEDIATE) != true) {
      DebugTrace("SDCARD fail");
      goto fail;
   }
 
-  if (adc.run() == false) {
+  if (adc.run(TIME_IMMEDIATE) == false) {
     DebugTrace("ADC fail");
     goto fail;
   }
 
-  if (baro.run() == false) {
+  if (baro.run(TIME_IMMEDIATE) == false) {
     DebugTrace("BARO fail");
     goto fail;
   }
 
-  if (dp.run() != true) {
+  if (dp.run(TIME_MS2I(10)) != true) {
     DebugTrace("DIFF PRESS fail");
     goto fail;
   }
   
-  if (imu.run() == false) {
+  if (imu.run(TIME_MS2I(10)) == false) {
     DebugTrace("IMU fail");
     goto fail;
   }
 
-   if (showBB.run() != true) {
+   if (showBB.run(TIME_MS2I(2000)) != true) {
      DebugTrace("Show Blackboard fail");
      goto fail;
   }
  
  fail:
-   if (usbStorage.run() != true) {
+   if (usbStorage.run(TIME_IMMEDIATE) != true) {
      DebugTrace("USB Storage fail");
   }
  

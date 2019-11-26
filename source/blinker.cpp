@@ -13,7 +13,6 @@ bool Blinker::init()
 bool Blinker::loop()
 {
   palToggleLine(LINE_LED1);
-  chThdSleepMilliseconds(500);
   return true;
 }
 

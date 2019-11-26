@@ -9,21 +9,13 @@
 
 
    ° fix
-	* recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
-	* le loop doit être appelé à intervalle régulier passé dans le constructeur
-	  en utilisant un chThdSleepUntil
 	* remplacer les debugTrace par des logError
-	* log de la revision de firmware sha git
+	* log de la revision de firmware sha git + date/time de compilation
+	* remplacer le log de compteur par des données capteur
+	* recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
 	  
    ° écrire des modules
 
-	* mettre en place usb storage
-	  + thread en attente d'une interruption EXTI sur USBVUS
-	  + quand USBVUS : arreter le thread de log (event + wait sur fin du thread),
-			   fermer les fichiers,
-	                   lancer usb-storage,
-			   attente d'une interruption EXTI sur USBVUS,
-			   reset
 	* coder lecture fichier de conf
 	* version qui envoie les données brutes sur la liaison série et la sdcard pour Murat
 	* integrer ahrs 2 angles (sans compas)

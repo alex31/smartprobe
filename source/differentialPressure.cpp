@@ -37,7 +37,6 @@ bool DifferentialPressure::loop()
     wdata[index].pressure = sdp3xGetPressure(&sdpd);
     wdata[index].temp = sdp3xGetTemp(&sdpd);
     blackBoard.write(wdata);
-    chThdSleepMilliseconds(1); // TODO : valeur à regler via fichier de conf
   }
   
   return true;

@@ -61,13 +61,10 @@ bool Imu::init()
 
 bool Imu::loop()
 {
-  
   icm20600_fetch(&icmd);
   icm20600_getVal(&icmd, &wdata.temp, &wdata.gyro, &wdata.acc);
   blackBoard.write(wdata);
   
-  
-  chThdSleepMilliseconds(10);
   return true;
 }
 

@@ -8,7 +8,7 @@ class WorkerThread
 {
 public:
   WorkerThread(const char *m_name, const tprio_t m_prio) : name(m_name), prio(m_prio) {};
-  bool run();
+  bool run(sysinterval_t time);
   WorkerThread& terminate();
   WorkerThread& join();
   ~WorkerThread() {terminate().join();};
@@ -22,7 +22,8 @@ private:
 
   const char *name;
   const tprio_t prio;
-
+  sysinterval_t timeInLoop;
+  
   static thread_t *handle;
 
   static THD_WORKING_AREA(ws, WSS);
@@ -31,7 +32,7 @@ private:
 
   
 template<size_t WSS, typename T>
-bool WorkerThread<WSS, T>::run(void)
+bool WorkerThread<WSS, T>::run(sysinterval_t m_timeInLoop)
 {
   // this will force that only one process can be run
   // in the same time
@@ -40,7 +41,8 @@ bool WorkerThread<WSS, T>::run(void)
     
   if (init() == false)
     return false;
-    
+
+  timeInLoop = m_timeInLoop;
   handle = chThdCreateStatic(ws, sizeof(ws), prio, threadFunc, this);
   chRegSetThreadNameX (handle, name);
   return true;
@@ -75,8 +77,11 @@ template<size_t WSS, typename T>
 void WorkerThread<WSS, T>::threadFunc(void *o) {
   WorkerThread<WSS, T> * const self = (WorkerThread<WSS, T>*) o;
   while (!chThdShouldTerminateX()) {
+    const systime_t now = chVTGetSystemTimeX();
+    const systime_t then = chVTGetSystemTimeX()+self->timeInLoop;
     if (self->loop() == false)
       break;
+    chThdSleepUntilWindowed(now, then);
   }
   chThdExit(0);
 }
