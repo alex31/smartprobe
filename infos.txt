@@ -17,6 +17,12 @@
    ° écrire des modules
 
 	* mettre en place usb storage
+	  + thread en attente d'une interruption EXTI sur USBVUS
+	  + quand USBVUS : arreter le thread de log (event + wait sur fin du thread),
+			   fermer les fichiers,
+	                   lancer usb-storage,
+			   attente d'une interruption EXTI sur USBVUS,
+			   reset
 	* coder lecture fichier de conf
 	* version qui envoie les données brutes sur la liaison série et la sdcard pour Murat
 	* integrer ahrs 2 angles (sans compas)
