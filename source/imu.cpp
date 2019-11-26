@@ -61,19 +61,13 @@ bool Imu::init()
 
 bool Imu::loop()
 {
-  Vec3f gyro={0}, acc={0};
-  float temp=0;
+  
   icm20600_fetch(&icmd);
-  icm20600_getVal(&icmd, &temp, &gyro, &acc);
-  DebugTrace("IMU temp= %.2f\r\n"
-	     "IMU gyro=[x=%.2f, y=%.2f, z=%.2f]\r\n"
-	     "IMU acc= [x=%.2f, y=%.2f, z=%.2f]",
-	     temp, gyro.v[0], gyro.v[1],  gyro.v[2],
-	     acc.v[0], acc.v[1],  acc.v[2]);
+  icm20600_getVal(&icmd, &wdata.temp, &wdata.gyro, &wdata.acc);
+  blackBoard.write(wdata);
   
   
-  
-  chThdSleepSeconds(3);
+  chThdSleepMilliseconds(10);
   return true;
 }
 

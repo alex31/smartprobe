@@ -52,7 +52,6 @@ int main (void)
     goto fail;
   }
 
-  
   if (baro.run() == false) {
     DebugTrace("BARO fail");
     goto fail;
@@ -63,15 +62,11 @@ int main (void)
     goto fail;
   }
   
-  goto end;
-  
   if (imu.run() == false) {
     DebugTrace("IMU fail");
     goto fail;
   }
 
-
- end:
    if (showBB.run() != true) {
      DebugTrace("Show Blackboard fail");
      goto fail;

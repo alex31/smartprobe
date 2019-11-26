@@ -17,9 +17,10 @@ private:
   bool init(void) final;
   bool loop(void) final;
 
-  event_listener_t baroEvent, diffPressEvent;
+  event_listener_t baroEvent, diffPressEvent, imuEvent;
   BarometerData baroData{};
   DiffPressureData diffPressData{};
+  ImuData imuData{};
 };
 
 
