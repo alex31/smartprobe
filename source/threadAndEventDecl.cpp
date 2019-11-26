@@ -1,4 +1,4 @@
-#include "sensorsDecl.hpp"
+#include "threadAndEventDecl.hpp"
 
 extern "C" {
 __attribute__((used))
@@ -9,3 +9,5 @@ DifferentialPressure dp(NORMALPRIO);
 Barometer baro(NORMALPRIO);
 Adc adc(NORMALPRIO);
 Imu imu(NORMALPRIO);
+SdCard sdcard(NORMALPRIO);
+ShowBlackboard showBB(NORMALPRIO);

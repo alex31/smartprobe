@@ -13,6 +13,7 @@
 	* le loop doit être appelé à intervalle régulier passé dans le constructeur
 	  en utilisant un chThdSleepUntil
 	* remplacer les debugTrace par des logError
+	* log de la revision de firmware sha git
 	  
    ° écrire des modules
 
@@ -27,6 +28,7 @@
 	* version qui envoie les données brutes sur la liaison série et la sdcard pour Murat
 	* integrer ahrs 2 angles (sans compas)
 	* integrer eigen ?
+	* integrer un watchdog IWDG
 
 
 

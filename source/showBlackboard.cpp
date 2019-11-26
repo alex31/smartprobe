@@ -3,7 +3,7 @@
 #include "showBlackboard.hpp"
 #include "blackBoard.hpp"
 #include "stdutil.h"	
-
+#include "threadAndEventDecl.hpp"
 
 
 
@@ -22,8 +22,8 @@ bool ShowBlackboard::loop()
   dp.blackBoard.registerEvt(&diffPressEvent, PDIF_EVT);
   imu.blackBoard.registerEvt(&imuEvent, IMU_EVT);
   
-  while (true) {
-    chEvtWaitAny(IMU_EVT);
+  while (!chThdShouldTerminateX()) {
+    chEvtWaitAll(IMU_EVT | BARO_EVT | PDIF_EVT);
     baro.blackBoard.read(baroData);
     dp.blackBoard.read(diffPressData);
     imu.blackBoard.read(imuData);
@@ -50,10 +50,9 @@ bool ShowBlackboard::loop()
 	     imuData.temp,  imuData.gyro.v[0],  imuData.gyro.v[1],   imuData.gyro.v[2],
 	      imuData.acc.v[0],  imuData.acc.v[1],   imuData.acc.v[2]);
 
-     
-    chThdSleepSeconds(2);
+     chThdSleepSeconds(2);
   }
-  return true;
+  return false;
 }
 
   

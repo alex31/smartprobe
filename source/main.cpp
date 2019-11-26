@@ -6,10 +6,9 @@
 #include "confFile.hpp"
 #include "hardwareConf.hpp"
 #include "workerClass.hpp"
-#include "sensorsDecl.hpp"
-#include "sdcard.hpp"
+#include "threadAndEventDecl.hpp"
 #include "blinker.hpp"
-#include "showBlackboard.hpp"
+#include "usbStorage.hpp"
 #include "printf.h"
 
 
@@ -35,8 +34,7 @@ void _init_chibios() {
 int main (void)
 {
   Blinker bl(NORMALPRIO);
-  SdCard sdcard(NORMALPRIO);
-  ShowBlackboard showBB(NORMALPRIO);
+  UsbStorage usbStorage(NORMALPRIO);
 
   bl.run();
   consoleInit();    // initialisation des objets liés au shell
@@ -72,8 +70,12 @@ int main (void)
      goto fail;
   }
  
-
  fail:
+   if (usbStorage.run() != true) {
+     DebugTrace("USB Storage fail");
+  }
+ 
+   
   chThdSleep(TIME_INFINITE);
 }
 

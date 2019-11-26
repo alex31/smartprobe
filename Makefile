@@ -6,6 +6,11 @@
 # Compiler options here.
 # -Wdouble-promotion -fno-omit-frame-pointer
 
+GIT_VERSION := $(shell git rev-parse --abbrev-ref HEAD) : 
+GIT_VERSION += $(shell git describe --abbrev=4 --dirty --always --tags)
+
+#$(info $$GIT_VERSION is [${GIT_VERSION}])
+
 DEBUG := 1
 OPT_SPEED := 2
 OPT_SIZE := 3
@@ -189,7 +194,8 @@ CSRC = $(ALLCSRC) \
        $(VARIOUS)/sdLog.c \
        $(VARIOUS)/i2cMaster.c \
        $(VARIOUS)/spiPeriphICM20600.c \
-       $(VARIOUS)/rtcAccess.c 
+       $(VARIOUS)/rtcAccess.c \
+       $(USBD_LIB)/mass_storage/usb_msd.c
 
 
 
@@ -223,7 +229,8 @@ ASMXSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 INCDIR = $(CONFDIR) $(ALLINC) $(TLSFINC) \
          $(CHIBIOS)/os/various $(VARIOUS) $(VARIOUS_INCL) \
          $(STMEMSLPS33HWDIR) \
-         $(CTRE_LIB) $(ETL_LIB) $(FROZEN_LIB) 
+         $(CTRE_LIB) $(ETL_LIB) $(FROZEN_LIB) \
+	 $(USBD_LIB)/mass_storage
 
 #
 # Project, sources and paths
@@ -281,7 +288,7 @@ UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHEC
         -DCH_DBG_ENABLE_ASSERTS=0
 endif
 
-UDEFS += -DCTRE_STRING_IS_UTF8=1 -DFROZEN_NO_EXCEPTIONS=1
+UDEFS += -DCTRE_STRING_IS_UTF8=1 -DFROZEN_NO_EXCEPTIONS=1 -DGIT_VERSION="$(GIT_VERSION)"
 
 # Define ASM defines here
 ifeq ($(EXECMODE),$(DEBUG))
@@ -310,7 +317,7 @@ ULIBS =
 RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk
 include $(RULESPATH)/arm-none-eabi.mk
 include $(RULESPATH)/rules.mk
-$(OBJS): cfg/board.h
+$(OBJS): cfg/board.h compiler_flags
 
 cfg/board.h: cfg/board.cfg Makefile
 	boardGen.pl --no-pp-line --no-adcp-in	$<  $@
@@ -324,3 +331,8 @@ flash: all
 	@echo write $(BUILDDIR)/$(PROJECT).bin to flash memory
 	bmpflash  $(BUILDDIR)/$(PROJECT).elf
 	@echo Done
+
+
+.PHONY: force
+compiler_flags: force
+	echo '$(GIT_VERSION)' | cmp -s - $@ || echo '$(GIT_VERSION)' > $@

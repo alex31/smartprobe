@@ -1,6 +1,12 @@
 #pragma once
 #include "workerClass.hpp"
-#include "sensorsDecl.hpp"
+#include "barometer.hpp"
+#include "adc.hpp"
+#include "imu.hpp"
+#include "differentialPressure.hpp"
+#include "sdcard.hpp"
+
+
 
 namespace TH_SHOWBLACKBOARD {
 static constexpr size_t threadStackSize = 512U;
