@@ -62,7 +62,7 @@ bool SdCard::loop()
 {
   //  chEvtWaitAll(IMU_EVT | BARO_EVT | PDIF_EVT);
 
-  chEvtWaitOne(BARO_EVT); // log each new differential sample
+  chEvtWaitOne(PDIF_EVT); // log each new differential sample
 
   baro.blackBoard.read(baroData);
   dp.blackBoard.read(diffPressData);
