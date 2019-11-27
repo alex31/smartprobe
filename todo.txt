@@ -35,6 +35,8 @@
    ° integration de librairies externes
 	* eigen ?
 	* micro python pour coder du comportement via le fichier de conf sans avoir à reflasher ?
+	* quand le projet devra être distribué : mettre toutes les dependences externes
+	  en sous modules git
 
 
              _____     __  __    ___          
