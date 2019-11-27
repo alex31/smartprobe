@@ -33,9 +33,9 @@ bool DifferentialPressure::loop()
     const size_t index = &sdpd - sensorsd.begin();
     wdata[index].pressure = sdp3xGetPressure(&sdpd);
     wdata[index].temp = sdp3xGetTemp(&sdpd);
-    blackBoard.write(wdata);
   }
   
+  blackBoard.write(wdata);
   return true;
 }
 
