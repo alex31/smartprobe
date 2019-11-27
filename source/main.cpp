@@ -60,7 +60,7 @@ int main (void)
     goto fail;
   }
   
-  if (imu.run(TIME_MS2I(10)) == false) {
+  if (imu.run(TIME_MS2I(2)) == false) {
     SdCard::logSyslog(Severity::Fatal, "IMU fail");
     goto fail;
   }

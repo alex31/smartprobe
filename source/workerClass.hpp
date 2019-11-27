@@ -9,6 +9,8 @@ class WorkerThread
 {
 public:
   enum ExitCode {ERROR_IN_INIT=-10, ERROR_IN_LOOP=-11};
+  enum  EventMask {BARO_EVT=1<<0, PDIF_EVT=1<<1, ADC_EVT=1<<2, IMU_EVT=1<<3}; 
+
   WorkerThread(const char *m_name, const tprio_t m_prio) : name(m_name), prio(m_prio) {};
   bool run(sysinterval_t time);
   WorkerThread& terminate();

@@ -5,6 +5,7 @@
 #include "sdio.h"
 #include <frozen/map.h>
 #include <frozen/string.h>
+#include "threadAndEventDecl.hpp"
 
 #define xstr(s) str(s)
 #define str(s) #s
@@ -44,11 +45,52 @@ bool SdCard::init()
   return retVal;
 }
 
+bool SdCard::initInThreadContext()
+{
+  // registerEvt must be done in the thread that will wait on event,
+  // so cannot be done in init method which is call by the parent thread
+  
+  baro.blackBoard.registerEvt(&baroEvent, BARO_EVT);
+  dp.blackBoard.registerEvt(&diffPressEvent, PDIF_EVT);
+  imu.blackBoard.registerEvt(&imuEvent, IMU_EVT);
+
+  return true;
+}
+
 
 bool SdCard::loop()
 {
-  static int i = 0, j= 0;
-  SdioError se = logSensors("i = %d\n", i++);
+  //  chEvtWaitAll(IMU_EVT | BARO_EVT | PDIF_EVT);
+
+  chEvtWaitOne(BARO_EVT); // log each new differential sample
+
+  baro.blackBoard.read(baroData);
+  dp.blackBoard.read(diffPressData);
+  imu.blackBoard.read(imuData);
+
+  const auto se =
+    logSensors("%4.2f\t%3.2f\t"
+	       "%.3f\t%.3f\t%.3f\t"
+	       "%.2f\t%.2f\t%.2f\t"
+	       "%.3f\t%.3f\t%.3f\t"
+	       "%.3f\t%.3f\t%.3f\t"
+	       "%.2f\t%.1f\t",
+	       baroData.pressure,
+	       baroData.temp,
+	       diffPressData[0].pressure,
+	       diffPressData[1].pressure,
+	       diffPressData[2].pressure,
+	       diffPressData[0].temp,
+	       diffPressData[1].temp,
+	       diffPressData[2].temp,
+	       imuData.acc.v[0],
+	       imuData.acc.v[1],
+	       imuData.acc.v[2],
+	       imuData.gyro.v[0],
+	       imuData.gyro.v[1],
+	       imuData.gyro.v[2],
+	       adc.getPowerSupplyVoltage(),
+	       adc.getCoreTemp()   );
   
   switch (se) {
   case SDLOG_FATFS_ERROR : DebugTrace("sdWrite sensors: Fatfs error");
@@ -58,18 +100,6 @@ bool SdCard::loop()
   default: break;
   }
   
-  if ((i % 1000) == 0) {
-    se = logSyslog(Severity::Info, "j = %d", j++);
-    switch (se) {
-    case SDLOG_FATFS_ERROR : DebugTrace("sdWrite syslog: Fatfs error");
-      return false;
-    case SDLOG_INTERNAL_ERROR : DebugTrace("sdWrite syslog: Internal error");
-      return false;
-    default: break;
-    }
-  }
-  
-  chThdSleepMilliseconds(1); // in final will be event waiting
   return true;
 }
 
@@ -181,6 +211,24 @@ void  SdCard::writeSyslogHeader(void)
   logSyslog(Severity::Info, "Build time:   %s%s%s", __DATE__, " - ", __TIME__);
 #endif
 #endif
+
+
+  logSensors("baro.p baro.t "
+	     "dp[0].p "
+	     "dp[1].p "
+	     "dp[2].p "
+	     "dp[0].t "
+	     "dp[1].t "
+	     "dp[2].t "
+	     "acc.x "
+	     "acc.y "
+	     "acc.z "
+	     "gyro.x "
+	     "gyro.y "
+	     "gyro.z "
+	     "vcc "
+	     "CoreTemp "
+	     );
 }
 
 
@@ -190,8 +238,12 @@ SdioError SdCard::logSensors (const char* fmt, ...)
 
   if (self != nullptr) {
     va_start(ap, fmt);
-    return sdLogvWriteLog(self->sensorsFd, fmt, ap);
+    sdLogWriteLog(self->sensorsFd, "[%.3f] : ",
+		  TIME_I2MS(chVTGetSystemTimeX())/1000.0f);
+    auto retVal = sdLogvWriteLog(self->sensorsFd, fmt, ap);
+    sdLogWriteLog(self->sensorsFd, "\r\n");
     va_end(ap);
+    return retVal;
   } else {
     return SDLOG_NOT_READY;
   }

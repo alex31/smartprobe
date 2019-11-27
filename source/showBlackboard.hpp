@@ -20,7 +20,6 @@ public:
 		 ShowBlackboard>("showBlackboard", m_prio) {};
 private:
   friend WorkerThread<TH_SHOWBLACKBOARD::threadStackSize, ShowBlackboard>;
-  enum  EventMask {BARO_EVT=1<<0, PDIF_EVT=1<<1, ADC_EVT=1<<2, IMU_EVT=1<<3}; 
   bool init(void) final;
   bool initInThreadContext(void) final;
   bool loop(void) final;

@@ -1,6 +1,10 @@
 #pragma once
 #include "workerClass.hpp"
 #include "sdLog.h"
+#include "barometer.hpp"
+#include "adc.hpp"
+#include "imu.hpp"
+#include "differentialPressure.hpp"
 
 namespace TH_SDCARD {
 static constexpr size_t threadStackSize = 1024U;
@@ -20,6 +24,7 @@ public:
 private:
   friend WorkerThread<TH_SDCARD::threadStackSize, SdCard>;
   bool init(void) final;
+  bool initInThreadContext(void) final;
   bool loop(void) final;
   bool sdLogInit(void);
   void writeSyslogHeader(void);
@@ -28,6 +33,11 @@ private:
   uint32_t freeSpaceInKo = 0;
   FileDes syslogFd = -1;
   FileDes sensorsFd = -1;
+
+  event_listener_t baroEvent, diffPressEvent, imuEvent;
+  BarometerData baroData{};
+  DiffPressureData diffPressData{};
+  ImuData imuData{};
 };
 
 
