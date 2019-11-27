@@ -36,7 +36,7 @@ int main (void)
   Blinker bl(NORMALPRIO);
   UsbStorage usbStorage(NORMALPRIO);
 
-  bl.run(TIME_MS2I(500));
+  bl.run(TIME_MS2I(1000));
   consoleInit();    // initialisation des objets liés au shell
   consoleLaunch();  // lancement du shell
 
@@ -75,7 +75,6 @@ int main (void)
      DebugTrace("USB Storage fail");
   }
  
-   
   chThdSleep(TIME_INFINITE);
 }
 

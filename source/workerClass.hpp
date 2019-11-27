@@ -3,10 +3,12 @@
 #include <hal.h>
 
 
+
 template<size_t WSS, typename T>
 class WorkerThread
 {
 public:
+  enum ExitCode {ERROR_IN_INIT=-10, ERROR_IN_LOOP=-11};
   WorkerThread(const char *m_name, const tprio_t m_prio) : name(m_name), prio(m_prio) {};
   bool run(sysinterval_t time);
   WorkerThread& terminate();
@@ -16,9 +18,11 @@ public:
 protected:
   static void threadFunc(void *o);
 private:
-  
+
+  // this is called in origin thread context
   virtual bool init(void) = 0;
-  virtual bool initThread(void){return true;};
+  // this is called in newly created thread context
+  virtual bool initInThreadContext(void) {return true;};
   virtual bool loop(void) = 0;
 
   const char *name;
@@ -65,10 +69,10 @@ template<size_t WSS, typename T>
 WorkerThread<WSS, T>& WorkerThread<WSS, T>::terminate(void)
 {
   // this will force that only one process can be run
-  // in the same time
-  if (handle != nullptr) {
+  // in the same time, not really a singleton but close. 
+  if (handle != nullptr) 
     chThdTerminate(handle);
-  }
+  
   return *this;
   
 }
@@ -77,8 +81,8 @@ WorkerThread<WSS, T>& WorkerThread<WSS, T>::terminate(void)
 template<size_t WSS, typename T>
 void WorkerThread<WSS, T>::threadFunc(void *o) {
   T * const self = static_cast<T*>(o);
-  if (self->initThread() == false)
-    chThdExit(-1);
+  if (self->initInThreadContext() == false)
+    chThdExit(ERROR_IN_INIT);
 
 
   while (!chThdShouldTerminateX()) {
@@ -88,11 +92,12 @@ void WorkerThread<WSS, T>::threadFunc(void *o) {
       break;
     chThdSleepUntilWindowed(now, then);
   }
-  chThdExit(-2);
+  chThdExit(ERROR_IN_LOOP);
 }
 
 template<size_t WSS, typename T>
-ALIGNED_VAR(32) stkalign_t WorkerThread<WSS, T>::ws[THD_WORKING_AREA_SIZE(WSS) / sizeof(stkalign_t)];
+ALIGNED_VAR(32) stkalign_t WorkerThread<WSS, T>::ws[THD_WORKING_AREA_SIZE(WSS) /
+						    sizeof(stkalign_t)];
 
 template<size_t WSS, typename T>
 thread_t *WorkerThread<WSS, T>::handle = nullptr;

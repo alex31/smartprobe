@@ -9,7 +9,6 @@
 
 
    ° fix
-        * tester fix frozen
 	* remplacer les DebugTrace par des logError(severity, "string")
 	* log de la revision de firmware sha git + date/time de compilation
 	* remplacer le log de compteur par des données capteur
@@ -17,24 +16,35 @@
 	
 	  
    ° écrire des modules
-	* lecture fichier de conf
-	* version qui envoie les données brutes sur la liaison série et la sdcard pour début decembre
+	* lecture/analyse du fichier de conf
+	* version qui envoie les données brutes sur la liaison série et la sdcard
+	  pour début decembre
 	* ahrs
 	  ° qui puisse donner 2 angles si la donnée heading n'est pas disponible
 	                      3 angles si la donnée heading est disponible
 	* watchdog IWDG -> test au boot, si il y a eu hardfault -> log
-	* recup de données gps -> ref horaire, calcul du cap, choix du format dans le fichier de conf :
+	* recup de données gps -> ref horaire, calcul du cap, choix du format
+	  dans le fichier de conf :
 	  ø nmea ou trame pprz (ou autre ?)
 	* calcul d'un vecteur vent dans le repaire de la sonde une fois
-	  la matrice de transformation issue de la calibration fournie dans le fichier de config
-	* calcul d'un vecteur vent dans le repaire terrestre si l'ahrs est en mode 3 angles et que l'autopilote
-	  fournit un vecteur vitesse en 3D
+	  la matrice de transformation issue de la calibration fournie
+	  dans le fichier de config
+	* calcul d'un vecteur vent dans le repaire terrestre si l'ahrs est
+	  en mode 3 angles et que l'autopilote fournit un vecteur vitesse en 3D
+	* code pour les leds :
+	  ° blink verte avec duty petit : heartbeat
+	  ° blink verte avec duty important : usb_storage
+	  ° blink rouge uniquement en cas d'erreur grave :
+	    1 blink : pb capteur
+	    2 blinks : pn sdcard
+	    
 
 
 
    ° integration de librairies externes
 	* eigen ?
-	* micro python pour coder du comportement via le fichier de conf sans avoir à reflasher ?
+	* micro python pour coder du comportement via le fichier de conf
+	  sans avoir à reflasher ?
 	* quand le projet devra être distribué : mettre toutes les dependences externes
 	  en sous modules git
 

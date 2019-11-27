@@ -12,7 +12,9 @@ bool Blinker::init()
 
 bool Blinker::loop()
 {
-  palToggleLine(LINE_LED1);
+  palSetLine(LINE_LED_GREEN);
+  chThdSleepMilliseconds(100);
+  palClearLine(LINE_LED_GREEN);
   return true;
 }
 

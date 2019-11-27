@@ -108,11 +108,11 @@
 #define	PD05                           5U
 #define	PD06                           6U
 #define	PD07                           7U
-#define	PD08_LED2                      8U
+#define	PD08_LED_GREEN                 8U
 #define	PD09                           9U
 #define	PD10                           10U
 #define	PD11                           11U
-#define	PD12_LED1                      12U
+#define	PD12_LED_RED                   12U
 #define	PD13                           13U
 #define	PD14                           14U
 #define	PD15                           15U
@@ -266,8 +266,8 @@
 #define	LINE_OSC32_OUT                 PAL_LINE(GPIOC, 15U)
 
 #define	LINE_SDMMC1_CMD                PAL_LINE(GPIOD, 2U)
-#define	LINE_LED2                      PAL_LINE(GPIOD, 8U)
-#define	LINE_LED1                      PAL_LINE(GPIOD, 12U)
+#define	LINE_LED_GREEN                 PAL_LINE(GPIOD, 8U)
+#define	LINE_LED_RED                   PAL_LINE(GPIOD, 12U)
 
 #define	LINE_BARO_DRDY                 PAL_LINE(GPIOE, 1U)
 
@@ -614,11 +614,11 @@
 					 PIN_MODE_INPUT(PD05) | \
 					 PIN_MODE_INPUT(PD06) | \
 					 PIN_MODE_INPUT(PD07) | \
-					 PIN_MODE_OUTPUT(PD08_LED2) | \
+					 PIN_MODE_OUTPUT(PD08_LED_GREEN) | \
 					 PIN_MODE_INPUT(PD09) | \
 					 PIN_MODE_INPUT(PD10) | \
 					 PIN_MODE_INPUT(PD11) | \
-					 PIN_MODE_OUTPUT(PD12_LED1) | \
+					 PIN_MODE_OUTPUT(PD12_LED_RED) | \
 					 PIN_MODE_INPUT(PD13) | \
 					 PIN_MODE_INPUT(PD14) | \
 					 PIN_MODE_INPUT(PD15))
@@ -631,11 +631,11 @@
 					 PIN_OTYPE_PUSHPULL(PD05) | \
 					 PIN_OTYPE_PUSHPULL(PD06) | \
 					 PIN_OTYPE_PUSHPULL(PD07) | \
-					 PIN_OTYPE_PUSHPULL(PD08_LED2) | \
+					 PIN_OTYPE_PUSHPULL(PD08_LED_GREEN) | \
 					 PIN_OTYPE_PUSHPULL(PD09) | \
 					 PIN_OTYPE_PUSHPULL(PD10) | \
 					 PIN_OTYPE_PUSHPULL(PD11) | \
-					 PIN_OTYPE_PUSHPULL(PD12_LED1) | \
+					 PIN_OTYPE_PUSHPULL(PD12_LED_RED) | \
 					 PIN_OTYPE_PUSHPULL(PD13) | \
 					 PIN_OTYPE_PUSHPULL(PD14) | \
 					 PIN_OTYPE_PUSHPULL(PD15))
@@ -648,11 +648,11 @@
 					 PIN_OSPEED_SPEED_VERYLOW(PD05) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD06) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD07) | \
-					 PIN_OSPEED_SPEED_VERYLOW(PD08_LED2) | \
+					 PIN_OSPEED_SPEED_VERYLOW(PD08_LED_GREEN) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD09) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD10) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD11) | \
-					 PIN_OSPEED_SPEED_VERYLOW(PD12_LED1) | \
+					 PIN_OSPEED_SPEED_VERYLOW(PD12_LED_RED) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD13) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD14) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD15))
@@ -665,11 +665,11 @@
 					 PIN_PUPDR_PULLDOWN(PD05) | \
 					 PIN_PUPDR_PULLDOWN(PD06) | \
 					 PIN_PUPDR_PULLDOWN(PD07) | \
-					 PIN_PUPDR_FLOATING(PD08_LED2) | \
+					 PIN_PUPDR_FLOATING(PD08_LED_GREEN) | \
 					 PIN_PUPDR_PULLDOWN(PD09) | \
 					 PIN_PUPDR_PULLDOWN(PD10) | \
 					 PIN_PUPDR_PULLDOWN(PD11) | \
-					 PIN_PUPDR_FLOATING(PD12_LED1) | \
+					 PIN_PUPDR_FLOATING(PD12_LED_RED) | \
 					 PIN_PUPDR_PULLDOWN(PD13) | \
 					 PIN_PUPDR_PULLDOWN(PD14) | \
 					 PIN_PUPDR_PULLDOWN(PD15))
@@ -682,11 +682,11 @@
 					 PIN_ODR_LEVEL_LOW(PD05) | \
 					 PIN_ODR_LEVEL_LOW(PD06) | \
 					 PIN_ODR_LEVEL_LOW(PD07) | \
-					 PIN_ODR_LEVEL_LOW(PD08_LED2) | \
+					 PIN_ODR_LEVEL_LOW(PD08_LED_GREEN) | \
 					 PIN_ODR_LEVEL_LOW(PD09) | \
 					 PIN_ODR_LEVEL_LOW(PD10) | \
 					 PIN_ODR_LEVEL_LOW(PD11) | \
-					 PIN_ODR_LEVEL_LOW(PD12_LED1) | \
+					 PIN_ODR_LEVEL_LOW(PD12_LED_RED) | \
 					 PIN_ODR_LEVEL_LOW(PD13) | \
 					 PIN_ODR_LEVEL_LOW(PD14) | \
 					 PIN_ODR_LEVEL_LOW(PD15))
@@ -700,11 +700,11 @@
 					 PIN_AFIO_AF(PD06, 0) | \
 					 PIN_AFIO_AF(PD07, 0))
 
-#define VAL_GPIOD_AFRH			(PIN_AFIO_AF(PD08_LED2, 0) | \
+#define VAL_GPIOD_AFRH			(PIN_AFIO_AF(PD08_LED_GREEN, 0) | \
 					 PIN_AFIO_AF(PD09, 0) | \
 					 PIN_AFIO_AF(PD10, 0) | \
 					 PIN_AFIO_AF(PD11, 0) | \
-					 PIN_AFIO_AF(PD12_LED1, 0) | \
+					 PIN_AFIO_AF(PD12_LED_RED, 0) | \
 					 PIN_AFIO_AF(PD13, 0) | \
 					 PIN_AFIO_AF(PD14, 0) | \
 					 PIN_AFIO_AF(PD15, 0))

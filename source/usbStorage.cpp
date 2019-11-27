@@ -16,7 +16,7 @@ namespace {
 /* Turns on a LED when there is I/O activity on the USB port */
 void usbActivity(bool active)
 {
-  palWriteLine(LINE_LED2, active ? PAL_HIGH : PAL_LOW);
+  palWriteLine(LINE_LED_GREEN, active ? PAL_HIGH : PAL_LOW);
 }
 
 USBMassStorageConfig msdConfig =

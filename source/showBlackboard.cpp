@@ -12,7 +12,7 @@ bool ShowBlackboard::init()
   return true;
 }
 
-bool ShowBlackboard::initThread()
+bool ShowBlackboard::initInThreadContext()
 {
   // registerEvt must be done in the thread that will wait on event,
   // so cannot be done in init method which is call by the parent thread
