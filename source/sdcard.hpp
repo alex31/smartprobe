@@ -16,6 +16,7 @@ public:
     __attribute__ ((format (printf, 1, 2)));
 
 private:
+  friend WorkerThread<TH_SDCARD::threadStackSize, SdCard>;
   bool init(void) final;
   bool loop(void) final;
   bool sdLogInit(void);

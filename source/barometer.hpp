@@ -22,6 +22,7 @@ public:
     WorkerThread<TH_BARO::threadStackSize, Barometer>("barometer", m_prio) {};
   BlackBoard<BarometerData, UpdateBehavior::OnContentChange> blackBoard;
 private:
+  friend WorkerThread<TH_BARO::threadStackSize, Barometer>;
   bool init(void) final;
   bool loop(void) final;
   BarometerData wdata = {};

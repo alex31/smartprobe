@@ -38,11 +38,11 @@ public:
   {};
   BlackBoard<DiffPressureData, UpdateBehavior::OnContentChange> blackBoard;
 private:
+  friend  WorkerThread<TH_DIFFPRESS::threadStackSize, DifferentialPressure>;
   bool init(void) final;
   bool loop(void) final;
   bool initSdp(Sdp3xDriver &sdp, const uint8_t numSlave);
   DiffPressureData wdata {};
-
   std::array<Sdp3xDriver, 3> sensorsd;
 };
 

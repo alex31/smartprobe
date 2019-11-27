@@ -9,18 +9,26 @@
 
 
    ° fix
-	* remplacer les debugTrace par des logError
+        * tester fix frozen
+	* workerClass.hpp :
+	  ø faire l'init en thread context (necessaire pour les event listener, mutex, ...)
+	  ø run : remplacer while (true) {...}  par do {...} while (time != TIME_INFINITE)
+	* remplacer les DebugTrace par des logError(severity, "string")
 	* log de la revision de firmware sha git + date/time de compilation
 	* remplacer le log de compteur par des données capteur
 	* recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
+	
 	  
    ° écrire des modules
 
-	* coder lecture fichier de conf
+	* lecture fichier de conf
 	* version qui envoie les données brutes sur la liaison série et la sdcard pour Murat
-	* integrer ahrs 2 angles (sans compas)
-	* integrer eigen ?
-	* integrer un watchdog IWDG
+	* ahrs 2 angles (sans compas)
+	* eigen ?
+	* watchdog IWDG -> test au boot, si il y a eu hardfault -> log
+	* recup de données gps -> ref horaire, calcul du cap, choix du format dans le fichier de conf :
+	  ø nmea ou trame pprz (ou autre ?)
+	* embarquer micro python pour coder du comportement via le fichier de conf sans avoir à reflasher ?
 
 
 

@@ -19,6 +19,7 @@ public:
   static constexpr uint32_t  ADC_GRP1_BUF_DEPTH = 1U;
 
 private:
+  friend WorkerThread<TH_ADC::threadStackSize, Adc>;
   bool init(void) final;
   bool loop(void) final;
   static float scaleTemp (int fromTmp);

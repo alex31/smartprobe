@@ -75,7 +75,7 @@ WorkerThread<WSS, T>& WorkerThread<WSS, T>::terminate(void)
 
 template<size_t WSS, typename T>
 void WorkerThread<WSS, T>::threadFunc(void *o) {
-  WorkerThread<WSS, T> * const self = (WorkerThread<WSS, T>*) o;
+  T * const self = static_cast<T*>(o);
   while (!chThdShouldTerminateX()) {
     const systime_t now = chVTGetSystemTimeX();
     const systime_t then = chVTGetSystemTimeX()+self->timeInLoop;

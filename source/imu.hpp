@@ -22,6 +22,7 @@ public:
     WorkerThread<TH_IMU::threadStackSize, Imu>("imu", m_prio) {};
   BlackBoard<ImuData, UpdateBehavior::OnContentChange> blackBoard;
 private:
+  friend WorkerThread<TH_IMU::threadStackSize, Imu>;
   bool init(void) final;
   bool loop(void) final;
   ImuData wdata = {};

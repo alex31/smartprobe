@@ -11,6 +11,7 @@ public:
     WorkerThread<TH_USBSTORAGE::threadStackSize, UsbStorage>("usb_storage",
 							   m_prio) {};
 private:
+  friend  WorkerThread<TH_USBSTORAGE::threadStackSize, UsbStorage>;
   bool init(void) final;
   bool loop(void) final;
 };
