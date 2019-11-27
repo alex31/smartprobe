@@ -2,10 +2,6 @@
 #include "stdutil.h"	
 #include "hardwareConf.hpp"
 
-namespace {
-
-}
-
 
 bool DifferentialPressure::init()
 {

@@ -18,6 +18,7 @@ protected:
 private:
   
   virtual bool init(void) = 0;
+  virtual bool initThread(void){return true;};
   virtual bool loop(void) = 0;
 
   const char *name;
@@ -38,10 +39,10 @@ bool WorkerThread<WSS, T>::run(sysinterval_t m_timeInLoop)
   // in the same time
   if (handle != nullptr)
     return false;
-    
+  
   if (init() == false)
     return false;
-
+  
   timeInLoop = m_timeInLoop;
   handle = chThdCreateStatic(ws, sizeof(ws), prio, threadFunc, this);
   chRegSetThreadNameX (handle, name);
@@ -76,6 +77,10 @@ WorkerThread<WSS, T>& WorkerThread<WSS, T>::terminate(void)
 template<size_t WSS, typename T>
 void WorkerThread<WSS, T>::threadFunc(void *o) {
   T * const self = static_cast<T*>(o);
+  if (self->initThread() == false)
+    chThdExit(-1);
+
+
   while (!chThdShouldTerminateX()) {
     const systime_t now = chVTGetSystemTimeX();
     const systime_t then = chVTGetSystemTimeX()+self->timeInLoop;
@@ -83,7 +88,7 @@ void WorkerThread<WSS, T>::threadFunc(void *o) {
       break;
     chThdSleepUntilWindowed(now, then);
   }
-  chThdExit(0);
+  chThdExit(-2);
 }
 
 template<size_t WSS, typename T>

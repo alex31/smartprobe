@@ -39,7 +39,7 @@ bool UsbStorage::init()
   return true;
 }
 
-
+[[noreturn]] 
 bool UsbStorage::loop()
 {
   chRegSetThreadName("UsbStorage:polling");
@@ -81,6 +81,6 @@ bool UsbStorage::loop()
   sdioDisconnect();
   
   systemReset();
-  return true;
+  while(true);
 }
 

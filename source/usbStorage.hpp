@@ -13,7 +13,7 @@ public:
 private:
   friend  WorkerThread<TH_USBSTORAGE::threadStackSize, UsbStorage>;
   bool init(void) final;
-  bool loop(void) final;
+  [[noreturn]] bool loop(void) final;
 };
 
 

@@ -51,7 +51,7 @@ bool SdCard::loop()
     }
   }
   
-  chThdSleepMilliseconds(1);
+  chThdSleepMilliseconds(1); // in final will be event waiting
   return true;
 }
 

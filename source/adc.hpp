@@ -21,7 +21,7 @@ public:
 private:
   friend WorkerThread<TH_ADC::threadStackSize, Adc>;
   bool init(void) final;
-  bool loop(void) final;
+  [[noreturn]] bool loop(void) final;
   static float scaleTemp (int fromTmp);
 };
 

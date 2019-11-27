@@ -60,27 +60,22 @@ bool Adc::init()
   return true;
 }
 
-
+[[noreturn]]
 bool Adc::loop()
 {
-  chBSemWait(&adcWatchDogSem);
-  //    palSetLine(LINE_LED2);    while(1);
-  stopAllPeripherals();
-  
   /*
     Do no try to flush file, with 4.5 volts as condensator voltage, there is
     only 20 ms before hitting 3V, not enough time to flush buffer, but enough to
     cleanly umount to avoid dirty bit
-    
-    sdLogCloseAllLogs(LOG_DONT_FLUSH_BUFFER);
-    chThdSleepMilliseconds(25);
   */
+
+  chBSemWait(&adcWatchDogSem); // wait for powerLoss event
   
+  stopAllPeripherals();
   sdLogFinish();
   chThdSleepMilliseconds(PowerLossAwakeTimeBeforeDeepSleep);
   systemDeepSleep();
-
-  return true;
+  while (true);
 }
 
   

@@ -10,9 +10,6 @@
 
    ° fix
         * tester fix frozen
-	* workerClass.hpp :
-	  ø faire l'init en thread context (necessaire pour les event listener, mutex, ...)
-	  ø run : remplacer while (true) {...}  par do {...} while (time != TIME_INFINITE)
 	* remplacer les DebugTrace par des logError(severity, "string")
 	* log de la revision de firmware sha git + date/time de compilation
 	* remplacer le log de compteur par des données capteur
@@ -20,18 +17,24 @@
 	
 	  
    ° écrire des modules
-
 	* lecture fichier de conf
-	* version qui envoie les données brutes sur la liaison série et la sdcard pour Murat
-	* ahrs 2 angles (sans compas)
-	* eigen ?
+	* version qui envoie les données brutes sur la liaison série et la sdcard pour début decembre
+	* ahrs
+	  ° qui puisse donner 2 angles si la donnée heading n'est pas disponible
+	                      3 angles si la donnée heading est disponible
 	* watchdog IWDG -> test au boot, si il y a eu hardfault -> log
 	* recup de données gps -> ref horaire, calcul du cap, choix du format dans le fichier de conf :
 	  ø nmea ou trame pprz (ou autre ?)
-	* embarquer micro python pour coder du comportement via le fichier de conf sans avoir à reflasher ?
+	* calcul d'un vecteur vent dans le repaire de la sonde une fois
+	  la matrice de transformation issue de la calibration fournie dans le fichier de config
+	* calcul d'un vecteur vent dans le repaire terrestre si l'ahrs est en mode 3 angles et que l'autopilote
+	  fournit un vecteur vitesse en 3D
 
 
 
+   ° integration de librairies externes
+	* eigen ?
+	* micro python pour coder du comportement via le fichier de conf sans avoir à reflasher ?
 
 
              _____     __  __    ___          
