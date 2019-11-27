@@ -2,6 +2,7 @@
 #include "ch.h"
 #include "hal.h"
 #include "stdutil.h"
+#include "sdcard.hpp"
 #include "usbStorage.hpp"
 #include "threadAndEventDecl.hpp"
 #include "sdLog.h"
@@ -56,7 +57,7 @@ bool UsbStorage::loop()
   chThdSleepMilliseconds(100);
   sdcard.terminate().join();
   showBB.terminate().join();
-  DebugTrace("UsbStorage:connected");
+  SdCard::logSyslog(Severity::Info, "UsbStorage:connected");
   chRegSetThreadName("UsbStorage:connected");
   /* connect sdcard sdc interface sdio */
   if (sdioConnect() == false) 
@@ -72,7 +73,7 @@ bool UsbStorage::loop()
   } while (palReadLine(LINE_USB_VBUS) == PAL_HIGH);
   
   
-  DebugTrace("UsbStorage:DEconnected");
+  SdCard::logSyslog(Severity::Info, "UsbStorage:DEconnected");
   chThdSleepMilliseconds(100);
   
   deinit_msd_driver();

@@ -41,38 +41,38 @@ int main (void)
   consoleLaunch();  // lancement du shell
 
   if (sdcard.run(TIME_IMMEDIATE) != true) {
-     DebugTrace("SDCARD fail");
+     SdCard::logSyslog(Severity::Fatal, "SDCARD fail");
      goto fail;
   }
 
   if (adc.run(TIME_IMMEDIATE) == false) {
-    DebugTrace("ADC fail");
+    SdCard::logSyslog(Severity::Fatal, "ADC fail");
     goto fail;
   }
 
   if (baro.run(TIME_IMMEDIATE) == false) {
-    DebugTrace("BARO fail");
+    SdCard::logSyslog(Severity::Fatal, "BARO fail");
     goto fail;
   }
 
   if (dp.run(TIME_MS2I(10)) != true) {
-    DebugTrace("DIFF PRESS fail");
+    SdCard::logSyslog(Severity::Fatal, "DIFF PRESS fail");
     goto fail;
   }
   
   if (imu.run(TIME_MS2I(10)) == false) {
-    DebugTrace("IMU fail");
+    SdCard::logSyslog(Severity::Fatal, "IMU fail");
     goto fail;
   }
 
    if (showBB.run(TIME_MS2I(2000)) != true) {
-     DebugTrace("Show Blackboard fail");
+     SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
      goto fail;
   }
  
  fail:
    if (usbStorage.run(TIME_IMMEDIATE) != true) {
-     DebugTrace("USB Storage fail");
+     SdCard::logSyslog(Severity::Fatal, "USB Storage fail");
   }
  
   chThdSleep(TIME_INFINITE);

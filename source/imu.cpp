@@ -3,6 +3,7 @@
 #include "imu.hpp"
 #include "hardwareConf.hpp" 
 #include "stdutil.h"	
+#include "sdcard.hpp"
 
 
 namespace {
@@ -38,20 +39,21 @@ bool Imu::init()
 {
   spiStart(&ImuSPID, &spiCfg);
   if (icm20600_init(&icmd, &icmCfg) == MSG_OK) {
-    DebugTrace ("IMU init OK");
+    SdCard::logSyslog(Severity::Info, "icm20600 init OK");
   } else {
-    DebugTrace ("IMU init FAIL");
+    SdCard::logSyslog(Severity::Fatal, "icm20600 init FAIL");
     return false;
   }
 
   const Icm20600TestResult res = icm20600_runSelfTests(&icmd);
-  DebugTrace("overall factory note = %u bias=%d passed=%d",
-	     res.factory, res.bias, res.passed);
+  SdCard::logSyslog(Severity::Info, "icm20600 overall factory note = "
+		    "%u bias=%d passed=%d",
+		    res.factory, res.bias, res.passed);
   
   if (res.bias && res.passed) {
-    DebugTrace ("IMU factory test OK");
+    SdCard::logSyslog(Severity::Info, "icm20600 factory test OK");
   } else {
-    DebugTrace ("IMU factory FAIL");
+    SdCard::logSyslog(Severity::Fatal, "icm20600 factory test FAIL");
     return false;
   }
   

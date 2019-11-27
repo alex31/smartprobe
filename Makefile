@@ -6,7 +6,8 @@
 # Compiler options here.
 # -Wdouble-promotion -fno-omit-frame-pointer
 
-GIT_VERSION := $(shell git rev-parse --abbrev-ref HEAD) : 
+GIT_VERSION := git branch 
+GIT_VERSION += $(shell git rev-parse --abbrev-ref HEAD) : sha 
 GIT_VERSION += $(shell git describe --abbrev=4 --dirty --always --tags)
 
 #$(info $$GIT_VERSION is [${GIT_VERSION}])

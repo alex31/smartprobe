@@ -4,6 +4,7 @@
 #include "stdutil.h"	
 #include "barometer.hpp"
 #include "hardwareConf.hpp"
+#include "sdcard.hpp"
 
 namespace {
   constexpr LPS33HWConfig lpsConfig = {
@@ -26,7 +27,7 @@ bool Barometer::init()
  
   if (status != MSG_OK) {
     retVal = false;
-    DebugTrace("lps33hw init FAIL");
+    SdCard::logSyslog(Severity::Fatal, "lps33hw init FAIL");
   }
   
   return retVal;
@@ -42,7 +43,7 @@ bool Barometer::loop()
 							    LPS33HW_FETCH_TEMP));
   
   if (status != MSG_OK) {
-    DebugTrace("lps33hw init FAIL");
+    SdCard::logSyslog(Severity::Fatal, "lps33hw init FAIL");
     return false;
   }
   wdata.pressure = lps33GetPressure(&lpsDriver);

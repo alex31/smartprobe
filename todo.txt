@@ -36,7 +36,7 @@
 	  ° blink verte avec duty important : usb_storage
 	  ° blink rouge uniquement en cas d'erreur grave :
 	    1 blink : pb capteur
-	    2 blinks : pn sdcard
+	    2 blinks : pb sdcard
 	    
 
 
