@@ -65,17 +65,22 @@ int main (void)
     goto fail;
   }
 
-   if (showBB.run(TIME_MS2I(50)) != true) {
-     SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
-     goto fail;
+  if (showBB.run(TIME_MS2I(50)) != true) {
+    SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
+    goto fail;
   }
- 
- fail:
-   if (usbStorage.run(TIME_IMMEDIATE) != true) {
-     SdCard::logSyslog(Severity::Fatal, "USB Storage fail");
+  
+  if (usbStorage.run(TIME_IMMEDIATE) != true) {
+    SdCard::logSyslog(Severity::Fatal, "USB Storage fail");
+    goto fail;
   }
- 
+  
   chThdSleep(TIME_INFINITE);
+
+ fail:
+   palSetLine(LINE_LED_RED);
+
+   chThdSleep(TIME_INFINITE);
 }
 
 
