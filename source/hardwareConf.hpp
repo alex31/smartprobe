@@ -109,14 +109,16 @@ LineToStopInCaseOfPowerFailure= {LINE_LED_GREEN,
 };
 
 static inline void stopAllPeripherals (void) {
-  i2cStop(&DiffPressI2CD);
-  i2cStop(&BaroI2CD);
-  spiStop(&ImuSPID);
-  adcStop(&ADCD1);
-  //  sdStop(&CONSOLE_DEV_SD);
+  // do not close peripherals : thread which use them will
+  // chSysHalt. terminate thread will be too long  so just
+  // put pins in highZ state and stop all clock peripherals but I²C
+
   for (const ioline_t line : LineToStopInCaseOfPowerFailure) {
     palSetLineMode(line, PAL_MODE_INPUT);
   }
+
+  rccDisableSPI1();
+  rccDisableADC1();
 }
 
 /*

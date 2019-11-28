@@ -97,6 +97,7 @@ static void cmd_close(BaseSequentialStream *lchp, int argc,const char* const arg
   (void) argc;
   (void) argv;
   DebugTrace("close all (FLUSH) wait 200 milliseconds");
+  stopAllPeripherals();
   sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
   chThdSleepMilliseconds(200);
   sdLogFinish();

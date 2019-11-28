@@ -27,11 +27,12 @@
 	* calcul d'un vecteur vent dans le repaire terrestre si l'ahrs est
 	  en mode 3 angles et que l'autopilote fournit un vecteur vitesse en 3D
 	* code pour les leds :
-	  ° blink verte avec duty petit : heartbeat
-	  ° blink verte avec duty important : usb_storage
-	  ° blink rouge uniquement en cas d'erreur grave :
-	    1 blink : pb capteur
-	    2 blinks : pb sdcard
+	  ° utiliser un module WS2812 : choix du timer, DMA
+	  ° blink verte  : heartbeat
+	  ° blink bleu :   usb_storage
+	  ° uniquement en cas d'erreur grave :
+	  °  blink jaune : pb sdcard
+	  °  blink rouge : pb capteur
 	    
 
 
