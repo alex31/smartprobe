@@ -40,47 +40,28 @@ int main (void)
   consoleInit();    // initialisation des objets liés au shell
   consoleLaunch();  // lancement du shell
 
-  if (sdcard.run(TIME_IMMEDIATE) != true) {
+  if (not sdcard.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "SDCARD fail");
-     goto fail;
-  }
-
-  if (adc.run(TIME_IMMEDIATE) == false) {
+  } else  if (not adc.run(TIME_IMMEDIATE)) {
     SdCard::logSyslog(Severity::Fatal, "ADC fail");
-    goto fail;
-  }
-
-  if (baro.run(TIME_IMMEDIATE) == false) {
+  } else if (not baro.run(TIME_IMMEDIATE)) {
     SdCard::logSyslog(Severity::Fatal, "BARO fail");
-    goto fail;
-  }
-
-  if (dp.run(TIME_MS2I(10)) != true) {
+  } else  if (not dp.run(TIME_MS2I(10))) {
     SdCard::logSyslog(Severity::Fatal, "DIFF PRESS fail");
-    goto fail;
-  }
-  
-  if (imu.run(TIME_MS2I(2)) == false) {
+  } else if (not imu.run(TIME_MS2I(2))) {
     SdCard::logSyslog(Severity::Fatal, "IMU fail");
-    goto fail;
-  }
-
-  if (showBB.run(TIME_MS2I(50)) != true) {
+  } else if (not showBB.run(TIME_MS2I(50))) {
     SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
-    goto fail;
-  }
-  
-  if (usbStorage.run(TIME_IMMEDIATE) != true) {
+  } else if (not usbStorage.run(TIME_IMMEDIATE)) {
     SdCard::logSyslog(Severity::Fatal, "USB Storage fail");
-    goto fail;
+  } else {
+    // if all went ok, main thead now can rest
+    chThdSleep(TIME_INFINITE);
   }
-  
+
+  // if something goes wrong, control finish here
+  palSetLine(LINE_LED_RED);
   chThdSleep(TIME_INFINITE);
-
- fail:
-   palSetLine(LINE_LED_RED);
-
-   chThdSleep(TIME_INFINITE);
 }
 
 

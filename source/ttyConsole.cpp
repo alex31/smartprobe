@@ -93,21 +93,13 @@ static void cmd_toggleSendSerialMessages(BaseSequentialStream *lchp,
 
 static void cmd_close(BaseSequentialStream *lchp, int argc,const char* const argv[])
 {
-  if (argc < 2) {  // si aucun paramètre n'a été passé à la commande param 
-    chprintf(lchp, "il faut deux paramètres en entrée\r\n");
-  } else {
-    const size_t ms = atoi(argv[1]);
-    if (toupper(argv[0][0]) == 'F') {
-      DebugTrace("close all (FLUSH) wait %u milliseconds", ms);
-      sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
-    } else {
-      DebugTrace("close all (DO NOT flush) wait %u milliseconds", ms);
-      sdLogCloseAllLogs(LOG_DONT_FLUSH_BUFFER);
-    }
-    //    stopPeripheralInCaseOfPowerFailure();
-    chThdSleepMilliseconds(ms);
-    sdLogFinish();
-  }
+  (void) lchp;
+  (void) argc;
+  (void) argv;
+  DebugTrace("close all (FLUSH) wait 200 milliseconds");
+  sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
+  chThdSleepMilliseconds(200);
+  sdLogFinish();
 }
 
 
