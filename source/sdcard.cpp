@@ -70,10 +70,10 @@ bool SdCard::loop()
 
   const auto se =
     logSensors("%4.2f\t%3.2f\t"
-	       "%.3f\t%.3f\t%.3f\t"
+	       "%.4f\t%.4f\t%.4f\t"
 	       "%.2f\t%.2f\t%.2f\t"
-	       "%.3f\t%.3f\t%.3f\t"
-	       "%.3f\t%.3f\t%.3f\t"
+	       "%.4f\t%.4f\t%.4f\t"
+	       "%.4f\t%.4f\t%.4f\t"
 	       "%.2f\t%.1f\t",
 	       baroData.pressure,
 	       baroData.temp,

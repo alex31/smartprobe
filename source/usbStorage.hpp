@@ -2,7 +2,7 @@
 #include "workerClass.hpp"
 
 namespace TH_USBSTORAGE {
-static constexpr size_t threadStackSize = 1024U;
+static constexpr size_t threadStackSize = 512U;
 }
 
 class UsbStorage : public WorkerThread<TH_USBSTORAGE::threadStackSize, UsbStorage> {

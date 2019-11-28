@@ -65,7 +65,7 @@ int main (void)
     goto fail;
   }
 
-   if (showBB.run(TIME_MS2I(2000)) != true) {
+   if (showBB.run(TIME_MS2I(50)) != true) {
      SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
      goto fail;
   }

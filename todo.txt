@@ -9,14 +9,11 @@
 
 
    ° fix
-	* remplacer le log de compteur par des données capteur
 	* recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
 	
 	  
    ° écrire des modules
 	* lecture/analyse du fichier de conf
-	* version log sd haute frequence et messages sur liaison série +
-	  interface graphique de visualisation ASAP
 	* ahrs
 	  ° qui puisse donner 2 angles si la donnée heading n'est pas disponible
 	                      3 angles si la donnée heading est disponible
@@ -41,10 +38,12 @@
 
    ° integration de librairies externes
 	* eigen ?
+	* module SerialMessage
 	* micro python pour coder du comportement via le fichier de conf
 	  sans avoir à reflasher ?
-	* quand le projet devra être distribué : mettre toutes les dépendences externes
-	  en sous modules git
+	* quand le projet devra être distribué : mettre toutes les
+	  dépendences externes en sous modules git
+	
 
 
              _____     __  __    ___          

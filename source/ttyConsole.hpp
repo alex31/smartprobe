@@ -10,6 +10,7 @@
 
 void consoleInit (void);
 void consoleLaunch (void);
+bool shouldSendSerialMessages(void);
 
 #if defined TRACE 
 #include "stdutil.h"

@@ -9,7 +9,7 @@
 
 
 namespace TH_SHOWBLACKBOARD {
-static constexpr size_t threadStackSize = 512U;
+static constexpr size_t threadStackSize = 1024U;
 }
 
 class ShowBlackboard : public WorkerThread<TH_SHOWBLACKBOARD::threadStackSize,
@@ -21,10 +21,8 @@ public:
 private:
   friend WorkerThread<TH_SHOWBLACKBOARD::threadStackSize, ShowBlackboard>;
   bool init(void) final;
-  bool initInThreadContext(void) final;
   bool loop(void) final;
 
-  event_listener_t baroEvent, diffPressEvent, imuEvent;
   BarometerData baroData{};
   DiffPressureData diffPressData{};
   ImuData imuData{};

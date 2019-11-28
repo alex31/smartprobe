@@ -23,12 +23,18 @@
 // declaration des prototypes de fonction
 // ces declarations sont necessaires pour remplir le tableau commands[] ci-dessous
 using cmd_func_t =  void  (BaseSequentialStream *lchp, int argc,const char * const argv[]);
-static cmd_func_t cmd_mem, cmd_uid, cmd_restart, cmd_param, cmd_close, cmd_rtc;
+static cmd_func_t cmd_mem, cmd_uid, cmd_restart, cmd_param, cmd_close,
+  cmd_rtc, cmd_toggleSendSerialMessages;
 #if CH_DBG_THREADS_PROFILING
 static cmd_func_t cmd_threads;
 #endif
 
+static bool sendSerialMessages = true;
 
+bool shouldSendSerialMessages(void)
+{
+  return sendSerialMessages;
+}
 
 static const ShellCommand commands[] = {
   {"mem", cmd_mem},		// affiche la mémoire libre/occupée
@@ -42,6 +48,7 @@ static const ShellCommand commands[] = {
 
   {"restart", cmd_restart},	// reboot MCU
   {"close", cmd_close},	// reboot MCU
+  {"t", cmd_toggleSendSerialMessages},	// reboot MCU
   {NULL, NULL}			// marqueur de fin de tableau
 };
 
@@ -72,6 +79,16 @@ static void cmd_param(BaseSequentialStream *lchp, int argc,const char* const arg
 		argv[argn], entier, argv[argn], flottant);
     }
   }
+}
+
+static void cmd_toggleSendSerialMessages(BaseSequentialStream *lchp,
+					 int argc,const char* const argv[])
+{
+  (void) lchp;
+  (void) argc;
+  (void) argv;
+
+  sendSerialMessages = not sendSerialMessages;
 }
 
 static void cmd_close(BaseSequentialStream *lchp, int argc,const char* const argv[])
