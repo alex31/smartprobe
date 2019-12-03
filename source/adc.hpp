@@ -21,8 +21,10 @@ public:
 private:
   friend WorkerThread<TH_ADC::threadStackSize, Adc>;
   bool init(void) final;
+  bool calculateThreshold(void);
   [[noreturn]] bool loop(void) final;
-  static float scaleTemp (int fromTmp);
+  static constexpr float scaleTemp (int fromTmp);
+  adcsample_t psThreshold = 0U;
 };
 
 

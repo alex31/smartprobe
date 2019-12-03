@@ -42,8 +42,6 @@ int main (void)
 
   if (not sdcard.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "SDCARD fail");
-  } else  if (not adc.run(TIME_IMMEDIATE)) {
-    SdCard::logSyslog(Severity::Fatal, "ADC fail");
   } else if (not baro.run(TIME_IMMEDIATE)) {
     SdCard::logSyslog(Severity::Fatal, "BARO fail");
   } else  if (not dp.run(TIME_MS2I(10))) {
@@ -54,6 +52,8 @@ int main (void)
     SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
   } else if (not usbStorage.run(TIME_IMMEDIATE)) {
     SdCard::logSyslog(Severity::Fatal, "USB Storage fail");
+  } else if (not adc.run(TIME_IMMEDIATE)) {
+    SdCard::logSyslog(Severity::Fatal, "ADC fail");
   } else {
     // if all went ok, main thead now can rest
     chThdSleep(TIME_INFINITE);
@@ -61,6 +61,9 @@ int main (void)
 
   // if something goes wrong, control finish here
   palSetLine(LINE_LED_RED);
+  sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
+  chThdSleepMilliseconds(300);
+  sdLogFinish();
   chThdSleep(TIME_INFINITE);
 }
 
