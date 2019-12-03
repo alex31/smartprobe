@@ -135,5 +135,5 @@ static inline void stopAllPeripherals (void) {
 #                |  __/ | (_| |  | |  \ |_   | (_| | | |_) | | |  |  __/        
 #                 \___|  \__,_|  |_|   \__|   \__,_| |_.__/  |_|   \___|        
 */
-static constexpr float PS_VOLTAGE_THRESHOLD = 4.6f;
+static constexpr float PS_VOLTAGE_THRESHOLD = 4.4f;
 
