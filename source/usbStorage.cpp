@@ -51,13 +51,15 @@ bool UsbStorage::loop()
   } while (palReadLine(LINE_USB_VBUS) == PAL_LOW);
   
   chRegSetThreadName("UsbStorage:wait join");
+  sdcard.terminate().join();
+  showBB.terminate().join();
+
   sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
   chThdSleepMilliseconds(200);
   sdLogFinish();
   chThdSleepMilliseconds(100);
-  sdcard.terminate().join();
-  showBB.terminate().join();
-  SdCard::logSyslog(Severity::Info, "UsbStorage:connected");
+
+  DebugTrace("UsbStorage:connected");
   chRegSetThreadName("UsbStorage:connected");
   /* connect sdcard sdc interface sdio */
   if (sdioConnect() == false) 
@@ -73,7 +75,7 @@ bool UsbStorage::loop()
   } while (palReadLine(LINE_USB_VBUS) == PAL_HIGH);
   
   
-  SdCard::logSyslog(Severity::Info, "UsbStorage:DEconnected");
+  DebugTrace("UsbStorage:DEconnected");
   chThdSleepMilliseconds(100);
   
   deinit_msd_driver();

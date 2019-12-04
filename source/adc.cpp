@@ -33,7 +33,7 @@ namespace {
 	.ltr          = 0,
 	.sqr1         = 0,
 	.sqr2         = 0,                                       
-	.sqr3         = ADC_SQR3_SQ1_N(ADC_CHANNEL_IN9)
+	.sqr3         = ADC_SQR3_SQ1_N(ADC_CHANNEL_IN9) | ADC_SQR3_SQ2_N(ADC_CHANNEL_IN9)
   };
 
   ADCConversionGroup adcgrpcfg = {
@@ -91,7 +91,9 @@ bool Adc::init()
 
 bool Adc::calculateThreshold()
 {
-  constexpr size_t loop = 10'000U; 
+  constexpr size_t loop = 20'000U;
+
+  chThdSleepMilliseconds(100); // wait for VSS to stabilize
   uint32_t accum = 0U;
   for (size_t i=0; i<loop; i++) {
     adcConvert(&ADCD1, &adcgrpcfgThreshold, samples, ADC_GRP1_BUF_DEPTH);

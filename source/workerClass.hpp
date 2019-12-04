@@ -92,7 +92,8 @@ void WorkerThread<WSS, T>::threadFunc(void *o) {
     const systime_t then = chVTGetSystemTimeX()+self->timeInLoop;
     if (self->loop() == false)
       break;
-    chThdSleepUntilWindowed(now, then);
+    if (self->timeInLoop)
+      chThdSleepUntilWindowed(now, then);
   }
   chThdExit(ERROR_IN_LOOP);
 }
