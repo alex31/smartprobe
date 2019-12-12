@@ -10,7 +10,7 @@ namespace TH_SDCARD {
 static constexpr size_t threadStackSize = 1024U;
 }
 
-enum class Severity {Debug, Info, Warning, Fatal};
+enum class Severity {Debug, Info, Warning, Fatal, Internal};
 
 class SdCard : public WorkerThread<TH_SDCARD::threadStackSize, SdCard> {
 public:

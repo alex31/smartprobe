@@ -1,0 +1,17 @@
+# comment
+filename.sensors = capteur
+sensor.pressure.frequency = 1 #comment 2
+sensor.pressure.cr1 = FREQUENCY_10HZ
+sensor.other = 3
+sensor.other = other_two
+sensor.o2 = 3
+thread.enable.imu = false
+
+# other comment
+
+bla bla
+
+thread.waitmillisecond = 500
+thread.frequency = -100.5
+vss.min = 4.42
+should_abort.debug = true

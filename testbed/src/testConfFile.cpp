@@ -1,22 +1,18 @@
-#include "confFile.hpp"
-#include <ch.h>
-#include <hal.h>
-#include "stdutil.h"
-#include "cpp_heap_alloc.hpp"
-#include "ttyConsole.hpp"       
-#include "confParameters.hpp"
-#include "sdcard.hpp"
+#include <cstdio>
 #include <cstring>
 #include <utility>
 #include <variant>
 #include <string>
 #include <map>
+#include <cassert>
+#include <sstream>
+#include <fstream>
+#include <iostream>
 #include <string_view>
 #include "ctre.hpp"
 #include "frozen/map.h"
 #include "frozen/string.h"
 #include "frozen/set.h"
-
 
 /*
   parse line : 
@@ -79,9 +75,6 @@ namespace {
     validator_variant_t   validator;
   };
 
-  constexpr auto conf_dict = MAKEMAP(PARAMETERS_MAP);
-
-
   std::pair<bool, const parameter_value_t &> verifyKey(const std::string_view &k);
   bool resolveDefine(value_variant_t &retVal, const validator_variant_t   &validator);
   bool validate(const std::string_view &k, const std::string_view &v,
@@ -90,20 +83,16 @@ namespace {
   constexpr size_t firstSetIndex = 3U;
   constexpr size_t numberOfSets = std::variant_size_v<validator_variant_t> - firstSetIndex;
 
-
-
-
-
   template<size_t N>
   void printNamedSet(const validator_variant_t &vtor)
   {
     if (std::holds_alternative<frozen::set<named_val_t, N>>(vtor)) {
       const frozen::set<named_val_t, N> &set = std::get<frozen::set<named_val_t, N>>(vtor);
-      DebugTrace("set = ");
+      printf("set = ");
       for (const named_val_t &nv : set) {
-	DebugTrace("\"%s\"=%d,", nv.valName.data(), nv.val);
+	printf("\"%s\"=%d,", nv.valName.data(), nv.val);
       }
-      DebugTrace("\n");
+      printf("\n");
     }
     if constexpr (N > 1) { // recurse over set size using template meta programming
 	printNamedSet<N-1>(vtor);
@@ -168,13 +157,13 @@ std::string variant2str(const default_variant_t &dvar)
   void printValue(const value_variant_t &value)
   {
     if (std::holds_alternative<std::string>(value)) {
-      DebugTrace("S=%s\n", variant2str(value).c_str());
+      printf("S=%s\n", variant2str(value).c_str());
     } else if (std::holds_alternative<int>(value)) {
-      DebugTrace("I=%s\n", variant2str(value).c_str());
+      printf("I=%s\n", variant2str(value).c_str());
     } else if (std::holds_alternative<bool>(value)) {
-      DebugTrace("B=%s\n", variant2str(value).c_str());
+      printf("B=%s\n", variant2str(value).c_str());
     } else if (std::holds_alternative<double>(value)) {
-      DebugTrace("F=%s\n", variant2str(value).c_str());
+      printf("F=%s\n", variant2str(value).c_str());
     } 
   }
   
@@ -212,6 +201,17 @@ std::string variant2str(const default_variant_t &dvar)
   }
 
 
+  constexpr auto conf_dict =
+    MAKEMAP (
+	     {"filename.sensors", {"capteurs"sv, NONAMESET }},
+	     {"sensor.pressure.frequency", {1, NAMESET({1, "frequency_one"}) }},
+	     {"sensor.other", {2, NAMESET({1, "other_one"}, {2, "other_two"}) }},
+	     {"sensor.o2", {3, NAMESET({1, "o2_low"}, {3, "o2_high"}) }},
+	     {"thread.waitmillisecond", {20.5f, RANGEINT(9, 1000) }},
+	     {"sensor.icm20600.init.cr1", {0, RANGEINT(0, 16) }},
+	     {"thread.enable.imu", {true, NONAMESET }},
+	     {"thread.frequency", {100, RANGEINT(10, 1000) }} );
+  
 
   std::pair<std::string, value_variant_t> parseLine(const std::string_view line)
   {
@@ -234,7 +234,7 @@ std::string variant2str(const default_variant_t &dvar)
     if (auto [whole, key, val] = line_match(line); whole) {
       k = key;
       const std::string_view v(val);
-      DebugTrace("key %.*s => val=%.*s :: ",
+      printf("key %.*s => val=%.*s :: ",
 	     static_cast<int>(k.length()), k.data(),
 	     static_cast<int>(v.length()), v.data());
       if (integer_match(v)) {
@@ -251,11 +251,11 @@ std::string variant2str(const default_variant_t &dvar)
 
       auto [exists, param] = verifyKey(k);
       if (not exists) {
-	DebugTrace("NOT KNOW key %.*s in conf_dict\r\n",
+	printf("NOT KNOW key %.*s in conf_dict\r\n",
 	       static_cast<int>(k.length()), k.data());
       } else {
 	if (not resolveDefine(paramVal, param.validator)) {
-	  DebugTrace("NOT KNOW define %s for key %.*s in conf_dict\r\n",
+	  printf("NOT KNOW define %s for key %.*s in conf_dict\r\n",
 		 std::get<std::string>(paramVal).c_str(),
 		 static_cast<int>(k.length()), k.data());
 	} else {
@@ -264,7 +264,7 @@ std::string variant2str(const default_variant_t &dvar)
 	    // authorized mismatch are : default is double and read value is int
 	    if ((not std::holds_alternative<int>(paramVal)) ||
 		(not std::holds_alternative<double>(param.defaut))) {
-	      DebugTrace("mismatch type for key %.*s : read %s instead of specified %s\r\n",
+	      printf("mismatch type for key %.*s : read %s instead of specified %s\r\n",
 		     static_cast<int>(k.length()), k.data(),
 		     variantName[paramVal.index()],
 		     variantName[param.defaut.index()]
@@ -272,7 +272,7 @@ std::string variant2str(const default_variant_t &dvar)
 	    }
 	  }
 	  if (not validate(k, v, paramVal, param.validator)) {
-	    DebugTrace("value %.*s for key %.*s does not validate constraints\n",
+	    printf("value %.*s for key %.*s does not validate constraints\n",
 		   static_cast<int>(v.length()), v.data(),
 		   static_cast<int>(k.length()), k.data());   
 	  }
@@ -307,10 +307,10 @@ std::string variant2str(const default_variant_t &dvar)
     const auto [exists, valueFromAlias] = getValueByName<numberOfSets>(sv, validator);
     if (exists == true) {
       value = valueFromAlias;
-      DebugTrace("alias %s remplaced by %d\n", sv.data(),  valueFromAlias);
+      printf("alias %s remplaced by %d\n", sv.data(),  valueFromAlias);
       return true;
     } else {
-      DebugTrace("alias %s not found\n", sv.data());
+      printf("alias %s not found\n", sv.data());
       return false;
     }
   }
@@ -334,7 +334,7 @@ std::string variant2str(const default_variant_t &dvar)
 	  const int val = std::get<int>(value);
 	  success = ((val >= min) && (val <= max));
 	  if (not success) {
-	    DebugTrace("value %d for key %.*s is not in range [%d .. %d]",
+	    printf("value %d for key %.*s is not in range [%d .. %d]",
 		   std::get<int>(value),
 		   static_cast<int>(k.length()), k.data(),
 		   min, max);
@@ -343,7 +343,7 @@ std::string variant2str(const default_variant_t &dvar)
 	  const double val = std::get<double>(value);
 	  success = ((val >= min) && (val <= max));
 	  if (not success) {
-	    DebugTrace("value %f for key %.*s is not in range [%d .. %d]",
+	    printf("value %f for key %.*s is not in range [%d .. %d]",
 		   std::get<double>(value),
 		   static_cast<int>(k.length()), k.data(),
 		   min, max);
@@ -357,7 +357,7 @@ std::string variant2str(const default_variant_t &dvar)
 	  const int val = std::get<int>(value);
 	  success = ((val >= min) && (val <= max));
 	  if (not success) {
-	    DebugTrace("value %d for key %.*s is not in range [%f .. %f]",
+	    printf("value %d for key %.*s is not in range [%f .. %f]",
 		   std::get<int>(value),
 		   static_cast<int>(k.length()), k.data(),
 		   min, max);
@@ -366,7 +366,7 @@ std::string variant2str(const default_variant_t &dvar)
 	  const double val = std::get<double>(value);
 	  success = ((val >= min) && (val <= max));
 	  if (not success) {
-	    DebugTrace("value %f for key %.*s is not in range [%f .. %f]",
+	    printf("value %f for key %.*s is not in range [%f .. %f]",
 		   std::get<double>(value),
 		   static_cast<int>(k.length()), k.data(),
 		   min, max);
@@ -377,7 +377,7 @@ std::string variant2str(const default_variant_t &dvar)
       default: 
 	success = isPresentInSet<numberOfSets>(std::get<int>(value), validator);
 	if (not success) {
-	  DebugTrace("value %.*s for key %.*s is not in set %s",
+	  printf("value %.*s for key %.*s is not in set %s",
 		 static_cast<int>(v.length()), v.data(),
 		 static_cast<int>(k.length()), k.data(),
 		 variant2str<numberOfSets>(validator).c_str());
@@ -390,41 +390,74 @@ std::string variant2str(const default_variant_t &dvar)
   std::pair<bool, const parameter_value_t &> verifyKey(const std::string_view &k)
   {
     const auto &it =  conf_dict.find(k);
+    //    return std::pair<bool, const parameter_value_t &>{it != conf_dict.end(), it->second};
     return {it != conf_dict.end(), it->second};
   }
 
   
+  
+  
 } // end of anonymous namespace
 
   
-bool ConfigurationFile::parseFile(void)
-{
-  FIL fil;
-  FRESULT rc;
-  
-  char lineBuffer[120];
 
-  rc = f_open(&fil, fileName, FA_READ | FA_OPEN_EXISTING);
-  if (rc != FR_OK) {
-    SdCard::logSyslog(Severity::Fatal, "configuration file %s not found", fileName);
-    goto fail;
-  }
-   
-  do {
-    f_gets(lineBuffer, sizeof(lineBuffer)-1, &fil);
-    const auto [key, value] = parseLine(lineBuffer);
-    dictionary[key] = value;
-    SdCard::logSyslog(Severity::Info, "read %s", lineBuffer);
-  } while (not f_eof(&fil));
+
+
+int main(int argc, char **argv)
+{
+  (void) argc;
+  (void) argv;
   
-   rc = f_close(&fil);
-   if (rc != FR_OK) {
-     SdCard::logSyslog(Severity::Warning,
-		       "fatfs close error on file %s", fileName);
-     goto fail;
-   }
-   
-   return true;
- fail:
-   return false;
+  std::ifstream infile("conf.txt");
+  std::string line;
+
+  std::map<std::string, value_variant_t> dictionaire;
+
+  while (std::getline(infile, line)) {
+    //    std::cout << "L1:" << line << std::endl;
+    const auto [key, value] = parseLine(line);
+    dictionaire[key] = value;
+    printValue(value);
+  }
+
+  for (auto const& [key, val] : conf_dict) {
+    printf ("\n\n.................\nkey = %s : \n", key.data());
+    if (not dictionaire.contains(std::string(key.data()))) {
+      printf ("key %s not in file\n", key.data());
+    }
+
+    const default_variant_t& d = val.defaut;
+    if (std::holds_alternative<int>(d)) {
+      printf ("default<integer> = %s\n", variant2str(d).c_str());
+    } else  if (std::holds_alternative<double>(d)) {
+      printf ("default<double> = %s\n", variant2str(d).c_str());
+    } else  if (std::holds_alternative<bool>(d)) {
+      printf ("default<boolean> = %s\n", variant2str(d).c_str());
+    } else  if (std::holds_alternative<std::string_view>(d)) {
+      printf ("default<string> = %s\n", variant2str(d).c_str());
+    } else {
+      printf ("no default\n");
+    }
+
+
+    const validator_variant_t& vtor = val.validator;
+    if (std::holds_alternative<std::monostate>(vtor)) {
+      printf ("no validation");
+    } else if (std::holds_alternative<range_int_t>(vtor)) {
+      printf ("default<integer range> = [%d .. %d]\n",
+	      std::get<range_int_t>(vtor).min,
+	      std::get<range_int_t>(vtor).max);
+    } else if (std::holds_alternative<range_double_t>(vtor)) {
+      printf ("default<double range> = [%f .. %f]\n",
+	      std::get<range_double_t>(vtor).min,
+	      std::get<range_double_t>(vtor).max);
+    } else {
+      printNamedSet<numberOfSets>(vtor);
+    }
+    
+  }
+
+  
+  
+  return 0;
 }

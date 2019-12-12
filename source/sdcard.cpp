@@ -17,7 +17,8 @@ namespace {
 	{Severity::Debug, "DEBUG"},
 	{Severity::Info, "INFO"},
 	{Severity::Warning, "WARNING"},
-	{Severity::Fatal, "FATAL"}
+	{Severity::Fatal, "FATAL"},
+	{Severity::Internal, "INTERNAL (please report bug)"}
     });
 }
 

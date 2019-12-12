@@ -39,16 +39,17 @@
 
  */
 
-using value_variant_t = std::variant<int, float, bool, std::string>;
-
+using value_variant_t = std::variant<int, double, bool, std::string, std::monostate>;
 
 class ConfigurationFile {
 public:
-  ConfigurationFile(const std::string_view fileName);
+  ConfigurationFile(const char* m_fileName) : fileName(m_fileName) {};
+  bool	parseFile(void);
 
-  value_variant_t operator[](const std::string_view key);
+  value_variant_t& operator[](const std::string_view key);
 
 private:
   using dictionary_t = std::map<std::string_view, value_variant_t>;
   dictionary_t dictionary;
+  const char *fileName; 
 };

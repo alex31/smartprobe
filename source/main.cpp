@@ -1,7 +1,8 @@
 #include <ch.h>
 #include <hal.h>
 #include <cstdio>
-#include "stdutil.h"		
+#include "stdutil.h"
+#include "cpp_heap_alloc.hpp"
 #include "ttyConsole.hpp"       
 #include "confFile.hpp"
 #include "hardwareConf.hpp"
@@ -9,6 +10,7 @@
 #include "threadAndEventDecl.hpp"
 #include "blinker.hpp"
 #include "usbStorage.hpp"
+#include "confFile.hpp"
 #include "printf.h"
 
 
@@ -35,13 +37,16 @@ int main (void)
 {
   Blinker bl(NORMALPRIO);
   UsbStorage usbStorage(NORMALPRIO);
+  ConfigurationFile confFile("SMARTPROBE/smartprobe.conf");
 
   bl.run(TIME_MS2I(1000));
   consoleInit();    // initialisation des objets liés au shell
   consoleLaunch();  // lancement du shell
 
   if (not sdcard.run(TIME_IMMEDIATE)) {
-     SdCard::logSyslog(Severity::Fatal, "SDCARD fail");
+    chprintf(chp, "SDCARD fail");
+  } else if (not confFile.parseFile()) {
+    SdCard::logSyslog(Severity::Fatal, "Read configuration file fail");
   } else if (not baro.run(TIME_IMMEDIATE)) {
     SdCard::logSyslog(Severity::Fatal, "BARO fail");
   } else  if (not dp.run(TIME_MS2I(10))) {
@@ -60,10 +65,11 @@ int main (void)
   }
 
   // if something goes wrong, control finish here
+  // still offer usb storage facility, so in case of configuration file
+  // error, one can still mount the device to read syslog and fix conf file
   palSetLine(LINE_LED_RED);
-  sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
-  chThdSleepMilliseconds(300);
-  sdLogFinish();
+  usbStorage.run(TIME_IMMEDIATE);
+  adc.run(TIME_IMMEDIATE);
   chThdSleep(TIME_INFINITE);
 }
 
