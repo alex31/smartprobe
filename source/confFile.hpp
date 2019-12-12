@@ -1,7 +1,8 @@
 #pragma once
-#include <ch.h>
-#include <hal.h>
-
+#include <string_view>
+#include <string>
+#include <map>
+#include <variant>
 
 /*
   dependance : un log ouvert.
@@ -38,3 +39,16 @@
 
  */
 
+using value_variant_t = std::variant<int, float, bool, std::string>;
+
+
+class ConfigurationFile {
+public:
+  ConfigurationFile(const std::string_view fileName);
+
+  value_variant_t operator[](const std::string_view key);
+
+private:
+  using dictionary_t = std::map<std::string_view, value_variant_t>;
+  dictionary_t dictionary;
+};

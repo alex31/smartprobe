@@ -89,7 +89,7 @@ void WorkerThread<WSS, T>::threadFunc(void *o) {
 
   while (!chThdShouldTerminateX()) {
     const systime_t now = chVTGetSystemTimeX();
-    const systime_t then = chVTGetSystemTimeX()+self->timeInLoop;
+    const systime_t then = chTimeAddX(now, self->timeInLoop);
     if (self->loop() == false)
       break;
     if (self->timeInLoop)
