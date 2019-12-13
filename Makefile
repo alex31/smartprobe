@@ -97,9 +97,9 @@ endif
 # the stack used by the main() thread.
 ifeq ($(USE_PROCESS_STACKSIZE),)
 ifeq ($(EXECMODE),$(DEBUG))
-  USE_PROCESS_STACKSIZE = 0x1A00
+  USE_PROCESS_STACKSIZE = 0x1F00
 else
-  USE_PROCESS_STACKSIZE = 0x1000
+  USE_PROCESS_STACKSIZE = 0x1B00
 endif
 endif
 
@@ -308,7 +308,7 @@ UINCDIR =
 ULIBDIR =
 
 # List all user libraries here
-ULIBS =
+ULIBS = -lstdc++
 
 #
 # End of user defines

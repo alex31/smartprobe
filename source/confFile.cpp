@@ -2,6 +2,7 @@
 #include <ch.h>
 #include <hal.h>
 #include "stdutil.h"
+#include "printf.h"
 #include "cpp_heap_alloc.hpp"
 #include "ttyConsole.hpp"       
 #include "confParameters.hpp"
@@ -213,20 +214,19 @@ std::string variant2str(const default_variant_t &dvar)
 
 
 
-  std::pair<std::string, value_variant_t> parseLine(const std::string_view line)
+  std::pair<std::string, value_variant_t> parseLine(const std::string_view &line)
   {
     using namespace ctre::literals;
     constexpr auto line_match =  ctre::match<R"(([\w\.]+)\s*=\s*([\+\-]?[\w\.]+)\s*#?.*)">;
-    //    constexpr auto empty_match =  ctre::match<R"((\s*#?.*))">;
     constexpr auto empty_match =  ctre::match<R"((\s*)|(\s*#.*))">;
     constexpr auto double_match =  ctre::match<R"([\+\-]?[\d\.]+)">;
     constexpr auto integer_match =  ctre::match<R"([\+\-]?[\d]+)">;
     constexpr auto bool_true_match =  ctre::match<R"((?:true)|(?:TRUE))">;
     constexpr auto bool_false_match =  ctre::match<R"((?:false)|(?:FALSE))">;
     auto string_match = [&]  (auto s) -> bool {return (not double_match(s))
-	and (not integer_match(s))
-	and (not bool_true_match(s))
-	and (not bool_false_match(s));};
+    	and (not integer_match(s))
+    	and (not bool_true_match(s))
+    	and (not bool_false_match(s));};
 
     value_variant_t paramVal= std::monostate{};
     std::string_view k = "";
@@ -238,45 +238,45 @@ std::string variant2str(const default_variant_t &dvar)
 	     static_cast<int>(k.length()), k.data(),
 	     static_cast<int>(v.length()), v.data());
       if (integer_match(v)) {
-	paramVal = atoi(v.data());
+    	paramVal = atoi(v.data());
       } else if (double_match(v)) {
-	paramVal = atof(v.data());
+    	paramVal = atof(v.data());
       } else if (bool_true_match(v)) {
-	paramVal = true;
+    	paramVal = true;
       } else if (bool_false_match(v)) {
-	paramVal = false;
+    	paramVal = false;
       } else if (string_match(v)){
-	paramVal = std::string(v.data());
+    	paramVal = std::string(v.data());
       }
 
       auto [exists, param] = verifyKey(k);
       if (not exists) {
-	DebugTrace("NOT KNOW key %.*s in conf_dict\r\n",
-	       static_cast<int>(k.length()), k.data());
+    	DebugTrace("NOT KNOW key %.*s in conf_dict\r\n",
+    	       static_cast<int>(k.length()), k.data());
       } else {
-	if (not resolveDefine(paramVal, param.validator)) {
-	  DebugTrace("NOT KNOW define %s for key %.*s in conf_dict\r\n",
-		 std::get<std::string>(paramVal).c_str(),
-		 static_cast<int>(k.length()), k.data());
-	} else {
-	  // type of default should be compatible with value read in configuration file
-	  if (param.defaut.index() != paramVal.index()) {
-	    // authorized mismatch are : default is double and read value is int
-	    if ((not std::holds_alternative<int>(paramVal)) ||
-		(not std::holds_alternative<double>(param.defaut))) {
-	      DebugTrace("mismatch type for key %.*s : read %s instead of specified %s\r\n",
-		     static_cast<int>(k.length()), k.data(),
-		     variantName[paramVal.index()],
-		     variantName[param.defaut.index()]
-		     );
-	    }
-	  }
-	  if (not validate(k, v, paramVal, param.validator)) {
-	    DebugTrace("value %.*s for key %.*s does not validate constraints\n",
-		   static_cast<int>(v.length()), v.data(),
-		   static_cast<int>(k.length()), k.data());   
-	  }
-	}
+    	if (not resolveDefine(paramVal, param.validator)) {
+    	  DebugTrace("NOT KNOW define %s for key %.*s in conf_dict\r\n",
+    		 std::get<std::string>(paramVal).c_str(),
+    		 static_cast<int>(k.length()), k.data());
+    	} else {
+    	  // type of default should be compatible with value read in configuration file
+    	  if (param.defaut.index() != paramVal.index()) {
+    	    // authorized mismatch are : default is double and read value is int
+    	    if ((not std::holds_alternative<int>(paramVal)) ||
+    		(not std::holds_alternative<double>(param.defaut))) {
+    	      DebugTrace("mismatch type for key %.*s : read %s instead of specified %s\r\n",
+    		     static_cast<int>(k.length()), k.data(),
+    		     variantName[paramVal.index()],
+    		     variantName[param.defaut.index()]
+    		     );
+    	    }
+    	  }
+    	  if (not validate(k, v, paramVal, param.validator)) {
+    	    DebugTrace("value %.*s for key %.*s does not validate constraints\n",
+    		   static_cast<int>(v.length()), v.data(),
+    		   static_cast<int>(k.length()), k.data());   
+    	  }
+    	}
       }
       
       
@@ -320,6 +320,10 @@ std::string variant2str(const default_variant_t &dvar)
 		const validator_variant_t &validator)
   {
     bool success = false;
+#if not defined(TRACE)
+    (void) k;
+    (void) v;
+#endif
     
     if (std::holds_alternative<std::string>(value)) {
       success = true;
@@ -402,7 +406,7 @@ bool ConfigurationFile::parseFile(void)
   FIL fil;
   FRESULT rc;
   
-  char lineBuffer[120];
+  char lineBuffer[120] = {0};
 
   rc = f_open(&fil, fileName, FA_READ | FA_OPEN_EXISTING);
   if (rc != FR_OK) {
@@ -413,10 +417,12 @@ bool ConfigurationFile::parseFile(void)
   do {
     f_gets(lineBuffer, sizeof(lineBuffer)-1, &fil);
     const auto [key, value] = parseLine(lineBuffer);
-    dictionary[key] = value;
+    if (not std::holds_alternative<std::monostate>(value)) {
+      dictionary[key] = value;
+    }
     SdCard::logSyslog(Severity::Info, "read %s", lineBuffer);
   } while (not f_eof(&fil));
-  
+
    rc = f_close(&fil);
    if (rc != FR_OK) {
      SdCard::logSyslog(Severity::Warning,

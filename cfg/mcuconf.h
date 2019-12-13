@@ -410,7 +410,7 @@
 #define  I2C_USE_MPL3115A2     FALSE
 
 
-#define CHPRINTF_USE_STDLIB		    0
+#define CHPRINTF_USE_STDLIB		    1
 #define CHPRINTF_BUFFER_SIZE		    160
 
 

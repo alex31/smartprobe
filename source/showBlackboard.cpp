@@ -2,7 +2,8 @@
 #include <hal.h>
 #include "showBlackboard.hpp"
 #include "blackBoard.hpp"
-#include "stdutil.h"	
+#include "stdutil.h"
+#include "printf.h"
 #include "threadAndEventDecl.hpp"
 #include "ttyConsole.hpp"
 

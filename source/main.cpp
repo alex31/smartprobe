@@ -35,7 +35,7 @@ void _init_chibios() {
 
 int main (void)
 {
-  Blinker bl(NORMALPRIO);
+  Blinker bl(NORMALPRIO+1);
   UsbStorage usbStorage(NORMALPRIO);
   ConfigurationFile confFile("SMARTPROBE/smartprobe.conf");
 
