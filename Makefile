@@ -22,7 +22,8 @@ EXECMODE := $(DEBUG)
 
 
 GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
-            -Wno-error=cpp \
+            -Wno-format-truncation -Wno-error=format-truncation  \
+	    -Wno-error=cpp \
             -Wno-error=unused-function \
             -Wunused -Wpointer-arith \
             -Werror=sign-compare \
@@ -251,7 +252,7 @@ CPPC = $(TRGT)g++
 # NOTE: You can use C++ even without C++ support if you are careful. C++
 #       runtime support makes code size explode.
 #LD   = $(TRGT)gcc
-LD   = $(TRGT)g++ -fno-exceptions
+LD   = $(TRGT)g++ 
 CP   = $(TRGT)objcopy
 AS   = $(TRGT)gcc -x assembler-with-cpp
 AR   = $(TRGT)ar

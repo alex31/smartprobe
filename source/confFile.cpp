@@ -480,30 +480,30 @@ bool ConfigurationFile::writeConfFile(void)
     SdCard::logSyslog(Severity::Fatal, "configuration file %s cannot be created", fileName);
     goto fail;
   }
-
-  for (auto const& [key, param] : conf_dict) {
-    UINT nbwf =0;
+  
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-truncation"
-    UINT nbw = snprintf(lineBuffer, sizeof(lineBuffer), "%.*s = %s\n",
+  for (auto const& [key, param] : conf_dict) {
+    UINT nbwf =0;
+    int32_t nbw = snprintf(lineBuffer, sizeof(lineBuffer), "%.*s = %s\n",
 			    static_cast<int>(key.size()), key.data(),
 			    variant2str(param.defaut).c_str()
 			    );
-#pragma GCC diagnostic pop
-    if (nbw >= sizeof(lineBuffer)) {
+    if ((nbw <= 0) || (nbw >= static_cast<int32_t>(sizeof(lineBuffer)))) {
       SdCard::logSyslog(Severity::Internal, "ConfigurationFile::writeConfFile : "
 			"lineBuffer too small");
       writeFileSuccess = false;
     } else {
       rc = f_write(&fil, lineBuffer, nbw, &nbwf);
-      if ((rc != FR_OK) || (nbw != nbwf)) {
+      if ((rc != FR_OK) || (nbw != static_cast<int32_t>(nbwf))) {
 	SdCard::logSyslog(Severity::Fatal, "ConfigurationFile::writeConfFile : "
 			  "f_write fails");
 	writeFileSuccess = false;
       }
     }
   }
-
+#pragma GCC diagnostic pop
+  
   rc = f_close(&fil);
   if (rc != FR_OK) {
     SdCard::logSyslog(Severity::Warning,
@@ -516,7 +516,6 @@ bool ConfigurationFile::writeConfFile(void)
  fail:
   return false;
 }
-
 
 
 bool ConfigurationFile::verifyNotFilledParameters(void)
