@@ -40,7 +40,7 @@
  */
 
 // this map accessor wrapper verify that the key is valid @compile time
-#define ConfigurationFile_AT(c,k)  (c)[k]; static_assert(conf_dict.find(k) != conf_dict.end());
+#define ConfigurationFile_AT(c,k)  ({static_assert(conf_dict.find(k) != conf_dict.end()); (c)[k];})
 
 
 using value_variant_t = std::variant<int, double, bool, std::string, std::monostate>;
