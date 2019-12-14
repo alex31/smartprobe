@@ -10,6 +10,7 @@
 #include "blinker.hpp"
 #include "usbStorage.hpp"
 #include "printf.h"
+#include "confFileAccessor.hpp"
 
 
 /*
@@ -40,13 +41,14 @@ int main (void)
   consoleInit();    // initialisation des objets liés au shell
   consoleLaunch();  // lancement du shell
 
+
   if (not sdcard.run(TIME_IMMEDIATE)) {
     chprintf(chp, "SDCARD fail");
   } else if (not confFile.populate()) {
     SdCard::logSyslog(Severity::Fatal, "Read configuration file fail");
   } else if (not baro.run(TIME_IMMEDIATE)) {
     SdCard::logSyslog(Severity::Fatal, "BARO fail");
-  } else  if (not dp.run(TIME_MS2I(10))) {
+  } else  if (not dp.run(getDiffPressPeriod())) {
     SdCard::logSyslog(Severity::Fatal, "DIFF PRESS fail");
   } else if (not imu.run(TIME_MS2I(2))) {
     SdCard::logSyslog(Severity::Fatal, "IMU fail");
