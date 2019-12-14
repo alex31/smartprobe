@@ -39,17 +39,24 @@
 
  */
 
+// this map accessor wrapper verify that the key is valid @compile time
+#define ConfigurationFile_AT(c,k)  (c)[k]; static_assert(conf_dict.find(k) != conf_dict.end());
+
+
 using value_variant_t = std::variant<int, double, bool, std::string, std::monostate>;
 
 class ConfigurationFile {
 public:
   ConfigurationFile(const char* m_fileName) : fileName(m_fileName) {};
-  bool	parseFile(void);
-
+  bool populate(void);
   value_variant_t& operator[](const std::string_view key);
 
 private:
   using dictionary_t = std::map<std::string_view, value_variant_t>;
   dictionary_t dictionary;
-  const char *fileName; 
+  const char *fileName;
+  bool readConfFile(void);
+  bool writeConfFile(void);
+  bool verifyNotFilledParameters(void);
+  void syslogInfoParameters(void);
 };

@@ -5,12 +5,10 @@
 #include "cpp_heap_alloc.hpp"
 #include "ttyConsole.hpp"       
 #include "confFile.hpp"
-#include "hardwareConf.hpp"
 #include "workerClass.hpp"
 #include "threadAndEventDecl.hpp"
 #include "blinker.hpp"
 #include "usbStorage.hpp"
-#include "confFile.hpp"
 #include "printf.h"
 
 
@@ -37,7 +35,6 @@ int main (void)
 {
   Blinker bl(NORMALPRIO+1);
   UsbStorage usbStorage(NORMALPRIO);
-  ConfigurationFile confFile("SMARTPROBE/smartprobe.conf");
 
   bl.run(TIME_MS2I(1000));
   consoleInit();    // initialisation des objets liés au shell
@@ -45,7 +42,7 @@ int main (void)
 
   if (not sdcard.run(TIME_IMMEDIATE)) {
     chprintf(chp, "SDCARD fail");
-  } else if (not confFile.parseFile()) {
+  } else if (not confFile.populate()) {
     SdCard::logSyslog(Severity::Fatal, "Read configuration file fail");
   } else if (not baro.run(TIME_IMMEDIATE)) {
     SdCard::logSyslog(Severity::Fatal, "BARO fail");

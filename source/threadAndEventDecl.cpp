@@ -1,4 +1,5 @@
 #include "threadAndEventDecl.hpp"
+#include "hardwareConf.hpp"
 
 extern "C" {
 __attribute__((used))
@@ -11,3 +12,4 @@ Adc adc(NORMALPRIO);
 Imu imu(NORMALPRIO);
 SdCard sdcard(NORMALPRIO);
 ShowBlackboard showBB(NORMALPRIO);
+ConfigurationFile confFile(CONFIGURATION_FILENAME);

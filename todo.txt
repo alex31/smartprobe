@@ -8,26 +8,38 @@
                |_|     \___/  |_____/    \___/         
 
 
-   ° module de lecture de conf
-     * mettre le nom du fichier de conf dans hardwareConf.hpp
-     * remplacer les DebugTrace() par des syslog()
-     * test de la presence d'une clef à la compilation plutot qu'à l'execution (voir si la methode d'accès à frozen::map est constexpr)
-     * test si des clefs son absentes du fichier de conf : syslog(warning) et utilisation de la valeur par defaut
-     * si le fichier smartprobe.conf n'existe pas : en creer un avec toutes les clefs associées aux valeurs par defaut et rebooter la carte
+A TESTER :
+ ° module de lecture de conf :
+   * mettre dans le syslog tous les paramètres sous forme d'info
+   * test si des clefs sont absentes du fichier de conf :
+        syslog(warning) et utilisation de la valeur par defaut
+	  (si elle existe sinon fatal error)
+   * si le fichier smartprobe.conf n'existe pas : en creer un
+       avec toutes les clefs associées aux valeurs par defaut
+
+A CODER :
+
      * passer en paramètres :
        + frequence d'acquisition des capteurs
        + paramètre d'init de l'ICM20600
+       + lancement de l'IMU
+       + log des veleurs brutes de l'IMU
+       + log des valeurs AHRS
        
      
      
-
+A AMELIORER :
 
    ° fix
 	* recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
-	
+
+
+
+GRANDES LIGNES : 
+
 	  
    ° écrire des modules
-	* lecture/analyse du fichier de conf
+        * syslog periodique de la charge de calcul
 	* ahrs
 	  ° qui puisse donner 2 angles si la donnée heading n'est pas disponible
 	                      3 angles si la donnée heading est disponible :

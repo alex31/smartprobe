@@ -19,6 +19,7 @@
 #                 \___|  \___/  |_| |_|   \_/    \___| |_|     \__|  |_|   \___/  |_| |_| 
 */
 
+using namespace std::literals;
 
 static constexpr uint32_t operator"" _hz (unsigned long long int freq)
 {
@@ -137,4 +138,6 @@ static inline void stopAllPeripherals (void) {
 */
 static constexpr float PS_VOLTAGE_THRESHOLD_PERCENT = 6.0f;
 static constexpr float PS_VOLTAGE_ABSOLUTE_MINIMUM = 4.4f;
-
+static constexpr char ROOTDIR[] = "SMARTPROBE";
+static constexpr char SYSLOG_FILENAME[] = "syslog";
+static constexpr char CONFIGURATION_FILENAME[] = "SMARTPROBE/smartprobe.conf";

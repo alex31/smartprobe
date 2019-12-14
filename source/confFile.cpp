@@ -6,11 +6,13 @@
 #include "cpp_heap_alloc.hpp"
 #include "ttyConsole.hpp"       
 #include "confParameters.hpp"
+#include "hardwareConf.hpp"
 #include "sdcard.hpp"
 #include <cstring>
 #include <utility>
 #include <variant>
 #include <string>
+#include <tuple>
 #include <map>
 #include <string_view>
 #include "ctre.hpp"
@@ -91,27 +93,8 @@ namespace {
   constexpr size_t firstSetIndex = 3U;
   constexpr size_t numberOfSets = std::variant_size_v<validator_variant_t> - firstSetIndex;
 
-
-
-
-
   template<size_t N>
-  void printNamedSet(const validator_variant_t &vtor)
-  {
-    if (std::holds_alternative<frozen::set<named_val_t, N>>(vtor)) {
-      const frozen::set<named_val_t, N> &set = std::get<frozen::set<named_val_t, N>>(vtor);
-      DebugTrace("set = ");
-      for (const named_val_t &nv : set) {
-	DebugTrace("\"%s\"=%d,", nv.valName.data(), nv.val);
-      }
-      DebugTrace("\n");
-    }
-    if constexpr (N > 1) { // recurse over set size using template meta programming
-	printNamedSet<N-1>(vtor);
-      }
-  }
-
-  template<size_t N>
+  [[maybe_unused]]
   std::string variant2str(const validator_variant_t &vtor)
   {
     std::string rep;
@@ -131,54 +114,81 @@ namespace {
     return "variant2str internal error";
   }
 
-  
-std::string variant2str(const default_variant_t &dvar)
-{
-   char buffer[80] = "{}";
-   
-   if (std::holds_alternative<int>(dvar)) {
-     snprintf (buffer, sizeof(buffer), "%d", std::get<int>(dvar));
-    } else  if (std::holds_alternative<double>(dvar)) {
-     snprintf (buffer, sizeof(buffer), "%f", std::get<double>(dvar));
-    } else  if (std::holds_alternative<bool>(dvar)) {
-     snprintf (buffer, sizeof(buffer), "%s", std::get<bool>(dvar) ? "true" : "false");
-    } else  if (std::holds_alternative<std::string_view>(dvar)) {
-     strncpy(buffer, std::get<std::string_view>(dvar).data(), sizeof(buffer));
-    } 
-
-   return std::string(buffer);
-}
-
-  std::string variant2str(const value_variant_t &vvar)
-{
-   char buffer[80] = "{}";
-   
-   if (std::holds_alternative<int>(vvar)) {
-     snprintf (buffer, sizeof(buffer), "%d", std::get<int>(vvar));
-    } else  if (std::holds_alternative<double>(vvar)) {
-     snprintf (buffer, sizeof(buffer), "%f", std::get<double>(vvar));
-    } else  if (std::holds_alternative<bool>(vvar)) {
-     snprintf (buffer, sizeof(buffer), "%s", std::get<bool>(vvar) ? "true" : "false");
-    } else  if (std::holds_alternative<std::string>(vvar)) {
-     strncpy(buffer, std::get<std::string>(vvar).c_str(), sizeof(buffer));
-    } 
-
-   return std::string(buffer);
-}
-
-  void printValue(const value_variant_t &value)
+  [[maybe_unused]] 
+  std::string variant2str(const default_variant_t &dvar)
   {
-    if (std::holds_alternative<std::string>(value)) {
-      DebugTrace("S=%s\n", variant2str(value).c_str());
-    } else if (std::holds_alternative<int>(value)) {
-      DebugTrace("I=%s\n", variant2str(value).c_str());
-    } else if (std::holds_alternative<bool>(value)) {
-      DebugTrace("B=%s\n", variant2str(value).c_str());
-    } else if (std::holds_alternative<double>(value)) {
-      DebugTrace("F=%s\n", variant2str(value).c_str());
+    char buffer[80] = "{}";
+    
+    if (std::holds_alternative<int>(dvar)) {
+      snprintf (buffer, sizeof(buffer), "%d", std::get<int>(dvar));
+    } else  if (std::holds_alternative<double>(dvar)) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
+      snprintf (buffer, sizeof(buffer), "%f", std::get<double>(dvar));
+#pragma GCC diagnostic pop
+    } else  if (std::holds_alternative<bool>(dvar)) {
+      snprintf (buffer, sizeof(buffer), "%s", std::get<bool>(dvar) ? "true" : "false");
+    } else  if (std::holds_alternative<std::string_view>(dvar)) {
+      strncpy(buffer, std::get<std::string_view>(dvar).data(), sizeof(buffer));
     } 
+    
+    return std::string(buffer);
   }
   
+  [[maybe_unused]]
+  std::string variant2str(const value_variant_t &vvar)
+  {
+    char buffer[80] = "{}";
+    
+    if (std::holds_alternative<int>(vvar)) {
+      snprintf (buffer, sizeof(buffer), "%d", std::get<int>(vvar));
+    } else  if (std::holds_alternative<double>(vvar)) {
+      snprintf (buffer, sizeof(buffer), "%f", std::get<double>(vvar));
+    } else  if (std::holds_alternative<bool>(vvar)) {
+      snprintf (buffer, sizeof(buffer), "%s", std::get<bool>(vvar) ? "true" : "false");
+    } else  if (std::holds_alternative<std::string>(vvar)) {
+      strncpy(buffer, std::get<std::string>(vvar).c_str(), sizeof(buffer));
+    } 
+    
+    return std::string(buffer);
+  }
+
+  std::pair<bool, value_variant_t> default2Value(const default_variant_t dvar)
+  {
+    value_variant_t value;
+    bool success = true;
+    
+    if (std::holds_alternative<int>(dvar)) {
+      value =  std::get<int>(dvar);
+    } else  if (std::holds_alternative<double>(dvar)) {
+      value =  std::get<double>(dvar);
+    } else  if (std::holds_alternative<bool>(dvar)) {
+      value =  std::get<bool>(dvar);
+    } else  if (std::holds_alternative<std::string_view>(dvar)) {
+      value =  std::string(std::get<std::string_view>(dvar));
+    } else {
+      success = false;
+    }
+    
+    return {success, value};
+  }
+
+  template<size_t N>
+  void syslogNamedSet(const validator_variant_t &vtor)
+  {
+    if (std::holds_alternative<frozen::set<named_val_t, N>>(vtor)) {
+      const frozen::set<named_val_t, N> &set = std::get<frozen::set<named_val_t, N>>(vtor);
+      SdCard::logSyslog(Severity::Info, "set of possible value is ");
+      for (const named_val_t &nv : set) {
+	SdCard::logSyslog(Severity::Info, "\"%s\"=%d,", nv.valName.data(), nv.val);
+      }
+    }
+    SdCard::logSyslog(Severity::Info, " ");
+    if constexpr (N > 1) { // recurse over set size using template meta programming
+	syslogNamedSet<N-1>(vtor);
+      }
+  }
+
   template<size_t N>
   std::pair<bool,  int> getValueByName(const std::string_view name,
 				       const validator_variant_t &vtor)
@@ -214,7 +224,7 @@ std::string variant2str(const default_variant_t &dvar)
 
 
 
-  std::pair<std::string, value_variant_t> parseLine(const std::string_view &line)
+std::tuple<bool, std::string, value_variant_t> parseLine(const std::string_view &line)
   {
     using namespace ctre::literals;
     constexpr auto line_match =  ctre::match<R"(([\w\.]+)\s*=\s*([\+\-]?[\w\.]+)\s*#?.*)">;
@@ -228,15 +238,16 @@ std::string variant2str(const default_variant_t &dvar)
     	and (not bool_true_match(s))
     	and (not bool_false_match(s));};
 
+    bool success = true;
     value_variant_t paramVal= std::monostate{};
     std::string_view k = "";
     
     if (auto [whole, key, val] = line_match(line); whole) {
       k = key;
       const std::string_view v(val);
-      DebugTrace("key %.*s => val=%.*s :: ",
-	     static_cast<int>(k.length()), k.data(),
-	     static_cast<int>(v.length()), v.data());
+      // DebugTrace("key %.*s => val=%.*s :: ",
+      // 	     static_cast<int>(k.length()), k.data(),
+      // 	     static_cast<int>(v.length()), v.data());
       if (integer_match(v)) {
     	paramVal = atoi(v.data());
       } else if (double_match(v)) {
@@ -251,41 +262,47 @@ std::string variant2str(const default_variant_t &dvar)
 
       auto [exists, param] = verifyKey(k);
       if (not exists) {
-    	DebugTrace("NOT KNOW key %.*s in conf_dict\r\n",
+	success = false;
+    	SdCard::logSyslog(Severity::Fatal, "parameter %.*s NOT KNOWN\r\n",
     	       static_cast<int>(k.length()), k.data());
       } else {
     	if (not resolveDefine(paramVal, param.validator)) {
-    	  DebugTrace("NOT KNOW define %s for key %.*s in conf_dict\r\n",
+	  success = false;
+    	  SdCard::logSyslog(Severity::Fatal, "define %s for key %.*s is NOT KNOWN\r\n",
     		 std::get<std::string>(paramVal).c_str(),
     		 static_cast<int>(k.length()), k.data());
     	} else {
     	  // type of default should be compatible with value read in configuration file
     	  if (param.defaut.index() != paramVal.index()) {
+	     success = false;
     	    // authorized mismatch are : default is double and read value is int
     	    if ((not std::holds_alternative<int>(paramVal)) ||
     		(not std::holds_alternative<double>(param.defaut))) {
-    	      DebugTrace("mismatch type for key %.*s : read %s instead of specified %s\r\n",
-    		     static_cast<int>(k.length()), k.data(),
-    		     variantName[paramVal.index()],
-    		     variantName[param.defaut.index()]
-    		     );
+    	      SdCard::logSyslog(Severity::Fatal, "mismatch type for key %.*s : "
+				"read %s instead of specified %s\r\n",
+				static_cast<int>(k.length()), k.data(),
+				variantName[paramVal.index()],
+				variantName[param.defaut.index()]
+				);
     	    }
     	  }
     	  if (not validate(k, v, paramVal, param.validator)) {
-    	    DebugTrace("value %.*s for key %.*s does not validate constraints\n",
-    		   static_cast<int>(v.length()), v.data(),
-    		   static_cast<int>(k.length()), k.data());   
+	    success = false;
+    	    SdCard::logSyslog(Severity::Fatal, "value %.*s for key %.*s "
+			      "does not validate constraints\n",
+			      static_cast<int>(v.length()), v.data(),
+			      static_cast<int>(k.length()), k.data());   
     	  }
     	}
       }
-      
-      
     } else if (empty_match(line)) {
       paramVal = std::monostate{};
     } else {
-      paramVal = std::string("parse line error on line : ") + std::string(line);      
+      success = false;
+      paramVal = std::string("syntax error on line : ") + std::string(line);
+      SdCard::logSyslog(Severity::Fatal, "%s", std::get<std::string>(paramVal).c_str());
     }
-    return {std::string(k), paramVal};
+    return {success, std::string(k), paramVal};
   }
 
   bool resolveDefine(value_variant_t &value, const validator_variant_t   &validator)
@@ -307,10 +324,10 @@ std::string variant2str(const default_variant_t &dvar)
     const auto [exists, valueFromAlias] = getValueByName<numberOfSets>(sv, validator);
     if (exists == true) {
       value = valueFromAlias;
-      DebugTrace("alias %s remplaced by %d\n", sv.data(),  valueFromAlias);
+      //      DebugTrace("alias %s remplaced by %d\n", sv.data(),  valueFromAlias);
       return true;
     } else {
-      DebugTrace("alias %s not found\n", sv.data());
+      //      DebugTrace("alias %s not found\n", sv.data());
       return false;
     }
   }
@@ -338,16 +355,16 @@ std::string variant2str(const default_variant_t &dvar)
 	  const int val = std::get<int>(value);
 	  success = ((val >= min) && (val <= max));
 	  if (not success) {
-	    DebugTrace("value %d for key %.*s is not in range [%d .. %d]",
-		   std::get<int>(value),
-		   static_cast<int>(k.length()), k.data(),
-		   min, max);
+	    SdCard::logSyslog(Severity::Fatal, "value %d for key %.*s is not in range [%d .. %d]",
+			      std::get<int>(value),
+			      static_cast<int>(k.length()), k.data(),
+			      min, max);
 	  }
 	} else if (std::holds_alternative<double>(value)) {
 	  const double val = std::get<double>(value);
 	  success = ((val >= min) && (val <= max));
 	  if (not success) {
-	    DebugTrace("value %f for key %.*s is not in range [%d .. %d]",
+	     SdCard::logSyslog(Severity::Fatal, "value %f for key %.*s is not in range [%d .. %d]",
 		   std::get<double>(value),
 		   static_cast<int>(k.length()), k.data(),
 		   min, max);
@@ -361,7 +378,7 @@ std::string variant2str(const default_variant_t &dvar)
 	  const int val = std::get<int>(value);
 	  success = ((val >= min) && (val <= max));
 	  if (not success) {
-	    DebugTrace("value %d for key %.*s is not in range [%f .. %f]",
+	     SdCard::logSyslog(Severity::Fatal, "value %d for key %.*s is not in range [%f .. %f]",
 		   std::get<int>(value),
 		   static_cast<int>(k.length()), k.data(),
 		   min, max);
@@ -370,7 +387,7 @@ std::string variant2str(const default_variant_t &dvar)
 	  const double val = std::get<double>(value);
 	  success = ((val >= min) && (val <= max));
 	  if (not success) {
-	    DebugTrace("value %f for key %.*s is not in range [%f .. %f]",
+	     SdCard::logSyslog(Severity::Fatal, "value %f for key %.*s is not in range [%f .. %f]",
 		   std::get<double>(value),
 		   static_cast<int>(k.length()), k.data(),
 		   min, max);
@@ -381,10 +398,10 @@ std::string variant2str(const default_variant_t &dvar)
       default: 
 	success = isPresentInSet<numberOfSets>(std::get<int>(value), validator);
 	if (not success) {
-	  DebugTrace("value %.*s for key %.*s is not in set %s",
-		 static_cast<int>(v.length()), v.data(),
-		 static_cast<int>(k.length()), k.data(),
-		 variant2str<numberOfSets>(validator).c_str());
+	   SdCard::logSyslog(Severity::Fatal, "value %.*s for key %.*s is not in set %s",
+			     static_cast<int>(v.length()), v.data(),
+			     static_cast<int>(k.length()), k.data(),
+			     variant2str<numberOfSets>(validator).c_str());
 	}
       }
     }
@@ -400,14 +417,28 @@ std::string variant2str(const default_variant_t &dvar)
   
 } // end of anonymous namespace
 
-  
-bool ConfigurationFile::parseFile(void)
+bool ConfigurationFile::populate(void)
+{
+  bool success = readConfFile();
+  if (not success)
+    success = writeConfFile();
+
+  if (success) {
+    success = verifyNotFilledParameters();
+  }
+  syslogInfoParameters();
+
+  return success;
+}
+
+bool ConfigurationFile::readConfFile(void)
 {
   FIL fil;
   FRESULT rc;
-  
   char lineBuffer[120] = {0};
+  bool readFileSuccess = true;
 
+  //  auto m_test = ConfigurationFile_AT(*this, "filename.sensors");
   rc = f_open(&fil, fileName, FA_READ | FA_OPEN_EXISTING);
   if (rc != FR_OK) {
     SdCard::logSyslog(Severity::Fatal, "configuration file %s not found", fileName);
@@ -416,8 +447,9 @@ bool ConfigurationFile::parseFile(void)
    
   do {
     f_gets(lineBuffer, sizeof(lineBuffer)-1, &fil);
-    const auto [key, value] = parseLine(lineBuffer);
-    if (not std::holds_alternative<std::monostate>(value)) {
+    const auto [success, key, value] = parseLine(lineBuffer);
+    readFileSuccess &= success;
+    if (success && not std::holds_alternative<std::monostate>(value)) {
       dictionary[key] = value;
     }
     SdCard::logSyslog(Severity::Info, "read %s", lineBuffer);
@@ -429,8 +461,126 @@ bool ConfigurationFile::parseFile(void)
 		       "fatfs close error on file %s", fileName);
      goto fail;
    }
-   
-   return true;
+
+   return readFileSuccess;
  fail:
    return false;
+}
+
+bool ConfigurationFile::writeConfFile(void)
+{
+  FIL fil;
+  FRESULT rc;
+  char lineBuffer[120] = {0};
+  bool writeFileSuccess = true;
+
+  //  auto m_test = ConfigurationFile_AT(*this, "filename.sensors");
+  rc = f_open(&fil, fileName, FA_CREATE_NEW | FA_WRITE);
+  if (rc != FR_OK) {
+    SdCard::logSyslog(Severity::Fatal, "configuration file %s cannot be created", fileName);
+    goto fail;
+  }
+
+  for (auto const& [key, param] : conf_dict) {
+    UINT nbwf =0;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
+    UINT nbw = snprintf(lineBuffer, sizeof(lineBuffer), "%.*s = %s\n",
+			    static_cast<int>(key.size()), key.data(),
+			    variant2str(param.defaut).c_str()
+			    );
+#pragma GCC diagnostic pop
+    if (nbw >= sizeof(lineBuffer)) {
+      SdCard::logSyslog(Severity::Internal, "ConfigurationFile::writeConfFile : "
+			"lineBuffer too small");
+      writeFileSuccess = false;
+    } else {
+      rc = f_write(&fil, lineBuffer, nbw, &nbwf);
+      if ((rc != FR_OK) || (nbw != nbwf)) {
+	SdCard::logSyslog(Severity::Fatal, "ConfigurationFile::writeConfFile : "
+			  "f_write fails");
+	writeFileSuccess = false;
+      }
+    }
+  }
+
+  rc = f_close(&fil);
+  if (rc != FR_OK) {
+    SdCard::logSyslog(Severity::Warning,
+		      "fatfs close error on file %s", fileName);
+    writeFileSuccess = false;
+  }
+
+  return writeFileSuccess;
+
+ fail:
+  return false;
+}
+
+
+
+bool ConfigurationFile::verifyNotFilledParameters(void)
+{
+  bool success = true;
+  
+  for (auto const& [key, param] : conf_dict) {
+    
+    if (not dictionary.contains(key.data())) {
+      auto [m_success, defaut] = default2Value(param.defaut);
+      success &= m_success;
+      if (m_success)
+	dictionary[key.data()] = defaut;
+      else
+	SdCard::logSyslog(Severity::Fatal, "parameter %.*s should be supplied in %s: "
+			  "no defaut for this parameter",
+			  static_cast<int>(key.size()), key.data(),
+			  CONFIGURATION_FILENAME);
+    }
+  }
+  return success;
+}
+
+
+void ConfigurationFile::syslogInfoParameters(void)
+{
+   for (auto const& [key, param] : conf_dict) {
+     SdCard::logSyslog(Severity::Info, "\n.................\nkey = %s : \n", key.data());
+     const default_variant_t& d = param.defaut;
+     if (std::holds_alternative<int>(d)) {
+      SdCard::logSyslog(Severity::Info, "default<integer> = %s\n", variant2str(d).c_str());
+    } else  if (std::holds_alternative<double>(d)) {
+      SdCard::logSyslog(Severity::Info, "default<double> = %s\n", variant2str(d).c_str());
+    } else  if (std::holds_alternative<bool>(d)) {
+      SdCard::logSyslog(Severity::Info, "default<boolean> = %s\n", variant2str(d).c_str());
+    } else  if (std::holds_alternative<std::string_view>(d)) {
+      SdCard::logSyslog(Severity::Info, "default<string> = %s\n", variant2str(d).c_str());
+    } else {
+      SdCard::logSyslog(Severity::Info, "no default\n");
+    }
+
+     const validator_variant_t& vtor = param.validator;
+     if (std::holds_alternative<std::monostate>(vtor)) {
+      SdCard::logSyslog(Severity::Info, "no validation");
+    } else if (std::holds_alternative<range_int_t>(vtor)) {
+      SdCard::logSyslog(Severity::Info, "RANGE is [%d .. %d]\n",
+	      std::get<range_int_t>(vtor).min,
+	      std::get<range_int_t>(vtor).max);
+    } else if (std::holds_alternative<range_double_t>(vtor)) {
+      SdCard::logSyslog(Severity::Info, "RANGE is [%f .. %f]\n",
+	      std::get<range_double_t>(vtor).min,
+	      std::get<range_double_t>(vtor).max);
+    } else {
+      syslogNamedSet<numberOfSets>(vtor);
+    }
+
+     
+   }
+}
+
+
+
+
+value_variant_t& ConfigurationFile::operator[](const std::string_view key)
+{
+  return dictionary[key];
 }
