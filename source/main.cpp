@@ -10,7 +10,6 @@
 #include "blinker.hpp"
 #include "usbStorage.hpp"
 #include "printf.h"
-#include "confFileAccessor.hpp"
 
 
 /*
@@ -23,7 +22,10 @@
 
  */
 
-  
+
+#define PERIOD(k) (CH_CFG_ST_FREQUENCY / CONF(k))
+
+
 void _init_chibios() __attribute__ ((constructor(101)));
 void _init_chibios() {
   halInit();
@@ -48,11 +50,11 @@ int main (void)
     SdCard::logSyslog(Severity::Fatal, "Read configuration file fail");
   } else if (not baro.run(TIME_IMMEDIATE)) {
     SdCard::logSyslog(Severity::Fatal, "BARO fail");
-  } else  if (not dp.run(getDiffPressPeriod())) {
+  } else  if (not dp.run(PERIOD("thread.frequency.d_press"))) {
     SdCard::logSyslog(Severity::Fatal, "DIFF PRESS fail");
-  } else if (not imu.run(TIME_MS2I(2))) {
+  } else if (not imu.run(PERIOD("thread.frequency.imu"))) {
     SdCard::logSyslog(Severity::Fatal, "IMU fail");
-  } else if (not showBB.run(TIME_MS2I(50))) {
+  } else if (not showBB.run(PERIOD("thread.frequency.stream"))) {
     SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
   } else if (not usbStorage.run(TIME_IMMEDIATE)) {
     SdCard::logSyslog(Severity::Fatal, "USB Storage fail");

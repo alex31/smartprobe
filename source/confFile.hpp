@@ -41,7 +41,11 @@
  */
 
 // this map accessor wrapper verify that the key is valid @compile time
-#define ConfigurationFile_AT(c,k)  ({static_assert(conf_dict.find(k) != conf_dict.end()); (c)[k];})
+#define ConfigurationFile_AT(c,k)  ( \
+    { \
+      static_assert(conf_dict.find(k) != conf_dict.end());	\
+      constexpr auto index = conf_dict.at(k).defaut.index();	\
+      std::get<index>((c)[k]); })
 
 
 using value_variant_t = std::variant<int, double, bool, std::string, std::monostate>;

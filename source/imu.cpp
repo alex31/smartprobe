@@ -4,6 +4,8 @@
 #include "hardwareConf.hpp" 
 #include "stdutil.h"	
 #include "sdcard.hpp"
+#include "confFile.hpp"
+#include "threadAndEventDecl.hpp"
 
 
 namespace {
@@ -19,15 +21,6 @@ namespace {
 			    .cr2 = 0
   };
 
-  Icm20600Config icmCfg = {
-			   .spid = &ImuSPID,
-			   .sampleRate = 100,
-			   .config = ICM20600_GYRO_RATE_8K_BW_3281,
-			   .gyroConfig = ICM20600_FCHOICE_RATE_32K_BW_8173 |
-			                 ICM20600_RANGE_250_DPS,
-			   .accelConf = ICM20600_RANGE_2G,
-			   .accelConf2 = ICM20600_ACC_RATE_4K_BW_1046
-  };
 
   
 }
@@ -37,6 +30,17 @@ namespace {
 
 bool Imu::init()
 {
+  static Icm20600Config icmCfg = {
+	.spid = &ImuSPID,
+	.sampleRate = uint32_t(CONF("thread.frequency.imu")),
+	.config = Icm20600_config(CONF("sensor.imu.gyrorate")),
+	.gyroConfig = Icm20600_gyroConf(CONF("sensor.imu.fchoicerate")) |
+		      Icm20600_gyroConf(CONF("sensor.imu.gyrorange")),
+	.accelConf = Icm20600_accelConf(CONF("sensor.imu.accrange")),
+	.accelConf2 = Icm20600_accelConf2(CONF("sensor.imu.accrate"))
+  };
+
+
   spiStart(&ImuSPID, &spiCfg);
   if (icm20600_init(&icmd, &icmCfg) == MSG_OK) {
     SdCard::logSyslog(Severity::Info, "icm20600 init OK");

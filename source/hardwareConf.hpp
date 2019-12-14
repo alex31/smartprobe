@@ -94,15 +94,15 @@ static constexpr I2CConfig i2ccfg_1000 = {
 
 static constexpr uint32_t PowerLossAwakeTimeBeforeDeepSleep = 8U;
 
-static const std::array<ioline_t, 10>
+static const std::array<ioline_t, 12>
 LineToStopInCaseOfPowerFailure= {LINE_LED_GREEN,	
 				 LINE_LED_RED,
 				 LINE_SPI1_NSS,
 				 LINE_IMU_SPI_SCK1,	
 				 LINE_IMU_SPI_MISO1,	
 				 LINE_IMU_SPI_MOSI1,
-				 //				 LINE_AP_TX1,		
-				 //				 LINE_AP_RX1,		
+				 LINE_AP_TX1,		
+				 LINE_AP_RX1,		
 				 LINE_PRESS_SCL4,	
 				 LINE_PRESS_SDA4,	
 				 LINE_BARO_SCL2,	

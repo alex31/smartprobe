@@ -6,6 +6,7 @@
 #include <frozen/map.h>
 #include <frozen/string.h>
 #include "hardwareConf.hpp"
+#include "confFile.hpp"
 #include "threadAndEventDecl.hpp"
 
 #define xstr(s) str(s)
@@ -140,7 +141,9 @@ bool  SdCard::sdLogInit(void)
   default: break;
   }
 
-  se = sdLogOpenLog(&sensorsFd, ROOTDIR, "sensors", 10_seconde,
+  se = sdLogOpenLog(&sensorsFd, ROOTDIR,
+		    std::string(CONF("filename.sensors")).c_str(),
+		    10_seconde,
 		    LOG_APPEND_TAG_AT_CLOSE_DISABLED, 0,
 		    LOG_PREALLOCATION_DISABLED);
   switch (se) {

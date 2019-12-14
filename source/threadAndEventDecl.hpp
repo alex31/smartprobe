@@ -7,6 +7,7 @@
 #include "showBlackboard.hpp"
 #include "confFile.hpp"
 
+#define CONF(k)  (ConfigurationFile_AT(confFile, k))
 
 extern  DifferentialPressure dp;
 extern  Barometer baro;

@@ -5,26 +5,25 @@
 #include "barometer.hpp"
 #include "hardwareConf.hpp"
 #include "sdcard.hpp"
-
-namespace {
-  constexpr LPS33HWConfig lpsConfig = {
-				       .i2cp = &BaroI2CD,
-				       .slaveAdr = LPS33HW_I2C_SLAVE_SA0_LOW,
-				       .odr = LPS33HW_ODR_75_Hz,
-				       .lpf = LPS33HW_LPF_ODR_DIV_2,
-				       .blockDataUpdateEnable = true,
-				       .dataReadyItrEnable = true };
-}
+#include "confFile.hpp"
+#include "threadAndEventDecl.hpp"
 
 bool Barometer::init()
 {
   bool retVal = true;
+  static const LPS33HWConfig lpsConfig = {
+					  .i2cp = &BaroI2CD,
+					  .slaveAdr = LPS33HW_I2C_SLAVE_SA0_LOW,
+					  .odr = lps33hw_odr_t(CONF("sensor.barometer.odr")),
+					  .lpf = lps33hw_lpfp_t(CONF("sensor.barometer.lpf")),
+					  .blockDataUpdateEnable = true,
+					  .dataReadyItrEnable = true };
 
   i2cStart(&BaroI2CD, &i2ccfg_1000);
   palEnableLineEvent(LINE_BARO_DRDY, PAL_EVENT_MODE_FALLING_EDGE);
-
+  
   const msg_t status = lps33Start(&lpsDriver, &lpsConfig);
- 
+  
   if (status != MSG_OK) {
     retVal = false;
     SdCard::logSyslog(Severity::Fatal, "lps33hw init FAIL");

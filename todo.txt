@@ -16,12 +16,13 @@ A TESTER :
 	  (si elle existe sinon fatal error)
    * si le fichier smartprobe.conf n'existe pas : en creer un
        avec toutes les clefs associées aux valeurs par defaut
-
+    * passage par paramètre dichier de conf :
+       + frequence d'acquisition des capteurs
+       + paramètre d'init de l'ICM20600
+  
 A CODER :
 
      * passer en paramètres :
-       + frequence d'acquisition des capteurs
-       + paramètre d'init de l'ICM20600
        + lancement de l'IMU
        + log des veleurs brutes de l'IMU
        + log des valeurs AHRS
@@ -61,6 +62,7 @@ GRANDES LIGNES :
 	  ° uniquement en cas d'erreur grave :
 	  °  blink jaune : pb sdcard
 	  °  blink rouge : pb capteur
+        * quand on teste le 5V, tester aussi le 3.3V en utilisant la reference interne
 	    
 
 
