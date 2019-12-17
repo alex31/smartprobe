@@ -285,7 +285,7 @@ SdioError SdCard::logSyslog (const Severity severity, const char* fmt, ...)
   }
 }
 
-SdioError SdCard::logSyslogNoNl (const Severity severity, const char* fmt, ...)
+SdioError SdCard::logSyslogRaw (const char* fmt, ...)
 {
   va_list ap;
   
@@ -300,9 +300,6 @@ SdioError SdCard::logSyslogNoNl (const Severity severity, const char* fmt, ...)
   
   if (self != nullptr) {
     va_start(ap, fmt);
-    sdLogWriteLog(self->syslogFd, "[%.3f] %s : ",
-		   TIME_I2MS(chVTGetSystemTimeX())/1000.0f,
-		   severityName.at(severity).data());
     auto retVal = sdLogvWriteLog(self->syslogFd, fmt, ap);
     va_end(ap);
     return retVal;

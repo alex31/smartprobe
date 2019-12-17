@@ -132,13 +132,13 @@ namespace {
   {
     if (std::holds_alternative<frozen::set<named_val_t, N>>(vtor)) {
       const frozen::set<named_val_t, N> &set = std::get<frozen::set<named_val_t, N>>(vtor);
-      SdCard::logSyslog(Severity::Info, "set of possible value is ");
+      SdCard::logSyslogRaw("set of possible value is : ");
       for (const named_val_t &nv : set) {
-	SdCard::logSyslog(Severity::Info, "\"%.*s\"=%d,",
-			  nv.valName.size(), nv.valName.data(), nv.val);
+	SdCard::logSyslogRaw("\"%.*s\"=%d, ",
+			      nv.valName.size(), nv.valName.data(), nv.val);
       }
+      SdCard::logSyslogRaw("\r\n");
     }
-    SdCard::logSyslog(Severity::Info, " ");
     if constexpr (N > 1) { // recurse over set size using template meta programming
 	syslogNamedSet<N-1>(vtor);
       }
@@ -218,11 +218,11 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string &line
       auto [exists, param] = verifyKey(k);
       if (not exists) {
 	success = false;
-    	SdCard::logSyslog(Severity::Fatal, "parameter %s NOT KNOWN\r\n", k.c_str());
+    	SdCard::logSyslog(Severity::Fatal, "parameter %s NOT KNOWN", k.c_str());
       } else {
     	if (not resolveDefine(paramVal, param.validator)) {
 	  success = false;
-    	  SdCard::logSyslog(Severity::Fatal, "define %s for key %s is NOT KNOWN\r\n",
+    	  SdCard::logSyslog(Severity::Fatal, "define %s for key %s is NOT KNOWN",
     		 std::get<std::string>(paramVal).c_str(), k.c_str());
     	} else {
     	  // type of default should be compatible with value read in configuration file
@@ -232,7 +232,7 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string &line
     	    if ((not std::holds_alternative<int>(paramVal)) ||
     		(not std::holds_alternative<double>(param.defaut))) {
     	      SdCard::logSyslog(Severity::Fatal, "mismatch type for key %s : "
-				"read %s instead of specified %s\r\n",
+				"read %s instead of specified %s",
 				k.c_str(),
 				variantName[paramVal.index()],
 				variantName[param.defaut.index()]
@@ -399,6 +399,7 @@ bool ConfigurationFile::readConfFile(void)
    
   do {
     f_gets(lineBuffer, sizeof(lineBuffer)-1, &fil);
+    strtok(lineBuffer, "\r\n"); // remove CRLN
     const auto [success, key, value] = parseLine(lineBuffer);
     readFileSuccess = success & readFileSuccess;
     if (success && not std::holds_alternative<std::monostate>(value)) {
@@ -478,13 +479,17 @@ bool ConfigurationFile::verifyNotFilledParameters(void)
     if (not dictionary.contains(ks)) {
       auto [m_success, defaut] = default2Value(param.defaut);
       success = m_success & success;
-      if (m_success)
+      if (m_success) {
+	SdCard::logSyslog(Severity::Warning, "parameter %s is not supplied in %s: "
+			  "using default %s",
+			  ks.c_str(), CONFIGURATION_FILENAME, variant2str(defaut).c_str());
 	dictionary[ks] = defaut;
-      else
+      } else {
 	SdCard::logSyslog(Severity::Fatal, "parameter %s should be supplied in %s: "
 			  "no defaut for this parameter",
 			  ks.c_str(),
 			  CONFIGURATION_FILENAME);
+      }
     }
   }
   return success;
@@ -494,36 +499,37 @@ bool ConfigurationFile::verifyNotFilledParameters(void)
 void ConfigurationFile::syslogInfoParameters(void)
 {
    for (auto const& [key, param] : conf_dict) {
-     SdCard::logSyslog(Severity::Info, "\n.................\nkey = %s : \n", key.data());
+     SdCard::logSyslog(Severity::Info, ".................\n");
+     SdCard::logSyslogRaw("key = %s : ", key.data());
      const default_variant_t& d = param.defaut;
      if (std::holds_alternative<int>(d)) {
-      SdCard::logSyslog(Severity::Info, "default<integer> = %s\n", variant2str(d).c_str());
+      SdCard::logSyslogRaw("default<integer> = %s; ", variant2str(d).c_str());
     } else  if (std::holds_alternative<double>(d)) {
-      SdCard::logSyslog(Severity::Info, "default<double> = %s\n", variant2str(d).c_str());
+      SdCard::logSyslogRaw("default<double> = %s; ", variant2str(d).c_str());
     } else  if (std::holds_alternative<bool>(d)) {
-      SdCard::logSyslog(Severity::Info, "default<boolean> = %s\n", variant2str(d).c_str());
+      SdCard::logSyslogRaw("default<boolean> = %s; ", variant2str(d).c_str());
     } else  if (std::holds_alternative<std::string_view>(d)) {
-      SdCard::logSyslog(Severity::Info, "default<string> = %s\n", variant2str(d).c_str());
+      SdCard::logSyslogRaw("default<string> = %s; ", variant2str(d).c_str());
     } else {
-      SdCard::logSyslog(Severity::Info, "no default\n");
+      SdCard::logSyslogRaw("no default; ");
     }
 
      const validator_variant_t& vtor = param.validator;
      if (std::holds_alternative<std::monostate>(vtor)) {
-      SdCard::logSyslog(Severity::Info, "no validation");
+      SdCard::logSyslogRaw("no validation");
     } else if (std::holds_alternative<range_int_t>(vtor)) {
-      SdCard::logSyslog(Severity::Info, "RANGE is [%d .. %d]\n",
+      SdCard::logSyslogRaw("RANGE is [%d .. %d]",
 	      std::get<range_int_t>(vtor).min,
 	      std::get<range_int_t>(vtor).max);
     } else if (std::holds_alternative<range_double_t>(vtor)) {
-      SdCard::logSyslog(Severity::Info, "RANGE is [%f .. %f]\n",
+      SdCard::logSyslogRaw("RANGE is [%f .. %f]",
 	      std::get<range_double_t>(vtor).min,
 	      std::get<range_double_t>(vtor).max);
     } else {
       syslogNamedSet<numberOfSets>(vtor);
     }
 
-     
+    SdCard::logSyslogRaw("\r\n"); 
    }
 }
 

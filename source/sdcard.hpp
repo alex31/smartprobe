@@ -20,8 +20,8 @@ public:
     __attribute__ ((format (printf, 1, 2)));
   static SdioError logSyslog (const Severity severity, const char* fmt, ...)
     __attribute__ ((format (printf, 2, 3)));
-  static SdioError logSyslogNoNl (const Severity severity, const char* fmt, ...)
-    __attribute__ ((format (printf, 2, 3)));
+  static SdioError logSyslogRaw (const char* fmt, ...)
+    __attribute__ ((format (printf, 1, 2)));
 
 private:
   friend WorkerThread<TH_SDCARD::threadStackSize, SdCard>;

@@ -9,24 +9,14 @@
 
 
 A TESTER :
- ° module de lecture de conf :
-   * mettre dans le syslog tous les paramètres sous forme d'info
-   * test si des clefs sont absentes du fichier de conf :
-        syslog(warning) et utilisation de la valeur par defaut
-	  (si elle existe sinon fatal error)
-   * si le fichier smartprobe.conf n'existe pas : en creer un
-       avec toutes les clefs associées aux valeurs par defaut
-    * passage par paramètre dichier de conf :
-       + frequence d'acquisition des capteurs
-       + paramètre d'init de l'ICM20600
+
   
 A CODER :
 
      * passer en paramètres :
-       + lancement de l'IMU
-       + log des valeurs brutes de l'IMU
-       + log des valeurs AHRS
-       
+       + enable du log des valeurs brutes de l'IMU
+       + enable du log des valeurs AHRS
+         => deduire des deux params precedents si on lance le thread IMU ou pas       
      
      
 A AMELIORER :
