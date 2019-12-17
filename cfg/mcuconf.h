@@ -388,7 +388,7 @@
  */
 #define STM32_WDG_USE_IWDG                  FALSE
 
-#define CH_HEAP_SIZE (128*1024)
+//#define CH_HEAP_SIZE (128*1024)
 #define CH_HEAP_USE_TLSF 1 // if 0 or undef, chAlloc will be used
 #define CONSOLE_DEV_SD SD1
 

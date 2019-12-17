@@ -52,14 +52,14 @@ int main (void)
     SdCard::logSyslog(Severity::Fatal, "BARO fail");
   } else  if (not dp.run(PERIOD("thread.frequency.d_press"))) {
     SdCard::logSyslog(Severity::Fatal, "DIFF PRESS fail");
-  } else if (not imu.run(PERIOD("thread.frequency.imu"))) {
-    SdCard::logSyslog(Severity::Fatal, "IMU fail");
-  } else if (not showBB.run(PERIOD("thread.frequency.stream"))) {
-    SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
-  } else if (not usbStorage.run(TIME_IMMEDIATE)) {
-    SdCard::logSyslog(Severity::Fatal, "USB Storage fail");
-  } else if (not adc.run(TIME_IMMEDIATE)) {
-    SdCard::logSyslog(Severity::Fatal, "ADC fail");
+   } else if (not imu.run(PERIOD("thread.frequency.imu"))) {
+     SdCard::logSyslog(Severity::Fatal, "IMU fail");
+   } else if (not showBB.run(PERIOD("thread.frequency.stream"))) {
+     SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
+   } else if (not usbStorage.run(TIME_IMMEDIATE)) {
+     SdCard::logSyslog(Severity::Fatal, "USB Storage fail");
+   } else if (not adc.run(TIME_IMMEDIATE)) {
+     SdCard::logSyslog(Severity::Fatal, "ADC fail");
   } else {
     // if all went ok, main thead now can rest
     chThdSleep(TIME_INFINITE);

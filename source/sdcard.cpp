@@ -142,7 +142,7 @@ bool  SdCard::sdLogInit(void)
   }
 
   se = sdLogOpenLog(&sensorsFd, ROOTDIR,
-		    std::string(CONF("filename.sensors")).c_str(),
+		    "sensors",
 		    10_seconde,
 		    LOG_APPEND_TAG_AT_CLOSE_DISABLED, 0,
 		    LOG_PREALLOCATION_DISABLED);
@@ -278,6 +278,32 @@ SdioError SdCard::logSyslog (const Severity severity, const char* fmt, ...)
 		   severityName.at(severity).data());
     auto retVal = sdLogvWriteLog(self->syslogFd, fmt, ap);
     sdLogWriteLog(self->syslogFd, "\r\n");
+    va_end(ap);
+    return retVal;
+  } else {
+    return SDLOG_NOT_READY;
+  }
+}
+
+SdioError SdCard::logSyslogNoNl (const Severity severity, const char* fmt, ...)
+{
+  va_list ap;
+  
+#ifdef TRACE 
+#include "printf.h"
+  {
+    va_start(ap, fmt);
+    chvprintf(chp, fmt, ap);
+    va_end(ap);
+  }
+#endif
+  
+  if (self != nullptr) {
+    va_start(ap, fmt);
+    sdLogWriteLog(self->syslogFd, "[%.3f] %s : ",
+		   TIME_I2MS(chVTGetSystemTimeX())/1000.0f,
+		   severityName.at(severity).data());
+    auto retVal = sdLogvWriteLog(self->syslogFd, fmt, ap);
     va_end(ap);
     return retVal;
   } else {

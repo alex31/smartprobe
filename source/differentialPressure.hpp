@@ -5,7 +5,7 @@
 #include "i2cMaster.h"
 
 namespace TH_DIFFPRESS {
-static constexpr size_t threadStackSize = 512U;
+static constexpr size_t threadStackSize = 1512U;
 }
 
 struct DiffPressureData {

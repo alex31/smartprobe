@@ -96,7 +96,10 @@ namespace {
     if (std::holds_alternative<int>(vvar)) {
       snprintf (buffer, sizeof(buffer), "%d", std::get<int>(vvar));
     } else  if (std::holds_alternative<double>(vvar)) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
       snprintf (buffer, sizeof(buffer), "%f", std::get<double>(vvar));
+#pragma GCC diagnostic pop
     } else  if (std::holds_alternative<bool>(vvar)) {
       snprintf (buffer, sizeof(buffer), "%s", std::get<bool>(vvar) ? "true" : "false");
     } else  if (std::holds_alternative<std::string>(vvar)) {
@@ -401,7 +404,7 @@ bool ConfigurationFile::readConfFile(void)
   do {
     f_gets(lineBuffer, sizeof(lineBuffer)-1, &fil);
     const auto [success, key, value] = parseLine(lineBuffer);
-    readFileSuccess &= success;
+    readFileSuccess = success & readFileSuccess;
     if (success && not std::holds_alternative<std::monostate>(value)) {
       dictionary[key] = value;
     }
@@ -479,7 +482,7 @@ bool ConfigurationFile::verifyNotFilledParameters(void)
     
     if (not dictionary.contains(key.data())) {
       auto [m_success, defaut] = default2Value(param.defaut);
-      success &= m_success;
+      success = m_success & success;
       if (m_success)
 	dictionary[key.data()] = defaut;
       else

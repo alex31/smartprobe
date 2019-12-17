@@ -24,7 +24,7 @@ A CODER :
 
      * passer en paramètres :
        + lancement de l'IMU
-       + log des veleurs brutes de l'IMU
+       + log des valeurs brutes de l'IMU
        + log des valeurs AHRS
        
      

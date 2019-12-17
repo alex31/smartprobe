@@ -7,7 +7,7 @@
 #include "differentialPressure.hpp"
 
 namespace TH_SDCARD {
-static constexpr size_t threadStackSize = 1024U;
+static constexpr size_t threadStackSize = 2048U;
 }
 
 enum class Severity {Debug, Info, Warning, Fatal, Internal};
@@ -19,6 +19,8 @@ public:
   static SdioError logSensors (const char* fmt, ...)
     __attribute__ ((format (printf, 1, 2)));
   static SdioError logSyslog (const Severity severity, const char* fmt, ...)
+    __attribute__ ((format (printf, 2, 3)));
+  static SdioError logSyslogNoNl (const Severity severity, const char* fmt, ...)
     __attribute__ ((format (printf, 2, 3)));
 
 private:

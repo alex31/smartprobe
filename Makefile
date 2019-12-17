@@ -36,7 +36,7 @@ GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
 
 
 ifeq ($(EXECMODE),$(DEBUG)) 
-  USE_OPT =  -Og -ggdb3  -Wall -Wextra \
+  USE_OPT =  -O1 -g -ggdb3  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	    $(GCC_DIAG)
 endif
@@ -98,7 +98,7 @@ endif
 # the stack used by the main() thread.
 ifeq ($(USE_PROCESS_STACKSIZE),)
 ifeq ($(EXECMODE),$(DEBUG))
-  USE_PROCESS_STACKSIZE = 0x1F00
+  USE_PROCESS_STACKSIZE = 0x2F00
 else
   USE_PROCESS_STACKSIZE = 0x1B00
 endif
@@ -107,7 +107,7 @@ endif
 # Stack size to the allocated to the Cortex-M main/exceptions stack. This
 # stack is used for processing interrupts and exceptions.
 ifeq ($(USE_EXCEPTIONS_STACKSIZE),)
-  USE_EXCEPTIONS_STACKSIZE = 0x400
+  USE_EXCEPTIONS_STACKSIZE = 0x600
 endif
 
 # Enables the use of FPU (no, softfp, hard).
@@ -284,7 +284,7 @@ CPPWARN = -Wall -Wextra -Wundef
 # List all user C define here, like -D_DEBUG=1
 ifeq ($(EXECMODE),$(DEBUG))
 UDEFS = -DTRACE  -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 -DCH_DBG_ENABLE_CHECKS=1 \
-        -DCH_DBG_ENABLE_ASSERTS=1
+        -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1
 else
 UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
         -DCH_DBG_ENABLE_ASSERTS=0
@@ -295,7 +295,7 @@ UDEFS += -DCTRE_STRING_IS_UTF8=1 -DFROZEN_NO_EXCEPTIONS=1 -DGIT_VERSION="$(GIT_V
 # Define ASM defines here
 ifeq ($(EXECMODE),$(DEBUG))
 UADEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 -DCH_DBG_ENABLE_CHECKS=1 \
-         -DCH_DBG_ENABLE_ASSERTS=1
+         -DCH_DBG_ENABLE_ASSERTS=1  -DTLSF_DEBUG=1 -D_DEBUG=1
 else
 UADEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
          -DCH_DBG_ENABLE_ASSERTS=0
