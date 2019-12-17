@@ -12,14 +12,15 @@ GIT_VERSION += $(shell git describe --abbrev=4 --dirty --always --tags)
 
 #$(info $$GIT_VERSION is [${GIT_VERSION}])
 
-DEBUG := 1
-OPT_SPEED := 2
-OPT_SIZE := 3
+DEBUG := DEBUG
+OPT_SPEED := SPEED
+OPT_SIZE := SIZE
 
-EXECMODE := $(DEBUG)
-#EXECMODE := $(OPT_SPEED)
-#EXECMODE := $(OPT_SIZE)
-
+ifeq 	($(BUILD),)
+	BUILD := $(DEBUG)
+#BUILD := $(OPT_SPEED)
+#BUILD := $(OPT_SIZE)
+endif
 
 GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
 	    -Wno-error=cpp \
@@ -34,23 +35,26 @@ GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
 
 
 
-ifeq ($(EXECMODE),$(DEBUG)) 
+ifeq ($(BUILD),$(DEBUG)) 
   USE_OPT =  -Og -ggdb3  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	    $(GCC_DIAG)
+  PROJECT = smartprobe_debug
 endif
 
-ifeq ($(EXECMODE),$(OPT_SPEED)) 
-    USE_OPT =  -Ofast -flto=4  -Wall -Wextra \
+ifeq ($(BUILD),$(OPT_SPEED)) 
+  USE_OPT =  -Ofast -flto=4  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	     $(GCC_DIAG)
+  PROJECT = smartprobe_speed
 endif
 
-ifeq ($(EXECMODE),$(OPT_SIZE)) 
-    USE_OPT =  -Os  -flto=4  -Wall -Wextra \
+ifeq ($(BUILD),$(OPT_SIZE)) 
+  USE_OPT =  -Os  -flto=4  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
             --specs=nano.specs \
 	     $(GCC_DIAG)
+  PROJECT = smartprobe_size
 endif
 
 
@@ -96,7 +100,7 @@ endif
 # Stack size to be allocated to the Cortex-M process stack. This stack is
 # the stack used by the main() thread.
 ifeq ($(USE_PROCESS_STACKSIZE),)
-ifeq ($(EXECMODE),$(DEBUG))
+ifeq ($(BUILD),$(DEBUG))
   USE_PROCESS_STACKSIZE = 0x2F00
 else
   USE_PROCESS_STACKSIZE = 0x1B00
@@ -128,7 +132,6 @@ endif
 #
 
 # Define project name here
-PROJECT = ch
 
 # Target settings.
 MCU  = cortex-m7
@@ -281,7 +284,7 @@ CPPWARN = -Wall -Wextra -Wundef
 #
 
 # List all user C define here, like -D_DEBUG=1
-ifeq ($(EXECMODE),$(DEBUG))
+ifeq ($(BUILD),$(DEBUG))
 UDEFS = -DTRACE  -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 -DCH_DBG_ENABLE_CHECKS=1 \
         -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1
 else
@@ -292,7 +295,7 @@ endif
 UDEFS += -DCTRE_STRING_IS_UTF8=1 -DFROZEN_NO_EXCEPTIONS=1 -DGIT_VERSION="$(GIT_VERSION)"
 
 # Define ASM defines here
-ifeq ($(EXECMODE),$(DEBUG))
+ifeq ($(BUILD),$(DEBUG))
 UADEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 -DCH_DBG_ENABLE_CHECKS=1 \
          -DCH_DBG_ENABLE_ASSERTS=1  -DTLSF_DEBUG=1 -D_DEBUG=1
 else
