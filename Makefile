@@ -36,7 +36,7 @@ GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
 
 
 ifeq ($(EXECMODE),$(DEBUG)) 
-  USE_OPT =  -O1 -g -ggdb3  -Wall -Wextra \
+  USE_OPT =  -Og -ggdb3  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	    $(GCC_DIAG)
 endif

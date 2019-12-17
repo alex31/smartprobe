@@ -27,6 +27,8 @@
   faire de l'exemple une classe avec des noms de membres 
   et de methodes plus intelligents que dans l'exemple
 */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
 
 using namespace std::literals;
 
@@ -38,9 +40,9 @@ namespace {
   
  
 
-  std::pair<bool, const parameter_value_t &> verifyKey(const std::string_view &k);
+  std::pair<bool, const parameter_value_t &> verifyKey(const std::string_view k);
   bool resolveDefine(value_variant_t &retVal, const validator_variant_t   &validator);
-  bool validate(const std::string_view &k, const std::string_view &v,
+  bool validate(const std::string_view k, const std::string_view v,
 		value_variant_t &value, const validator_variant_t &validator);
 
   constexpr size_t firstSetIndex = 3U;
@@ -56,7 +58,8 @@ namespace {
     if (std::holds_alternative<frozen::set<named_val_t, N>>(vtor)) {
       const frozen::set<named_val_t, N> &set = std::get<frozen::set<named_val_t, N>>(vtor);
       for (const named_val_t &nv : set) {
-	snprintf(buffer, sizeof(buffer), "\"%s\"=%d,", nv.valName.data(), nv.val);
+	snprintf(buffer, sizeof(buffer), "\"%.*s\"=%d,",
+		 int(nv.valName.size()), nv.valName.data(), nv.val);
 	rep += buffer;
       }
       return rep;
@@ -75,14 +78,12 @@ namespace {
     if (std::holds_alternative<int>(dvar)) {
       snprintf (buffer, sizeof(buffer), "%d", std::get<int>(dvar));
     } else  if (std::holds_alternative<double>(dvar)) {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wformat-truncation"
       snprintf (buffer, sizeof(buffer), "%f", std::get<double>(dvar));
-#pragma GCC diagnostic pop
     } else  if (std::holds_alternative<bool>(dvar)) {
       snprintf (buffer, sizeof(buffer), "%s", std::get<bool>(dvar) ? "true" : "false");
     } else  if (std::holds_alternative<std::string_view>(dvar)) {
-      strncpy(buffer, std::get<std::string_view>(dvar).data(), sizeof(buffer));
+      const auto &sv = std::get<std::string_view>(dvar);
+      strncpy(buffer, std::string(sv).c_str(), sizeof(buffer));
     } 
     
     return std::string(buffer);
@@ -96,10 +97,7 @@ namespace {
     if (std::holds_alternative<int>(vvar)) {
       snprintf (buffer, sizeof(buffer), "%d", std::get<int>(vvar));
     } else  if (std::holds_alternative<double>(vvar)) {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wformat-truncation"
       snprintf (buffer, sizeof(buffer), "%f", std::get<double>(vvar));
-#pragma GCC diagnostic pop
     } else  if (std::holds_alternative<bool>(vvar)) {
       snprintf (buffer, sizeof(buffer), "%s", std::get<bool>(vvar) ? "true" : "false");
     } else  if (std::holds_alternative<std::string>(vvar)) {
@@ -136,7 +134,8 @@ namespace {
       const frozen::set<named_val_t, N> &set = std::get<frozen::set<named_val_t, N>>(vtor);
       SdCard::logSyslog(Severity::Info, "set of possible value is ");
       for (const named_val_t &nv : set) {
-	SdCard::logSyslog(Severity::Info, "\"%s\"=%d,", nv.valName.data(), nv.val);
+	SdCard::logSyslog(Severity::Info, "\"%.*s\"=%d,",
+			  nv.valName.size(), nv.valName.data(), nv.val);
       }
     }
     SdCard::logSyslog(Severity::Info, " ");
@@ -180,7 +179,7 @@ namespace {
 
 
 
-std::tuple<bool, std::string, value_variant_t> parseLine(const std::string_view &line)
+std::tuple<bool, std::string, value_variant_t> parseLine(const std::string_view line)
   {
     using namespace ctre::literals;
     constexpr auto line_match =  ctre::match<R"(([\w\.]+)\s*=\s*([\+\-]?[\w\.]+)\s*#?.*)">;
@@ -276,7 +275,7 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string_view 
       return false;
     }
 
-    const std::string_view &sv = std::get<std::string>(value);
+    const std::string_view sv = std::get<std::string>(value);
     const auto [exists, valueFromAlias] = getValueByName<numberOfSets>(sv, validator);
     if (exists == true) {
       value = valueFromAlias;
@@ -288,7 +287,7 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string_view 
     }
   }
 
-  bool validate(const std::string_view &k, const std::string_view &v,
+  bool validate(const std::string_view k, const std::string_view v,
 		value_variant_t &value,
 		const validator_variant_t &validator)
   {
@@ -364,7 +363,7 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string_view 
     return success;
   }
 
-  std::pair<bool, const parameter_value_t &> verifyKey(const std::string_view &k)
+  std::pair<bool, const parameter_value_t &> verifyKey(const std::string_view k)
   {
     const auto &it =  conf_dict.find(k);
     return {it != conf_dict.end(), it->second};
@@ -437,8 +436,7 @@ bool ConfigurationFile::writeConfFile(void)
     goto fail;
   }
   
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wformat-truncation"
+
   for (auto const& [key, param] : conf_dict) {
     UINT nbwf =0;
     int32_t nbw = snprintf(lineBuffer, sizeof(lineBuffer), "%.*s = %s\n",
@@ -458,7 +456,6 @@ bool ConfigurationFile::writeConfFile(void)
       }
     }
   }
-#pragma GCC diagnostic pop
   
   rc = f_close(&fil);
   if (rc != FR_OK) {
@@ -539,3 +536,5 @@ value_variant_t& ConfigurationFile::operator[](const std::string_view key)
 {
   return dictionary[key];
 }
+
+#pragma GCC diagnostic pop
