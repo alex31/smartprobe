@@ -22,7 +22,6 @@ EXECMODE := $(DEBUG)
 
 
 GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
-            -Wno-format-truncation -Wno-error=format-truncation  \
 	    -Wno-error=cpp \
             -Wno-error=unused-function \
             -Wunused -Wpointer-arith \
@@ -30,7 +29,7 @@ GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
             -Wshadow -Wparentheses -fmax-errors=5 \
             -ftrack-macro-expansion=2 -Wno-error=strict-overflow -Wstrict-overflow=2 \
             -Wvla-larger-than=128 -Wduplicated-branches -Wdangling-else \
-            -Wformat-overflow=2 -Wformat-truncation=2
+            -Wformat-overflow=2 
 
 
 

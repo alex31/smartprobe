@@ -54,10 +54,9 @@ class ConfigurationFile {
 public:
   ConfigurationFile(const char* m_fileName) : fileName(m_fileName) {};
   bool populate(void);
-  value_variant_t& operator[](const std::string_view key);
-
+  const value_variant_t& operator[] (const std::string_view key);
 private:
-  using dictionary_t = std::map<std::string_view, value_variant_t>;
+  using dictionary_t = std::map<std::string, value_variant_t>;
   dictionary_t dictionary;
   const char *fileName;
   bool readConfFile(void);

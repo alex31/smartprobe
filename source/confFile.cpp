@@ -179,7 +179,7 @@ namespace {
 
 
 
-std::tuple<bool, std::string, value_variant_t> parseLine(const std::string_view line)
+std::tuple<bool, std::string, value_variant_t> parseLine(const std::string &line)
   {
     using namespace ctre::literals;
     constexpr auto line_match =  ctre::match<R"(([\w\.]+)\s*=\s*([\+\-]?[\w\.]+)\s*#?.*)">;
@@ -195,37 +195,35 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string_view 
 
     bool success = true;
     value_variant_t paramVal= std::monostate{};
-    std::string_view k = "";
+    std::string k = "";
     
     if (auto [whole, key, val] = line_match(line); whole) {
       k = key;
-      const std::string_view v(val);
+      const std::string  v(val);
       // DebugTrace("key %.*s => val=%.*s :: ",
       // 	     static_cast<int>(k.length()), k.data(),
       // 	     static_cast<int>(v.length()), v.data());
       if (integer_match(v)) {
-    	paramVal = atoi(v.data());
+    	paramVal = atoi(v.c_str());
       } else if (double_match(v)) {
-    	paramVal = atof(v.data());
+    	paramVal = atof(v.c_str());
       } else if (bool_true_match(v)) {
     	paramVal = true;
       } else if (bool_false_match(v)) {
     	paramVal = false;
       } else if (string_match(v)){
-    	paramVal = std::string(v.data());
+    	paramVal = v;
       }
 
       auto [exists, param] = verifyKey(k);
       if (not exists) {
 	success = false;
-    	SdCard::logSyslog(Severity::Fatal, "parameter %.*s NOT KNOWN\r\n",
-    	       static_cast<int>(k.length()), k.data());
+    	SdCard::logSyslog(Severity::Fatal, "parameter %s NOT KNOWN\r\n", k.c_str());
       } else {
     	if (not resolveDefine(paramVal, param.validator)) {
 	  success = false;
-    	  SdCard::logSyslog(Severity::Fatal, "define %s for key %.*s is NOT KNOWN\r\n",
-    		 std::get<std::string>(paramVal).c_str(),
-    		 static_cast<int>(k.length()), k.data());
+    	  SdCard::logSyslog(Severity::Fatal, "define %s for key %s is NOT KNOWN\r\n",
+    		 std::get<std::string>(paramVal).c_str(), k.c_str());
     	} else {
     	  // type of default should be compatible with value read in configuration file
     	  if (param.defaut.index() != paramVal.index()) {
@@ -233,9 +231,9 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string_view 
     	    // authorized mismatch are : default is double and read value is int
     	    if ((not std::holds_alternative<int>(paramVal)) ||
     		(not std::holds_alternative<double>(param.defaut))) {
-    	      SdCard::logSyslog(Severity::Fatal, "mismatch type for key %.*s : "
+    	      SdCard::logSyslog(Severity::Fatal, "mismatch type for key %s : "
 				"read %s instead of specified %s\r\n",
-				static_cast<int>(k.length()), k.data(),
+				k.c_str(),
 				variantName[paramVal.index()],
 				variantName[param.defaut.index()]
 				);
@@ -243,10 +241,9 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string_view 
     	  }
     	  if (not validate(k, v, paramVal, param.validator)) {
 	    success = false;
-    	    SdCard::logSyslog(Severity::Fatal, "value %.*s for key %.*s "
+    	    SdCard::logSyslog(Severity::Fatal, "value %s for key %s "
 			      "does not validate constraints\n",
-			      static_cast<int>(v.length()), v.data(),
-			      static_cast<int>(k.length()), k.data());   
+			      v.c_str(), k.c_str());
     	  }
     	}
       }
@@ -254,10 +251,10 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string_view 
       paramVal = std::monostate{};
     } else {
       success = false;
-      paramVal = std::string("syntax error on line : ") + std::string(line);
+      paramVal = std::string("syntax error on line : ") + line;
       SdCard::logSyslog(Severity::Fatal, "%s", std::get<std::string>(paramVal).c_str());
     }
-    return {success, std::string(k), paramVal};
+    return {success, k, paramVal};
   }
 
   bool resolveDefine(value_variant_t &value, const validator_variant_t   &validator)
@@ -476,16 +473,17 @@ bool ConfigurationFile::verifyNotFilledParameters(void)
   bool success = true;
   
   for (auto const& [key, param] : conf_dict) {
+    std::string ks(key.data(), key.size());
     
-    if (not dictionary.contains(key.data())) {
+    if (not dictionary.contains(ks)) {
       auto [m_success, defaut] = default2Value(param.defaut);
       success = m_success & success;
       if (m_success)
-	dictionary[key.data()] = defaut;
+	dictionary[ks] = defaut;
       else
-	SdCard::logSyslog(Severity::Fatal, "parameter %.*s should be supplied in %s: "
+	SdCard::logSyslog(Severity::Fatal, "parameter %s should be supplied in %s: "
 			  "no defaut for this parameter",
-			  static_cast<int>(key.size()), key.data(),
+			  ks.c_str(),
 			  CONFIGURATION_FILENAME);
     }
   }
@@ -529,12 +527,9 @@ void ConfigurationFile::syslogInfoParameters(void)
    }
 }
 
-
-
-
-value_variant_t& ConfigurationFile::operator[](const std::string_view key)
+const value_variant_t& ConfigurationFile::operator[]  (const std::string_view key) 
 {
-  return dictionary[key];
+  return dictionary[std::string(key)];
 }
 
 #pragma GCC diagnostic pop
