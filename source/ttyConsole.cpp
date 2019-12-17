@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cctype>
+#include <cstring>
 #include "ch.h"
 #include "hal.h"
 #include "microrl/microrlShell.h"
@@ -12,8 +13,6 @@
 #include "ttyConsole.hpp"
 #include "sdcard.hpp"
 #include "hardwareConf.hpp"
-#include "etl/cstring.h"
-#include <etl/vector.h>
 
 
 /*===========================================================================*/
@@ -127,8 +126,6 @@ static void cmd_close(BaseSequentialStream *lchp, int argc,const char* const arg
 
 using pGetFunc_t = uint32_t (*) (void);
 using pSetFunc_t  = void (*) (uint32_t);
-using commandStr_t = etl::string<6>;
-
 
 static void cmd_restart(BaseSequentialStream *lchp, int argc,const char* const argv[])
 {

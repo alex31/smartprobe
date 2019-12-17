@@ -152,7 +152,6 @@ DEPDIR   := ./.dep
 STMSRC = $(RELATIVE)/COMMON/stm
 VARIOUS = $(RELATIVE)/COMMON/various
 USBD_LIB = $(VARIOUS)/Chibios-USB-Devices
-ETL_LIB = ../../../../etl/include
 FROZEN_LIB = ../../../../frozen/include
 CTRE_LIB = ../../../.././compile-time-regular-expressions/single-header
 
@@ -233,7 +232,7 @@ ASMXSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 INCDIR = $(CONFDIR) $(ALLINC) $(TLSFINC) \
          $(CHIBIOS)/os/various $(VARIOUS) $(VARIOUS_INCL) \
          $(STMEMSLPS33HWDIR) \
-         $(CTRE_LIB) $(ETL_LIB) $(FROZEN_LIB) \
+         $(CTRE_LIB) $(FROZEN_LIB) \
 	 $(USBD_LIB)/mass_storage
 
 #

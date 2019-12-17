@@ -18212,40 +18212,6 @@ Discarded input sections
  .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
  .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
  .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
- .group         0x0000000000000000        0xc ./build/obj/ttyConsole.o
  .text          0x0000000000000000        0x0 ./build/obj/ttyConsole.o
  .data          0x0000000000000000        0x0 ./build/obj/ttyConsole.o
  .bss           0x0000000000000000        0x0 ./build/obj/ttyConsole.o
@@ -18287,6 +18253,8 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x1c ./build/obj/ttyConsole.o
  .debug_macro   0x0000000000000000       0xde ./build/obj/ttyConsole.o
  .debug_macro   0x0000000000000000       0x5e ./build/obj/ttyConsole.o
+ .debug_macro   0x0000000000000000       0x16 ./build/obj/ttyConsole.o
+ .debug_macro   0x0000000000000000       0x8e ./build/obj/ttyConsole.o
  .debug_macro   0x0000000000000000       0x3a ./build/obj/ttyConsole.o
  .debug_macro   0x0000000000000000      0x1a5 ./build/obj/ttyConsole.o
  .debug_macro   0x0000000000000000       0x58 ./build/obj/ttyConsole.o
@@ -18434,24 +18402,6 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x22 ./build/obj/ttyConsole.o
  .debug_macro   0x0000000000000000       0xd0 ./build/obj/ttyConsole.o
  .debug_macro   0x0000000000000000       0x12 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x7c ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x17 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x16 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x17 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x10 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x10 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x76 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x16 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x19 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x22 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x10 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x18 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x10 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x11 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x2d ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x26 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x3b ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000000000       0x16 ./build/obj/ttyConsole.o
  .group         0x0000000000000000        0x8 ./build/obj/blinker.o
  .group         0x0000000000000000        0xc ./build/obj/blinker.o
  .group         0x0000000000000000        0xc ./build/obj/blinker.o
@@ -29016,7 +28966,7 @@ OUTPUT(build/smartprobe_debug.elf elf32-littlearm)
  .comment       0x0000000000000079       0x7a ./build/obj/showBlackboard.o
  .comment       0x0000000000000079       0x7a ./build/obj/main.o
 
-.debug_line     0x0000000000000000    0x7d04d
+.debug_line     0x0000000000000000    0x7c86f
  .debug_line    0x0000000000000000       0xea ./build/obj/crt0_v7m.o
  .debug_line    0x00000000000000ea       0x83 ./build/obj/vectors.o
  .debug_line    0x000000000000016d       0x9c ./build/obj/chcoreasm_v7m.o
@@ -29095,12 +29045,12 @@ OUTPUT(build/smartprobe_debug.elf elf32-littlearm)
  .debug_line    0x000000000005fb9b     0x1cb9 ./build/obj/differentialPressure.o
  .debug_line    0x0000000000061854     0x21c2 ./build/obj/imu.o
  .debug_line    0x0000000000063a16    0x118bb ./build/obj/confFile.o
- .debug_line    0x00000000000752d1     0x2805 ./build/obj/ttyConsole.o
- .debug_line    0x0000000000077ad6      0xe4c ./build/obj/blinker.o
- .debug_line    0x0000000000078922     0x1fab ./build/obj/showBlackboard.o
- .debug_line    0x000000000007a8cd     0x2780 ./build/obj/main.o
+ .debug_line    0x00000000000752d1     0x2027 ./build/obj/ttyConsole.o
+ .debug_line    0x00000000000772f8      0xe4c ./build/obj/blinker.o
+ .debug_line    0x0000000000078144     0x1fab ./build/obj/showBlackboard.o
+ .debug_line    0x000000000007a0ef     0x2780 ./build/obj/main.o
 
-.debug_info     0x0000000000000000   0x2cb661
+.debug_info     0x0000000000000000   0x2ca9d2
  .debug_info    0x0000000000000000       0x26 ./build/obj/crt0_v7m.o
  .debug_info    0x0000000000000026       0x26 ./build/obj/vectors.o
  .debug_info    0x000000000000004c       0x26 ./build/obj/chcoreasm_v7m.o
@@ -29179,12 +29129,12 @@ OUTPUT(build/smartprobe_debug.elf elf32-littlearm)
  .debug_info    0x000000000018c8d6    0x11dcc ./build/obj/differentialPressure.o
  .debug_info    0x000000000019e6a2    0x246bb ./build/obj/imu.o
  .debug_info    0x00000000001c2d5d    0xa9fc4 ./build/obj/confFile.o
- .debug_info    0x000000000026cd21    0x1232f ./build/obj/ttyConsole.o
- .debug_info    0x000000000027f050     0x3c5d ./build/obj/blinker.o
- .debug_info    0x0000000000282cad    0x238cf ./build/obj/showBlackboard.o
- .debug_info    0x00000000002a657c    0x250e5 ./build/obj/main.o
+ .debug_info    0x000000000026cd21    0x116a0 ./build/obj/ttyConsole.o
+ .debug_info    0x000000000027e3c1     0x3c5d ./build/obj/blinker.o
+ .debug_info    0x000000000028201e    0x238cf ./build/obj/showBlackboard.o
+ .debug_info    0x00000000002a58ed    0x250e5 ./build/obj/main.o
 
-.debug_abbrev   0x0000000000000000    0x1c4d3
+.debug_abbrev   0x0000000000000000    0x1c37e
  .debug_abbrev  0x0000000000000000       0x14 ./build/obj/crt0_v7m.o
  .debug_abbrev  0x0000000000000014       0x14 ./build/obj/vectors.o
  .debug_abbrev  0x0000000000000028       0x14 ./build/obj/chcoreasm_v7m.o
@@ -29263,10 +29213,10 @@ OUTPUT(build/smartprobe_debug.elf elf32-littlearm)
  .debug_abbrev  0x0000000000015bf1      0xc5c ./build/obj/differentialPressure.o
  .debug_abbrev  0x000000000001684d     0x113b ./build/obj/imu.o
  .debug_abbrev  0x0000000000017988     0x1835 ./build/obj/confFile.o
- .debug_abbrev  0x00000000000191bd      0xe3b ./build/obj/ttyConsole.o
- .debug_abbrev  0x0000000000019ff8      0x44c ./build/obj/blinker.o
- .debug_abbrev  0x000000000001a444      0xec9 ./build/obj/showBlackboard.o
- .debug_abbrev  0x000000000001b30d     0x11c6 ./build/obj/main.o
+ .debug_abbrev  0x00000000000191bd      0xce6 ./build/obj/ttyConsole.o
+ .debug_abbrev  0x0000000000019ea3      0x44c ./build/obj/blinker.o
+ .debug_abbrev  0x000000000001a2ef      0xec9 ./build/obj/showBlackboard.o
+ .debug_abbrev  0x000000000001b1b8     0x11c6 ./build/obj/main.o
 
 .debug_aranges  0x0000000000000000     0x2f88
  .debug_aranges
@@ -29434,7 +29384,7 @@ OUTPUT(build/smartprobe_debug.elf elf32-littlearm)
  .debug_aranges
                 0x0000000000002eb0       0xd8 ./build/obj/main.o
 
-.debug_str      0x0000000000000000   0x2583db
+.debug_str      0x0000000000000000   0x257057
  .debug_str     0x0000000000000000       0x9d ./build/obj/crt0_v7m.o
  .debug_str     0x000000000000009d       0x4e ./build/obj/vectors.o
                                          0x9c (size before relaxing)
@@ -29442,161 +29392,161 @@ OUTPUT(build/smartprobe_debug.elf elf32-littlearm)
                                          0xa0 (size before relaxing)
  .debug_str     0x000000000000013d    0xa688d ./build/obj/crt1.o
                                       0xa6ad0 (size before relaxing)
- .debug_str     0x00000000000a69ca    0x2262a ./build/obj/hal.o
+ .debug_str     0x00000000000a69ca    0x22631 ./build/obj/hal.o
                                       0xc9252 (size before relaxing)
- .debug_str     0x00000000000c8ff4       0x3d ./build/obj/hal_st.o
+ .debug_str     0x00000000000c8ffb       0x3d ./build/obj/hal_st.o
                                       0xc91f4 (size before relaxing)
- .debug_str     0x00000000000c9031      0x2ad ./build/obj/hal_queues.o
+ .debug_str     0x00000000000c9038      0x2ad ./build/obj/hal_queues.o
                                       0xc9467 (size before relaxing)
- .debug_str     0x00000000000c92de      0x36c ./build/obj/hal_mmcsd.o
+ .debug_str     0x00000000000c92e5      0x36c ./build/obj/hal_mmcsd.o
                                       0xc9546 (size before relaxing)
- .debug_str     0x00000000000c964a      0x1d0 ./build/obj/hal_adc.o
+ .debug_str     0x00000000000c9651      0x1d0 ./build/obj/hal_adc.o
                                       0xc9475 (size before relaxing)
- .debug_str     0x00000000000c981a      0x131 ./build/obj/hal_i2c.o
+ .debug_str     0x00000000000c9821      0x131 ./build/obj/hal_i2c.o
                                       0xc941a (size before relaxing)
- .debug_str     0x00000000000c994b      0x133 ./build/obj/hal_pal.o
+ .debug_str     0x00000000000c9952      0x133 ./build/obj/hal_pal.o
                                       0xc940d (size before relaxing)
- .debug_str     0x00000000000c9a7e      0x1be ./build/obj/hal_rtc.o
+ .debug_str     0x00000000000c9a85      0x1be ./build/obj/hal_rtc.o
                                       0xc93e7 (size before relaxing)
- .debug_str     0x00000000000c9c3c      0x442 ./build/obj/hal_sdc.o
+ .debug_str     0x00000000000c9c43      0x442 ./build/obj/hal_sdc.o
                                       0xc975e (size before relaxing)
- .debug_str     0x00000000000ca07e      0x13a ./build/obj/hal_serial.o
+ .debug_str     0x00000000000ca085      0x13a ./build/obj/hal_serial.o
                                       0xc946e (size before relaxing)
- .debug_str     0x00000000000ca1b8      0x174 ./build/obj/hal_spi.o
+ .debug_str     0x00000000000ca1bf      0x174 ./build/obj/hal_spi.o
                                       0xc951b (size before relaxing)
- .debug_str     0x00000000000ca32c      0x39c ./build/obj/hal_usb.o
+ .debug_str     0x00000000000ca333      0x39c ./build/obj/hal_usb.o
                                       0xc96a4 (size before relaxing)
- .debug_str     0x00000000000ca6c8       0xc6 ./build/obj/nvic.o
+ .debug_str     0x00000000000ca6cf       0xc6 ./build/obj/nvic.o
                                       0xc93d6 (size before relaxing)
- .debug_str     0x00000000000ca78e      0x78a ./build/obj/stm32_isr.o
+ .debug_str     0x00000000000ca795      0x78a ./build/obj/stm32_isr.o
                                       0xc9aa6 (size before relaxing)
- .debug_str     0x00000000000caf18      0x17c ./build/obj/hal_lld.o
+ .debug_str     0x00000000000caf1f      0x17c ./build/obj/hal_lld.o
                                       0xc9389 (size before relaxing)
- .debug_str     0x00000000000cb094      0x1f9 ./build/obj/hal_adc_lld.o
+ .debug_str     0x00000000000cb09b      0x1f9 ./build/obj/hal_adc_lld.o
                                       0xc96cb (size before relaxing)
- .debug_str     0x00000000000cb28d      0x21a ./build/obj/stm32_dma.o
+ .debug_str     0x00000000000cb294      0x21a ./build/obj/stm32_dma.o
                                       0xc970a (size before relaxing)
- .debug_str     0x00000000000cb4a7       0x8c ./build/obj/stm32_exti.o
+ .debug_str     0x00000000000cb4ae       0x8c ./build/obj/stm32_exti.o
                                       0xc927b (size before relaxing)
- .debug_str     0x00000000000cb533      0x113 ./build/obj/hal_pal_lld.o
+ .debug_str     0x00000000000cb53a      0x113 ./build/obj/hal_pal_lld.o
                                       0xc93f5 (size before relaxing)
- .debug_str     0x00000000000cb646      0x662 ./build/obj/hal_i2c_lld.o
+ .debug_str     0x00000000000cb64d      0x662 ./build/obj/hal_i2c_lld.o
                                       0xc9c79 (size before relaxing)
- .debug_str     0x00000000000cbca8      0x24e ./build/obj/hal_usb_lld.o
+ .debug_str     0x00000000000cbcaf      0x24e ./build/obj/hal_usb_lld.o
                                       0xc9867 (size before relaxing)
- .debug_str     0x00000000000cbef6      0x2b2 ./build/obj/hal_rtc_lld.o
+ .debug_str     0x00000000000cbefd      0x2b2 ./build/obj/hal_rtc_lld.o
                                       0xc961d (size before relaxing)
- .debug_str     0x00000000000cc1a8      0x521 ./build/obj/hal_spi_lld.o
+ .debug_str     0x00000000000cc1af      0x521 ./build/obj/hal_spi_lld.o
                                       0xc99cb (size before relaxing)
- .debug_str     0x00000000000cc6c9      0x53a ./build/obj/hal_sdc_lld.o
+ .debug_str     0x00000000000cc6d0      0x53a ./build/obj/hal_sdc_lld.o
                                       0xc9c46 (size before relaxing)
- .debug_str     0x00000000000ccc03       0xac ./build/obj/hal_st_lld.o
+ .debug_str     0x00000000000ccc0a       0xac ./build/obj/hal_st_lld.o
                                       0xc93ea (size before relaxing)
- .debug_str     0x00000000000cccaf       0x8e ./build/obj/hal_serial_lld.o
+ .debug_str     0x00000000000cccb6       0x8e ./build/obj/hal_serial_lld.o
                                       0xc9580 (size before relaxing)
- .debug_str     0x00000000000ccd3d       0xdc ./build/obj/board.o
+ .debug_str     0x00000000000ccd44       0xdc ./build/obj/board.o
                                       0xc9426 (size before relaxing)
- .debug_str     0x00000000000cce19      0x319 ./build/obj/chsys.o
+ .debug_str     0x00000000000cce20      0x319 ./build/obj/chsys.o
                                       0xabcd0 (size before relaxing)
- .debug_str     0x00000000000cd132       0x68 ./build/obj/chdebug.o
+ .debug_str     0x00000000000cd139       0x68 ./build/obj/chdebug.o
                                       0xab0fb (size before relaxing)
- .debug_str     0x00000000000cd19a       0x4d ./build/obj/chvt.o
+ .debug_str     0x00000000000cd1a1       0x4d ./build/obj/chvt.o
                                       0xab012 (size before relaxing)
- .debug_str     0x00000000000cd1e7      0x159 ./build/obj/chschd.o
+ .debug_str     0x00000000000cd1ee      0x159 ./build/obj/chschd.o
                                       0xab26d (size before relaxing)
- .debug_str     0x00000000000cd340      0x249 ./build/obj/chthreads.o
+ .debug_str     0x00000000000cd347      0x249 ./build/obj/chthreads.o
                                       0xab42e (size before relaxing)
- .debug_str     0x00000000000cd589       0x6d ./build/obj/chtm.o
+ .debug_str     0x00000000000cd590       0x6d ./build/obj/chtm.o
                                       0xab107 (size before relaxing)
- .debug_str     0x00000000000cd5f6       0x31 ./build/obj/chstats.o
+ .debug_str     0x00000000000cd5fd       0x31 ./build/obj/chstats.o
                                       0xab10d (size before relaxing)
- .debug_str     0x00000000000cd627       0xc9 ./build/obj/chregistry.o
+ .debug_str     0x00000000000cd62e       0xc9 ./build/obj/chregistry.o
                                       0xadd16 (size before relaxing)
- .debug_str     0x00000000000cd6f0      0x10f ./build/obj/chsem.o
+ .debug_str     0x00000000000cd6f7      0x10f ./build/obj/chsem.o
                                       0xab20f (size before relaxing)
- .debug_str     0x00000000000cd7ff       0xa7 ./build/obj/chmtx.o
+ .debug_str     0x00000000000cd806       0xa7 ./build/obj/chmtx.o
                                       0xab18f (size before relaxing)
- .debug_str     0x00000000000cd8a6       0xf4 ./build/obj/chcond.o
+ .debug_str     0x00000000000cd8ad       0xf4 ./build/obj/chcond.o
                                       0xab213 (size before relaxing)
- .debug_str     0x00000000000cd99a      0x19c ./build/obj/chevents.o
+ .debug_str     0x00000000000cd9a1      0x19c ./build/obj/chevents.o
                                       0xab2ae (size before relaxing)
- .debug_str     0x00000000000cdb36       0x95 ./build/obj/chmsg.o
+ .debug_str     0x00000000000cdb3d       0x95 ./build/obj/chmsg.o
                                       0xab141 (size before relaxing)
- .debug_str     0x00000000000cdbcb       0xba ./build/obj/chdynamic.o
+ .debug_str     0x00000000000cdbd2       0xba ./build/obj/chdynamic.o
                                       0xab188 (size before relaxing)
- .debug_str     0x00000000000cdc85       0xec ./build/obj/chmboxes.o
+ .debug_str     0x00000000000cdc8c       0xec ./build/obj/chmboxes.o
                                       0xab21c (size before relaxing)
- .debug_str     0x00000000000cdd71       0x8c ./build/obj/chmemcore.o
+ .debug_str     0x00000000000cdd78       0x8c ./build/obj/chmemcore.o
                                       0xab0fd (size before relaxing)
- .debug_str     0x00000000000cddfd      0x1a5 ./build/obj/chmemheaps.o
+ .debug_str     0x00000000000cde04      0x1a5 ./build/obj/chmemheaps.o
                                       0xab1fd (size before relaxing)
- .debug_str     0x00000000000cdfa2      0x139 ./build/obj/chmempools.o
+ .debug_str     0x00000000000cdfa9      0x139 ./build/obj/chmempools.o
                                       0xab203 (size before relaxing)
- .debug_str     0x00000000000ce0db      0x460 ./build/obj/chfactory.o
+ .debug_str     0x00000000000ce0e2      0x460 ./build/obj/chfactory.o
                                       0xae191 (size before relaxing)
- .debug_str     0x00000000000ce53b       0xb1 ./build/obj/chcore_v7m.o
+ .debug_str     0x00000000000ce542       0xb1 ./build/obj/chcore_v7m.o
                                       0xab22d (size before relaxing)
- .debug_str     0x00000000000ce5ec      0x4f1 ./build/obj/fatfs_diskio.o
+ .debug_str     0x00000000000ce5f3      0x4f1 ./build/obj/fatfs_diskio.o
                                       0xc9743 (size before relaxing)
- .debug_str     0x00000000000ceadd      0x312 ./build/obj/fatfs_syscall.o
+ .debug_str     0x00000000000ceae4      0x312 ./build/obj/fatfs_syscall.o
                                       0xc9792 (size before relaxing)
- .debug_str     0x00000000000cedef     0x3f82 ./build/obj/ff.o
+ .debug_str     0x00000000000cedf6     0x3f82 ./build/obj/ff.o
                                       0xaf789 (size before relaxing)
- .debug_str     0x00000000000d2d71       0x78 ./build/obj/ffunicode.o
+ .debug_str     0x00000000000d2d78       0x78 ./build/obj/ffunicode.o
                                       0xab539 (size before relaxing)
- .debug_str     0x00000000000d2de9      0xcf3 ./build/obj/tlsf.o
+ .debug_str     0x00000000000d2df0      0xcf3 ./build/obj/tlsf.o
                                        0x706d (size before relaxing)
- .debug_str     0x00000000000d3adc      0xdf9 ./build/obj/tlsf_malloc.o
+ .debug_str     0x00000000000d3ae3      0xdf9 ./build/obj/tlsf_malloc.o
                                       0xca221 (size before relaxing)
- .debug_str     0x00000000000d48d5     0x1958 ./build/obj/lps33hw_reg.o
+ .debug_str     0x00000000000d48dc     0x1958 ./build/obj/lps33hw_reg.o
                                        0x874e (size before relaxing)
- .debug_str     0x00000000000d622d      0xaf1 ./build/obj/syscalls.o
+ .debug_str     0x00000000000d6234      0xaf1 ./build/obj/syscalls.o
                                       0xaf3a1 (size before relaxing)
- .debug_str     0x00000000000d6d1e      0xa7b ./build/obj/stdutil.o
+ .debug_str     0x00000000000d6d25      0xa7b ./build/obj/stdutil.o
                                       0xcbc1b (size before relaxing)
- .debug_str     0x00000000000d7799      0x281 ./build/obj/msg_queue.o
+ .debug_str     0x00000000000d77a0      0x281 ./build/obj/msg_queue.o
                                       0xca492 (size before relaxing)
- .debug_str     0x00000000000d7a1a      0x6fb ./build/obj/sdio.o
+ .debug_str     0x00000000000d7a21      0x6fb ./build/obj/sdio.o
                                       0xcaf8d (size before relaxing)
- .debug_str     0x00000000000d8115      0x797 ./build/obj/printf.o
+ .debug_str     0x00000000000d811c      0x797 ./build/obj/printf.o
                                       0xca8fd (size before relaxing)
- .debug_str     0x00000000000d88ac      0x646 ./build/obj/microrlShell.o
+ .debug_str     0x00000000000d88b3      0x646 ./build/obj/microrlShell.o
                                       0xcac6b (size before relaxing)
- .debug_str     0x00000000000d8ef2      0x1ca ./build/obj/microrl.o
+ .debug_str     0x00000000000d8ef9      0x1ca ./build/obj/microrl.o
                                        0x712d (size before relaxing)
- .debug_str     0x00000000000d90bc      0x7b9 ./build/obj/sdLog.o
+ .debug_str     0x00000000000d90c3      0x7b9 ./build/obj/sdLog.o
                                       0xcbcdd (size before relaxing)
- .debug_str     0x00000000000d9875     0x10d9 ./build/obj/i2cMaster.o
+ .debug_str     0x00000000000d987c     0x10d9 ./build/obj/i2cMaster.o
                                       0xcc770 (size before relaxing)
- .debug_str     0x00000000000da94e     0x132e ./build/obj/spiPeriphICM20600.o
+ .debug_str     0x00000000000da955     0x132e ./build/obj/spiPeriphICM20600.o
                                       0xcbf37 (size before relaxing)
- .debug_str     0x00000000000dbc7c      0x204 ./build/obj/rtcAccess.o
+ .debug_str     0x00000000000dbc83      0x204 ./build/obj/rtcAccess.o
                                       0xc95ad (size before relaxing)
- .debug_str     0x00000000000dbe80     0x1108 ./build/obj/usb_msd.o
+ .debug_str     0x00000000000dbe87     0x1108 ./build/obj/usb_msd.o
                                       0xcb4f7 (size before relaxing)
- .debug_str     0x00000000000dcf88    0x49454 ./build/obj/barometer.o
+ .debug_str     0x00000000000dcf8f    0x49454 ./build/obj/barometer.o
                                      0x11520b (size before relaxing)
- .debug_str     0x00000000001263dc     0x2b12 ./build/obj/sdcard.o
+ .debug_str     0x00000000001263e3     0x2b12 ./build/obj/sdcard.o
                                      0x116e73 (size before relaxing)
- .debug_str     0x0000000000128eee      0x31b ./build/obj/usbStorage.o
+ .debug_str     0x0000000000128ef5      0x32e ./build/obj/usbStorage.o
                                      0x113ff0 (size before relaxing)
- .debug_str     0x0000000000129209      0x1ef ./build/obj/adc.o
+ .debug_str     0x0000000000129223      0x1ef ./build/obj/adc.o
                                       0xdfbe4 (size before relaxing)
- .debug_str     0x00000000001293f8     0x9be5 ./build/obj/threadAndEventDecl.o
+ .debug_str     0x0000000000129412     0x9be5 ./build/obj/threadAndEventDecl.o
                                      0x11ea58 (size before relaxing)
- .debug_str     0x0000000000132fdd      0x90a ./build/obj/differentialPressure.o
+ .debug_str     0x0000000000132ff7      0x90a ./build/obj/differentialPressure.o
                                       0xe0ca2 (size before relaxing)
- .debug_str     0x00000000001338e7       0xd0 ./build/obj/imu.o
+ .debug_str     0x0000000000133901       0xd0 ./build/obj/imu.o
                                      0x1153fd (size before relaxing)
- .debug_str     0x00000000001339b7   0x12296c ./build/obj/confFile.o
+ .debug_str     0x00000000001339d1   0x122987 ./build/obj/confFile.o
                                      0x2407d3 (size before relaxing)
- .debug_str     0x0000000000256323     0x1af2 ./build/obj/ttyConsole.o
-                                      0xe3f7e (size before relaxing)
- .debug_str     0x0000000000257e15      0x24f ./build/obj/blinker.o
+ .debug_str     0x0000000000256358      0x739 ./build/obj/ttyConsole.o
+                                      0xe11df (size before relaxing)
+ .debug_str     0x0000000000256a91      0x24f ./build/obj/blinker.o
                                       0xca338 (size before relaxing)
- .debug_str     0x0000000000258064       0x52 ./build/obj/showBlackboard.o
+ .debug_str     0x0000000000256ce0       0x52 ./build/obj/showBlackboard.o
                                      0x114a18 (size before relaxing)
- .debug_str     0x00000000002580b6      0x325 ./build/obj/main.o
+ .debug_str     0x0000000000256d32      0x325 ./build/obj/main.o
                                      0x114ebe (size before relaxing)
 
 .debug_loc      0x0000000000000000    0x65d6f
@@ -29758,7 +29708,7 @@ OUTPUT(build/smartprobe_debug.elf elf32-littlearm)
  .debug_ranges  0x000000000000ea68       0x68 ./build/obj/showBlackboard.o
  .debug_ranges  0x000000000000ead0      0x1e8 ./build/obj/main.o
 
-.debug_macro    0x0000000000000000    0x492f3
+.debug_macro    0x0000000000000000    0x48acf
  .debug_macro   0x0000000000000000       0xf3 ./build/obj/crt1.o
  .debug_macro   0x00000000000000f3      0xaf0 ./build/obj/crt1.o
  .debug_macro   0x0000000000000be3       0x22 ./build/obj/crt1.o
@@ -30106,40 +30056,22 @@ OUTPUT(build/smartprobe_debug.elf elf32-littlearm)
  .debug_macro   0x0000000000045089       0x27 ./build/obj/confFile.o
  .debug_macro   0x00000000000450b0       0x28 ./build/obj/confFile.o
  .debug_macro   0x00000000000450d8      0x100 ./build/obj/confFile.o
- .debug_macro   0x00000000000451d8     0x1243 ./build/obj/ttyConsole.o
- .debug_macro   0x000000000004641b       0xe6 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046501       0x16 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046517       0x97 ./build/obj/ttyConsole.o
- .debug_macro   0x00000000000465ae      0x104 ./build/obj/ttyConsole.o
- .debug_macro   0x00000000000466b2      0x13e ./build/obj/ttyConsole.o
- .debug_macro   0x00000000000467f0       0x52 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046842       0x48 ./build/obj/ttyConsole.o
- .debug_macro   0x000000000004688a       0x4c ./build/obj/ttyConsole.o
- .debug_macro   0x00000000000468d6       0x4e ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046924       0x5e ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046982      0x1da ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046b5c       0xc4 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046c20       0x64 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046c84       0x34 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046cb8       0x40 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046cf8       0x19 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046d11       0x22 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046d33       0x16 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046d49       0x10 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046d59       0x10 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046d69       0x20 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046d89       0x19 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046da2       0x10 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046db2       0x10 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046dc2       0x1c ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046dde       0x17 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046df5       0x10 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046e05       0x28 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046e2d       0x17 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046e44       0x10 ./build/obj/ttyConsole.o
- .debug_macro   0x0000000000046e54      0x637 ./build/obj/blinker.o
- .debug_macro   0x000000000004748b      0xf2d ./build/obj/showBlackboard.o
- .debug_macro   0x00000000000483b8      0xf3b ./build/obj/main.o
+ .debug_macro   0x00000000000451d8      0xcfe ./build/obj/ttyConsole.o
+ .debug_macro   0x0000000000045ed6       0xe6 ./build/obj/ttyConsole.o
+ .debug_macro   0x0000000000045fbc       0x16 ./build/obj/ttyConsole.o
+ .debug_macro   0x0000000000045fd2       0x97 ./build/obj/ttyConsole.o
+ .debug_macro   0x0000000000046069      0x104 ./build/obj/ttyConsole.o
+ .debug_macro   0x000000000004616d      0x13e ./build/obj/ttyConsole.o
+ .debug_macro   0x00000000000462ab       0x52 ./build/obj/ttyConsole.o
+ .debug_macro   0x00000000000462fd       0x19 ./build/obj/ttyConsole.o
+ .debug_macro   0x0000000000046316       0x48 ./build/obj/ttyConsole.o
+ .debug_macro   0x000000000004635e       0x4c ./build/obj/ttyConsole.o
+ .debug_macro   0x00000000000463aa       0x4e ./build/obj/ttyConsole.o
+ .debug_macro   0x00000000000463f8       0x5e ./build/obj/ttyConsole.o
+ .debug_macro   0x0000000000046456      0x1da ./build/obj/ttyConsole.o
+ .debug_macro   0x0000000000046630      0x637 ./build/obj/blinker.o
+ .debug_macro   0x0000000000046c67      0xf2d ./build/obj/showBlackboard.o
+ .debug_macro   0x0000000000047b94      0xf3b ./build/obj/main.o
 
 .debug_frame    0x0000000000000000     0xf8dc
  .debug_frame   0x0000000000000000       0x6c ./build/obj/crt1.o
