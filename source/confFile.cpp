@@ -70,13 +70,50 @@ namespace {
     return "variant2str internal error";
   }
 
-  [[maybe_unused]] 
-  std::string variant2str(const default_variant_t &dvar)
+  template<size_t N>
+  std::pair<bool,  int> getValueByName(const std::string_view name,
+				       const validator_variant_t &vtor)
+  {
+    if (std::holds_alternative<frozen::set<named_val_t, N>>(vtor)) {
+      const frozen::set<named_val_t, N> &set = std::get<frozen::set<named_val_t, N>>(vtor);
+      for (const named_val_t &nv : set) 
+	if (nv.valName == name) 
+	  return {true, nv.val};
+    }
+    if constexpr (N > 1) { // recurse over set size using template meta programming
+	return getValueByName<N-1>(name, vtor);
+      }
+    return {false, 0};
+  }
+
+  template<size_t N>
+  std::pair<bool, const std::string_view> getNameByValue(const int value,
+							 const validator_variant_t &vtor)
+  {
+    if (std::holds_alternative<frozen::set<named_val_t, N>>(vtor)) {
+      const frozen::set<named_val_t, N> &set = std::get<frozen::set<named_val_t, N>>(vtor);
+      for (const named_val_t &nv : set) 
+	if (nv.val == value) 
+	  return {true, std::string_view(nv.valName.data(), nv.valName.size())};
+    }
+    if constexpr (N > 1) { // recurse over set size using template meta programming
+	return getNameByValue<N-1>(value, vtor);
+      }
+    return {false, ""};
+  }
+
+  std::string variant2str(const default_variant_t &dvar, const validator_variant_t &vtor)
   {
     char buffer[80] = "{}";
     
     if (std::holds_alternative<int>(dvar)) {
-      snprintf (buffer, sizeof(buffer), "%d", std::get<int>(dvar));
+      const auto [success, sv] = getNameByValue<numberOfSets>(std::get<int>(dvar), vtor);
+      if (success) 
+	snprintf (buffer, sizeof(buffer), "%.*s [%d]",
+		  int(sv.length()), sv.data(),
+		  std::get<int>(dvar));
+       else 
+	snprintf (buffer, sizeof(buffer), "%d", std::get<int>(dvar));
     } else  if (std::holds_alternative<double>(dvar)) {
       snprintf (buffer, sizeof(buffer), "%f", std::get<double>(dvar));
     } else  if (std::holds_alternative<bool>(dvar)) {
@@ -89,7 +126,6 @@ namespace {
     return std::string(buffer);
   }
   
-  [[maybe_unused]]
   std::string variant2str(const value_variant_t &vvar)
   {
     char buffer[80] = "{}";
@@ -144,22 +180,7 @@ namespace {
       }
   }
 
-  template<size_t N>
-  std::pair<bool,  int> getValueByName(const std::string_view name,
-				       const validator_variant_t &vtor)
-  {
-    if (std::holds_alternative<frozen::set<named_val_t, N>>(vtor)) {
-      const frozen::set<named_val_t, N> &set = std::get<frozen::set<named_val_t, N>>(vtor);
-      for (const named_val_t &nv : set) 
-	if (nv.valName == name) 
-	  return {true, nv.val};
-    }
-    if constexpr (N > 1) { // recurse over set size using template meta programming
-	return getValueByName<N-1>(name, vtor);
-      }
-    return {false, 0};
-  }
-
+  
  template<size_t N>
   bool isPresentInSet(const int value,
 		      const validator_variant_t &vtor)
@@ -439,7 +460,7 @@ bool ConfigurationFile::writeConfFile(void)
     UINT nbwf =0;
     int32_t nbw = snprintf(lineBuffer, sizeof(lineBuffer), "%.*s = %s\n",
 			    static_cast<int>(key.size()), key.data(),
-			    variant2str(param.defaut).c_str()
+			   variant2str(param.defaut, param.validator).c_str()
 			    );
     if ((nbw <= 0) || (nbw >= static_cast<int32_t>(sizeof(lineBuffer)))) {
       SdCard::logSyslog(Severity::Internal, "ConfigurationFile::writeConfFile : "
@@ -499,22 +520,22 @@ bool ConfigurationFile::verifyNotFilledParameters(void)
 void ConfigurationFile::syslogInfoParameters(void)
 {
    for (auto const& [key, param] : conf_dict) {
+     const validator_variant_t& vtor = param.validator;
      SdCard::logSyslog(Severity::Info, ".................\n");
      SdCard::logSyslogRaw("key = %s : ", key.data());
      const default_variant_t& d = param.defaut;
      if (std::holds_alternative<int>(d)) {
-      SdCard::logSyslogRaw("default<integer> = %s; ", variant2str(d).c_str());
+       SdCard::logSyslogRaw("default<integer> = %s; ", variant2str(d, vtor).c_str());
     } else  if (std::holds_alternative<double>(d)) {
-      SdCard::logSyslogRaw("default<double> = %s; ", variant2str(d).c_str());
+      SdCard::logSyslogRaw("default<double> = %s; ", variant2str(d, vtor).c_str());
     } else  if (std::holds_alternative<bool>(d)) {
-      SdCard::logSyslogRaw("default<boolean> = %s; ", variant2str(d).c_str());
+      SdCard::logSyslogRaw("default<boolean> = %s; ", variant2str(d, vtor).c_str());
     } else  if (std::holds_alternative<std::string_view>(d)) {
-      SdCard::logSyslogRaw("default<string> = %s; ", variant2str(d).c_str());
+      SdCard::logSyslogRaw("default<string> = %s; ", variant2str(d, vtor).c_str());
     } else {
       SdCard::logSyslogRaw("no default; ");
     }
 
-     const validator_variant_t& vtor = param.validator;
      if (std::holds_alternative<std::monostate>(vtor)) {
       SdCard::logSyslogRaw("no validation");
     } else if (std::holds_alternative<range_int_t>(vtor)) {
