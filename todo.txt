@@ -9,9 +9,6 @@
 
 
 A TESTER :
-    * quand on ecrit une valeur par defaut : si elle a un type enum associé, l'utiliser
-       ° pour generer smartprobe.conf
-       ° dans les messages syslog
   
   
 A CODER :

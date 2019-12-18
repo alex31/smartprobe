@@ -126,6 +126,7 @@ namespace {
     return std::string(buffer);
   }
   
+  [[maybe_unused]]
   std::string variant2str(const value_variant_t &vvar)
   {
     char buffer[80] = "{}";
@@ -503,7 +504,8 @@ bool ConfigurationFile::verifyNotFilledParameters(void)
       if (m_success) {
 	SdCard::logSyslog(Severity::Warning, "parameter %s is not supplied in %s: "
 			  "using default %s",
-			  ks.c_str(), CONFIGURATION_FILENAME, variant2str(defaut).c_str());
+			  ks.c_str(), CONFIGURATION_FILENAME,
+			  variant2str(param.defaut, param.validator).c_str());
 	dictionary[ks] = defaut;
       } else {
 	SdCard::logSyslog(Severity::Fatal, "parameter %s should be supplied in %s: "
