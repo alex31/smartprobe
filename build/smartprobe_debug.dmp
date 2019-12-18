@@ -6,21 +6,21 @@ EXEC_P, HAS_SYMS, D_PAGED
 start address 0x00200361
 
 Program Header:
-0x70000001 off    0x0004f248 vaddr 0x0022f248 paddr 0x080345bc align 2**2
+0x70000001 off    0x0004f248 vaddr 0x0022f248 paddr 0x080345a4 align 2**2
          filesz 0x000001e0 memsz 0x000001e0 flags r--
     LOAD off    0x00010000 vaddr 0x00200000 paddr 0x08000000 align 2**16
          filesz 0x0002f104 memsz 0x0002f104 flags rwx
     LOAD off    0x0003f120 vaddr 0x0802f120 paddr 0x0802f120 align 2**16
-         filesz 0x00005358 memsz 0x00005358 flags r--
-    LOAD off    0x0004f104 vaddr 0x0022f104 paddr 0x08034478 align 2**16
+         filesz 0x00005340 memsz 0x00005340 flags r--
+    LOAD off    0x0004f104 vaddr 0x0022f104 paddr 0x08034460 align 2**16
          filesz 0x00000324 memsz 0x00000324 flags r--
-    LOAD off    0x00050000 vaddr 0x20020000 paddr 0x0803479c align 2**16
+    LOAD off    0x00050000 vaddr 0x20020000 paddr 0x08034784 align 2**16
          filesz 0x00000af4 memsz 0x00000af4 flags rw-
-    LOAD off    0x00058a10 vaddr 0x20008a10 paddr 0x08035290 align 2**16
+    LOAD off    0x00058a10 vaddr 0x20008a10 paddr 0x08035278 align 2**16
          filesz 0x0000072c memsz 0x0000072c flags rw-
-    LOAD off    0x00060af8 vaddr 0x20020af8 paddr 0x08035290 align 2**16
+    LOAD off    0x00060af8 vaddr 0x20020af8 paddr 0x08035278 align 2**16
          filesz 0x00000000 memsz 0x00021000 flags rw-
-    LOAD off    0x00059140 vaddr 0x20009140 paddr 0x080359bc align 2**16
+    LOAD off    0x00059140 vaddr 0x20009140 paddr 0x080359a4 align 2**16
          filesz 0x00000000 memsz 0x0000240c flags rw-
     LOAD off    0x00060000 vaddr 0x20000000 paddr 0x20000000 align 2**16
          filesz 0x00000000 memsz 0x00008a10 flags rw-
@@ -44,19 +44,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   6 .text         0002eec4  00200240  08000240  00010240  2**6
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  7 .rodata       00005358  0802f120  0802f120  0003f120  2**5
+  7 .rodata       00005340  0802f120  0802f120  0003f120  2**5
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  8 .ARM.extab    00000144  0022f104  08034478  0004f104  2**2
+  8 .ARM.extab    00000144  0022f104  08034460  0004f104  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  9 .ARM.exidx    000001e0  0022f248  080345bc  0004f248  2**2
+  9 .ARM.exidx    000001e0  0022f248  080345a4  0004f248  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
- 10 .data         00000af4  20020000  0803479c  00050000  2**3
+ 10 .data         00000af4  20020000  08034784  00050000  2**3
                   CONTENTS, ALLOC, LOAD, DATA
  11 .bss          00005510  20003500  20003500  00060000  2**5
                   ALLOC
  12 .ram0_init    00000000  20020af4  20020af4  0005913c  2**2
                   CONTENTS
- 13 .ram0         00021000  20020af8  08035290  00060af8  2**3
+ 13 .ram0         00021000  20020af8  08035278  00060af8  2**3
                   ALLOC
  14 .ram1_init    00000000  20020000  20020000  0005913c  2**2
                   CONTENTS
@@ -66,9 +66,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS
  17 .ram2         00000000  2007c000  2007c000  0005913c  2**2
                   CONTENTS
- 18 .ram3_init    0000072c  20008a10  08035290  00058a10  2**3
+ 18 .ram3_init    0000072c  20008a10  08035278  00058a10  2**3
                   CONTENTS, ALLOC, LOAD, DATA
- 19 .ram3         0000240c  20009140  080359bc  00059140  2**3
+ 19 .ram3         0000240c  20009140  080359a4  00059140  2**3
                   ALLOC
  20 .ram4_init    00000000  00000000  00000000  0005913c  2**2
                   CONTENTS
@@ -100,15 +100,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  34 .debug_aranges 00002fd8  00000000  00000000  003bfc70  2**3
                   CONTENTS, READONLY, DEBUGGING
- 35 .debug_str    00257be2  00000000  00000000  003c2c48  2**0
+ 35 .debug_str    00257bdc  00000000  00000000  003c2c48  2**0
                   CONTENTS, READONLY, DEBUGGING
- 36 .debug_loc    00067cef  00000000  00000000  0061a82a  2**0
+ 36 .debug_loc    00067cef  00000000  00000000  0061a824  2**0
                   CONTENTS, READONLY, DEBUGGING
- 37 .debug_ranges 0000eed0  00000000  00000000  00682519  2**0
+ 37 .debug_ranges 0000eed0  00000000  00000000  00682513  2**0
                   CONTENTS, READONLY, DEBUGGING
- 38 .debug_macro  000488ee  00000000  00000000  006913e9  2**0
+ 38 .debug_macro  000488ee  00000000  00000000  006913e3  2**0
                   CONTENTS, READONLY, DEBUGGING
- 39 .debug_frame  0000fa64  00000000  00000000  006d9cd8  2**2
+ 39 .debug_frame  0000fa64  00000000  00000000  006d9cd4  2**2
                   CONTENTS, READONLY, DEBUGGING
 SYMBOL TABLE:
 20000000 l    d  .mstack	00000000 .mstack
@@ -159,7 +159,7 @@ SYMBOL TABLE:
 00000000 l    df *ABS*	00000000 threadAndEventDecl.cpp
 0021b310 l     F .text	00000224 _Z41__static_initialization_and_destruction_0ii
 0021b7b0 l     F .text	0000000e _GLOBAL__sub_I__fini
-08031f3c l     O .rodata	00000010 _ZL22CONFIGURATION_FILENAME
+08031f28 l     O .rodata	00000010 _ZL22CONFIGURATION_FILENAME
 00000000 l    df *ABS*	00000000 eh_alloc.cc
 002248f8 l     F .text	0000008c _ZN12_GLOBAL__N_14pool4freeEPv.constprop.0
 00224984 l     F .text	00000050 _ZN12_GLOBAL__N_14pool8allocateEj.constprop.0
@@ -773,9 +773,9 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 20020050 l     O .data	0000000c _ZZN9Barometer4initEvE9lpsConfig
 08031880 l     O .rodata	0000000c _ZL11i2ccfg_1000
 00000000 l    df *ABS*	00000000 sdcard.cpp
-08031c70 l     O .rodata	00000007 _ZL15SYSLOG_FILENAME
-08031c78 l     O .rodata	0000000b _ZL7ROOTDIR
-08031c84 l     O .rodata	00000040 _ZN12_GLOBAL__N_1L12severityNameE
+08031c5c l     O .rodata	00000007 _ZL15SYSLOG_FILENAME
+08031c64 l     O .rodata	0000000b _ZL7ROOTDIR
+08031c70 l     O .rodata	00000040 _ZN12_GLOBAL__N_1L12severityNameE
 00000000 l    df *ABS*	00000000 usbStorage.cpp
 0021add0 l     F .text	00000024 _ZN12_GLOBAL__N_111usbActivityEb
 2002005c l     O .data	0000002c _ZN12_GLOBAL__N_19msdConfigE
@@ -784,14 +784,14 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 20020088 l     O .data	0000000c _ZN12_GLOBAL__N_114adcWatchDogSemE
 20020094 l     O .data	0000002c _ZN12_GLOBAL__N_19adcgrpcfgE
 2000b548 l     O .ram3	00000004 _ZN12_GLOBAL__N_17samplesE
-08031e04 l     O .rodata	00000030 _ZL30LineToStopInCaseOfPowerFailure
-08031e34 l     O .rodata	0000002c _ZN12_GLOBAL__N_1L18adcgrpcfgThresholdE
+08031df0 l     O .rodata	00000030 _ZL30LineToStopInCaseOfPowerFailure
+08031e20 l     O .rodata	0000002c _ZN12_GLOBAL__N_1L18adcgrpcfgThresholdE
 00000000 l    df *ABS*	00000000 differentialPressure.cpp
-08031fdc l     O .rodata	0000000c _ZL11i2ccfg_1000
+08031fc8 l     O .rodata	0000000c _ZL11i2ccfg_1000
 00000000 l    df *ABS*	00000000 imu.cpp
 2000587c l     O .bss	00000004 _ZGVZN3Imu4initEvE6icmCfg
 200200c0 l     O .data	0000000c _ZZN3Imu4initEvE6icmCfg
-08032118 l     O .rodata	00000010 _ZN12_GLOBAL__N_1L6spiCfgE
+08032104 l     O .rodata	00000010 _ZN12_GLOBAL__N_1L6spiCfgE
 00000000 l    df *ABS*	00000000 confFile.cpp
 0021bce0 l     F .text	00000064 _ZN12_GLOBAL__N_114getValueByNameILj1EEESt4pairIbiESt17basic_string_viewIcSt11char_traitsIcEERKSt7variantIJSt9monostate11range_int_t14range_double_tN6frozen3setI11named_val_tLj1ESt4lessISD_EEENSC_ISD_Lj2ESF_EENSC_ISD_Lj3ESF_EENSC_ISD_Lj4ESF_EENSC_ISD_Lj5ESF_EENSC_ISD_Lj6ESF_EENSC_ISD_Lj7ESF_EENSC_ISD_Lj8ESF_EENSC_ISD_Lj9ESF_EENSC_ISD_Lj10ESF_EEEE
 0021bd50 l     F .text	0000006e _ZN12_GLOBAL__N_114getValueByNameILj2EEESt4pairIbiESt17basic_string_viewIcSt11char_traitsIcEERKSt7variantIJSt9monostate11range_int_t14range_double_tN6frozen3setI11named_val_tLj1ESt4lessISD_EEENSC_ISD_Lj2ESF_EENSC_ISD_Lj3ESF_EENSC_ISD_Lj4ESF_EENSC_ISD_Lj5ESF_EENSC_ISD_Lj6ESF_EENSC_ISD_Lj7ESF_EENSC_ISD_Lj8ESF_EENSC_ISD_Lj9ESF_EENSC_ISD_Lj10ESF_EEEE
@@ -849,9 +849,9 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00222630 l     F .text	000000c4 _ZN12_GLOBAL__N_111variant2strILj10EEENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEERKSt7variantIJSt9monostate11range_int_t14range_double_tN6frozen3setI11named_val_tLj1ESt4lessISD_EEENSC_ISD_Lj2ESF_EENSC_ISD_Lj3ESF_EENSC_ISD_Lj4ESF_EENSC_ISD_Lj5ESF_EENSC_ISD_Lj6ESF_EENSC_ISD_Lj7ESF_EENSC_ISD_Lj8ESF_EENSC_ISD_Lj9ESF_EENSC_ISD_Lj10ESF_EEEE
 00222700 l     F .text	0000022c _ZN12_GLOBAL__N_18validateESt17basic_string_viewIcSt11char_traitsIcEES3_RSt7variantIJidbNSt7__cxx1112basic_stringIcS2_SaIcEEESt9monostateEERKS4_IJS9_11range_int_t14range_double_tN6frozen3setI11named_val_tLj1ESt4lessISG_EEENSF_ISG_Lj2ESI_EENSF_ISG_Lj3ESI_EENSF_ISG_Lj4ESI_EENSF_ISG_Lj5ESI_EENSF_ISG_Lj6ESI_EENSF_ISG_Lj7ESI_EENSF_ISG_Lj8ESI_EENSF_ISG_Lj9ESI_EENSF_ISG_Lj10ESI_EEEE
 00222e00 l     F .text	00000674 _ZN12_GLOBAL__N_19parseLineERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE
-0803280c l     O .rodata	00000010 _ZL22CONFIGURATION_FILENAME
-08032820 l     O .rodata	00000648 _ZL9conf_dict
-08032e68 l     O .rodata	00000014 _ZN12_GLOBAL__N_1L11variantNameE
+080327f8 l     O .rodata	00000010 _ZL22CONFIGURATION_FILENAME
+08032808 l     O .rodata	00000648 _ZL9conf_dict
+08032e50 l     O .rodata	00000014 _ZN12_GLOBAL__N_1L11variantNameE
 00000000 l    df *ABS*	00000000 ttyConsole.cpp
 002236d0 l     F .text	00000010 _ZL28cmd_toggleSendSerialMessagesP20BaseSequentialStreamiPKPKc
 002236e0 l     F .text	00000016 _ZL24stampThreadGetCpuPercentPK14_ThreadCpuInfom
@@ -866,11 +866,11 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 20005880 l     O .bss	00000004 _ZGVZL11cmd_threadsP20BaseSequentialStreamiPKPKcE13threadCpuInfo
 20005884 l     O .bss	000000a4 _ZZL11cmd_threadsP20BaseSequentialStreamiPKPKcE13threadCpuInfo
 200200cc l     O .data	00000001 _ZL18sendSerialMessages
-08033208 l     O .rodata	00000010 _ZL10ftdiConfig
-08033218 l     O .rodata	00000008 _ZL10shell_cfg1
-08033250 l     O .rodata	00000048 _ZL8commands
-08033220 l     O .rodata	00000030 _ZL30LineToStopInCaseOfPowerFailure
-08033298 l     O .rodata	00000040 _ZZL11cmd_threadsP20BaseSequentialStreamiPKPKcE6states
+080331f0 l     O .rodata	00000010 _ZL10ftdiConfig
+08033200 l     O .rodata	00000008 _ZL10shell_cfg1
+08033238 l     O .rodata	00000048 _ZL8commands
+08033208 l     O .rodata	00000030 _ZL30LineToStopInCaseOfPowerFailure
+08033280 l     O .rodata	00000040 _ZZL11cmd_threadsP20BaseSequentialStreamiPKPKcE6states
 00000000 l    df *ABS*	00000000 blinker.cpp
 00000000 l    df *ABS*	00000000 showBlackboard.cpp
 00000000 l    df *ABS*	00000000 atexit_arm.cc
@@ -925,8 +925,8 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00000000 l    df *ABS*	00000000 memset.c
 00000000 l    df *ABS*	00000000 mktime.c
 00226970 l     F .text	000001fc validate_structure
-08034064 l     O .rodata	00000030 DAYS_IN_MONTH
-08034094 l     O .rodata	00000030 _DAYS_BEFORE_MONTH
+0803404c l     O .rodata	00000030 DAYS_IN_MONTH
+0803407c l     O .rodata	00000030 _DAYS_BEFORE_MONTH
 00000000 l    df *ABS*	00000000 mlock.c
 00000000 l    df *ABS*	00000000 putc.c
 00000000 l    df *ABS*	00000000 realloc.c
@@ -946,9 +946,9 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 002277b4 l     F .text	000002b4 two_way_long_needle
 00000000 l    df *ABS*	00000000 strtod.c
 00227bcc l     F .text	00000034 sulp
-080340d0 l     O .rodata	00000014 fpi.7558
-080340e4 l     O .rodata	00000014 fpinan.7594
-080340f8 l     O .rodata	00000028 tinytens
+080340b8 l     O .rodata	00000014 fpi.7558
+080340cc l     O .rodata	00000014 fpinan.7594
+080340e0 l     O .rodata	00000028 tinytens
 00000000 l    df *ABS*	00000000 strtok.c
 00000000 l    df *ABS*	00000000 strtok_r.c
 00000000 l    df *ABS*	00000000 strtol.c
@@ -956,8 +956,8 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00000000 l    df *ABS*	00000000 strtoul.c
 00228c7c l     F .text	0000013c _strtoul_l.isra.0
 00000000 l    df *ABS*	00000000 vfprintf.c
-08034160 l     O .rodata	00000010 blanks.8708
-08034170 l     O .rodata	00000010 zeroes.8709
+08034148 l     O .rodata	00000010 blanks.8708
+08034158 l     O .rodata	00000010 zeroes.8709
 00000000 l    df *ABS*	00000000 tolower.c
 00000000 l    df *ABS*	00000000 tzcalc_limits.c
 00000000 l    df *ABS*	00000000 tzlock.c
@@ -990,7 +990,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00000000 l    df *ABS*	00000000 localeconv.c
 00000000 l    df *ABS*	00000000 mbtowc_r.c
 00000000 l    df *ABS*	00000000 mprec.c
-08034448 l     O .rodata	0000000c p05.7478
+08034430 l     O .rodata	0000000c p05.7478
 00000000 l    df *ABS*	00000000 s_frexp.c
 00000000 l    df *ABS*	00000000 s_nan.c
 00000000 l    df *ABS*	00000000 siscanf.c
@@ -998,7 +998,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00000000 l    df *ABS*	00000000 strcpy.c
 00000000 l    df *ABS*	00000000 vfprintf.c
 00000000 l    df *ABS*	00000000 vfscanf.c
-08034454 l     O .rodata	00000022 basefix.8279
+0803443c l     O .rodata	00000022 basefix.8279
 00000000 l    df *ABS*	00000000 ungetc.c
 00000000 l    df *ABS*	00000000 wctomb_r.c
 00000000 l    df *ABS*	00000000 mallocr.c
@@ -1089,7 +1089,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00227424 g     F .text	0000002c _kill_r
 002248c4 g     F .text	00000014 _ZNSt9bad_allocD2Ev
 00219100 g     F .text	00000058 setSecond
-08031f28  w    O .rodata	00000014 _ZNSt8__detail9__variant12__gen_vtableILb1ENS0_16__variant_cookieEOZNS0_16_Variant_storageILb0EJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateEE13_M_reset_implEvEUlOT_E_JRSt7variantIJidbS9_SA_EEEE9_S_vtableE
+08031f14  w    O .rodata	00000014 _ZNSt8__detail9__variant12__gen_vtableILb1ENS0_16__variant_cookieEOZNS0_16_Variant_storageILb0EJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateEE13_M_reset_implEvEUlOT_E_JRSt7variantIJidbS9_SA_EEEE9_S_vtableE
 200089e8 g     O .bss	00000001 __lock___atexit_recursive_mutex
 00224a4c g     F .text	00000000 __cxa_end_cleanup
 0020f680 g     F .text	0000000c _thread_memfill
@@ -1111,7 +1111,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00200362  w    F .text	00000000 Vector1F0
 0020c0a0 g     F .text	00000044 dmaInit
 0022542c g     F .text	00000014 _ZN10__cxxabiv120__si_class_type_infoD2Ev
-08033500 g     O .rodata	00000025 _ZTSN10__cxxabiv120__si_class_type_infoE
+080334e8 g     O .rodata	00000025 _ZTSN10__cxxabiv120__si_class_type_infoE
 00209910 g     F .text	0000006e rtcConvertStructTmToDateTime
 00200362  w    F .text	00000000 Vector19C
 00215d50 g     F .text	00000010 msgqueue_copy_send
@@ -1130,7 +1130,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 002177b0 g     F .text	0000006c sdLogCloseLog
 00200362  w    F .text	00000000 Vector8C
 0020e920 g     F .text	00000034 SysTick_Handler
-08032808  w    O .rodata	00000001 _ZSt19piecewise_construct
+080327f4  w    O .rodata	00000001 _ZSt19piecewise_construct
 200089ec g     O .bss	00000001 __lock___arc4random_mutex
 0022d830 g     F .text	0000007c _sfread_r
 0020e400 g     F .text	00000028 sdc_lld_set_bus_mode
@@ -1157,7 +1157,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0022f428 g       .ARM.exidx	00000000 __exidx_end
 00228ae8 g     F .text	0000006a __strtok_r
 00224080  w    F .text	0000004c _ZN12WorkerThreadILj1024E3ImuE3runEm
-08033324 g     O .rodata	00000014 _ZTV14ShowBlackboard
+0803330c g     O .rodata	00000014 _ZTV14ShowBlackboard
 00216de0 g     F .text	00000054 microrl_init
 2000366c g     O .bss	00000034 I2CD4
 0020aec0 g     F .text	00000014 _usb_wakeup
@@ -1174,11 +1174,11 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00200362  w    F .text	00000000 Vector110
 00207a80 g     F .text	00000004 .hidden __aeabi_unwind_cpp_pr0
 20020920 g     O .data	00000004 __atexit_recursive_mutex
-080334e0 g     O .rodata	00000014 _ZTVSt13bad_exception
+080334c8 g     O .rodata	00000014 _ZTVSt13bad_exception
 0020fc10 g     F .text	00000024 chThdEnqueueTimeoutS
 002246c0 g     F .text	00000004 _ZSt18_Rb_tree_decrementPSt18_Rb_tree_node_base
 0021ae70  w    F .text	00000018 _ZN12WorkerThreadILj2048E6SdCardE9terminateEv
-08031ed8  w    O .rodata	00000014 _ZTV12WorkerThreadILj1024E3ImuE
+08031ec4  w    O .rodata	00000014 _ZTV12WorkerThreadILj1024E3ImuE
 00209750 g     F .text	0000001c i2cReleaseBus
 002081d0 g     F .text	0000000a .hidden _Unwind_GetRegionStart
 20041af8 g       .ram0	00000000 __ram0_free__
@@ -1218,7 +1218,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 002259b8 g     F .text	000000f0 __cxa_call_unexpected
 0020ff50 g     F .text	00000018 chRegFindThreadByWorkingArea
 0020a440 g     F .text	00000044 sdIncomingDataI
-08035290 g       *ABS*	00000000 __ram3_init_text__
+08035278 g       *ABS*	00000000 __ram3_init_text__
 00210b70 g     F .text	00000048 chMBObjectInit
 0020f230 g     F .text	00000014 _scheduler_init
 200055d4  w    O .bss	00000004 _ZN12WorkerThreadILj1024E3ImuE6handleE
@@ -1232,8 +1232,8 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0020fe10 g     F .text	00000024 _stats_ctxswc
 00200362  w    F .text	00000000 Vector94
 40025000 g       *ABS*	00000000 __ram5_end__
-08031cc4 g     O .rodata	00000014 _ZTV6SdCard
-08031e60 g     O .rodata	00000014 _ZTV3Adc
+08031cb0 g     O .rodata	00000014 _ZTV6SdCard
+08031e4c g     O .rodata	00000014 _ZTV3Adc
 0021b300  w    F .text	00000004 _ZN12WorkerThreadILj1024E3ImuE19initInThreadContextEv
 40024000 g       .ram5	00000000 __ram5_noinit__
 0022f428 g       .ram7	00000000 __flash1_free__
@@ -1291,7 +1291,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0803188c g     O .rodata	00000014 _ZTV9Barometer
 00218670 g     F .text	00000016 icm20600_setAccelLpf
 0021aaf0  w    F .text	0000002c _ZNK10BlackBoardI13BarometerDataL14UpdateBehavior0EE8readLockEv
-08034478 g       .rodata	00000000 __rodata_end__
+08034460 g       .rodata	00000000 __rodata_end__
 0021b0b0 g     F .text	00000118 _ZN3Adc18calculateThresholdEv
 00211420 g     F .text	0000000c ff_del_syncobj
 00226204 g     F .text	00000010 malloc
@@ -1302,10 +1302,10 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00210f40 g     F .text	00000020 _heap_init
 0020bd20 g     F .text	00000038 Vector74
 0020f080 g     F .text	00000034 _dbg_check_enter_isr
-08034380 g     O .rodata	000000c8 __mprec_tens
+08034368 g     O .rodata	000000c8 __mprec_tens
 00220bb0  w    F .text	00000002 _ZSt14__variant_castIJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateERNSt8__detail9__variant17_Move_assign_baseILb0EJidbS5_S6_EEEEDcOT0_
 00208c70 g     F .text	00000030 halInit
-08032128 g     O .rodata	00000014 _ZTV3Imu
+08032114 g     O .rodata	00000014 _ZTV3Imu
 00223d10 g     F .text	00000024 _Z11consoleInitv
 00224170  w    F .text	0000004c _ZN12WorkerThreadILj320E3AdcE3runEm
 00200362  w    F .text	00000000 Vector160
@@ -1391,7 +1391,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00000000 g       .bss	00000000 __flash4_start__
 00217d60 g     F .text	000000cc sdp3xFetch
 00207a88  w    F .text	00000004 .hidden __aeabi_unwind_cpp_pr2
-08033410 g     O .rodata	0000000c _ZTISt9bad_alloc
+080333f8 g     O .rodata	0000000c _ZTISt9bad_alloc
 0021b610  w    F .text	00000018 _ZN3AdcD1Ev
 200089b4 g     O .bss	00000004 __malloc_max_sbrked_mem
 00200240 g       .text	00000000 __text_base
@@ -1413,7 +1413,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0020df40 g     F .text	0000002c spi_lld_init
 00200362  w    F .text	00000000 Vector1C4
 00219a90 g     F .text	00000014 debug_snd_evt_inl
-08033528 g     O .rodata	0000002c _ZTVN10__cxxabiv120__si_class_type_infoE
+08033510 g     O .rodata	0000002c _ZTVN10__cxxabiv120__si_class_type_infoE
 00200362  w    F .text	00000000 Vector1CC
 2007c000 g       *ABS*	00000000 __ram1_end__
 00004000 g       *ABS*	00000000 __ram4_end__
@@ -1424,33 +1424,33 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 002100c0 g     F .text	00000050 chSemWait
 0020f910 g     F .text	0000004c chThdExitS
 002097f0 g     F .text	00000008 rtcInit
-0803363c g     O .rodata	00000014 _ZTVSt11logic_error
+08033624 g     O .rodata	00000014 _ZTVSt11logic_error
 00225914 g     F .text	0000001a _ZNK10__cxxabiv117__class_type_info11__do_upcastEPKS0_PKvRNS0_15__upcast_resultE
 00218820 g     F .text	000000c0 icm20600_fetch
 00224658 g     F .text	00000004 _ZdlPv
 200089f4 g     O .bss	00000001 __lock___sinit_recursive_mutex
 002256f4 g     F .text	0000001c _ZNSt12length_errorD0Ev
 00215840 g     F .text	00000032 lps33hw_low_pass_filter_mode_set
-08035290 g       *ABS*	00000000 __ram0_init_text__
-08034060 g     O .rodata	00000004 _global_impure_ptr
+08035278 g       *ABS*	00000000 __ram0_init_text__
+08034048 g     O .rodata	00000004 _global_impure_ptr
 00200362  w    F .text	00000000 Vector1E4
 00226fdc g     F .text	000003e0 _realloc_r
 0020fdc0 g     F .text	00000024 _stats_init
 00220ce0  w    F .text	0000003e _ZSt28__variant_construct_by_indexILj3ESt7variantIJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateEEJS6_EEvRT0_DpOT1_
 20005830 g     O .bss	0000004c showBB
 00225c04 g     F .text	00000010 _ZSt15get_new_handlerv
-08035290 g       *ABS*	00000000 __ram1_init_text__
+08035278 g       *ABS*	00000000 __ram1_init_text__
 00000000 g       *ABS*	00000000 __flash5_end__
 00000000 g       .ram7	00000000 __flash2_free__
 002245b0  w    F .text	00000054 _ZN12WorkerThreadILj1024E14ShowBlackboardE10threadFuncEPv
 002157c0 g     F .text	00000018 lps33hw_from_lsb_to_hpa
 002093a0 g     F .text	00000058 adcStartConversion
-080341e4 g     O .rodata	00000100 __hexdig
+080341cc g     O .rodata	00000100 __hexdig
 20004544 g     O .bss	00000004 shell_terminated
 00207dfc g     F .text	00000022 .hidden ___Unwind_RaiseException
 00223640  w    F .text	00000084 _ZNSt8__detail9__variant17__gen_vtable_implILb1ENS0_12_Multi_arrayIPFNS0_20__variant_idx_cookieEOZNS0_17_Copy_assign_baseILb0EJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateEEaSERKSC_EUlOT_T0_E_RKSt7variantIJidbSA_SB_EEEJEEESt5tupleIJSN_EESt16integer_sequenceIjJLj3EEEE14__visit_invokeESJ_SN_
 0022488c g     F .text	00000030 _ZSt20__throw_length_errorPKc
-08034358 g     O .rodata	00000028 __mprec_bigtens
+08034340 g     O .rodata	00000028 __mprec_bigtens
 00209730 g     F .text	0000001c i2cAcquireBus
 0022cb9c g     F .text	000000a0 __s2b
 00200362  w    F .text	00000000 Vector148
@@ -1468,19 +1468,19 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0020ef10 g     F .text	00000054 chSysRestoreStatusX
 00209540 g     F .text	00000078 i2cStop
 002164f0 g     F .text	00000080 microrlComplet
-08031ec4  w    O .rodata	00000014 _ZTV12WorkerThreadILj320E3AdcE
+08031eb0  w    O .rodata	00000014 _ZTV12WorkerThreadILj320E3AdcE
 00221130  w    F .text	00000050 _ZNSt8__detail9__variant17__gen_vtable_implILb1ENS0_12_Multi_arrayIPFNS0_20__variant_idx_cookieEOZNS0_17_Copy_assign_baseILb0EJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateEEaSERKSC_EUlOT_T0_E_RKSt7variantIJidbSA_SB_EEEJEEESt5tupleIJSN_EESt16integer_sequenceIjJLj2EEEE14__visit_invokeESJ_SN_
 00225b24 g     F .text	00000088 __cxa_end_catch
 0020d870 g     F .text	00000010 usb_lld_stall_out
-08031d70 g     O .rodata	00000014 _ZTV10UsbStorage
+08031d5c g     O .rodata	00000014 _ZTV10UsbStorage
 002159d0 g     F .text	00000032 lps33hw_int_polarity_set
 0020fd80 g     F .text	0000003c chTMChainMeasurementToX
 0021b210 g     F .text	00000030 _ZNK3Adc21getPowerSupplyVoltageEv
 00215fd0 g     F .text	0000004c chvprintf
-08031f14  w    O .rodata	00000014 _ZTV12WorkerThreadILj1024E14ShowBlackboardE
+08031f00  w    O .rodata	00000014 _ZTV12WorkerThreadILj1024E14ShowBlackboardE
 00218690 g     F .text	00000038 icm20600_setSampleRate
 00000000 g       *ABS*	00000000 __flash2_end__
-080359bc g       *ABS*	00000000 __ram5_init_text__
+080359a4 g       *ABS*	00000000 __ram5_init_text__
 00224bf0 g     F .text	00000002 _ZNSt13bad_exceptionD2Ev
 00000000 g       *ABS*	00000000 __flash4_size__
 002191b0 g     F .text	0000002c getMinute
@@ -1492,7 +1492,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00228c64 g     F .text	00000018 strtol
 0021b7c0 g     F .text	0000004c _ZN20DifferentialPressure7initSdpER11Sdp3xDriverh
 00220dd0  w    F .text	00000002 _ZSt14__variant_castIJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateERKNSt8__detail9__variant15_Copy_ctor_baseILb0EJidbS5_S6_EEEEDcOT0_
-080333ec  w    O .rodata	00000014 _ZTV12WorkerThreadILj1512E10UsbStorageE
+080333d4  w    O .rodata	00000014 _ZTV12WorkerThreadILj1512E10UsbStorageE
 00227788 g     F .text	0000002c strnlen
 0020ee40 g     F .text	0000000c chSysHalt
 00200362  w    F .text	00000000 Vector198
@@ -1519,7 +1519,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0020b8d0 g     F .text	0000002c adc_lld_init
 00210f30 g     F .text	00000010 chCoreGetStatusX
 00200360  w    F .text	00000000 Reset_Handler
-080336b4 g     O .rodata	00000022 _ZTSN10__cxxabiv117__class_type_infoE
+0803369c g     O .rodata	00000022 _ZTSN10__cxxabiv117__class_type_infoE
 0020aea0 g     F .text	00000020 _usb_suspend
 0022a8a4 g     F .text	0000000c __tz_unlock
 00220fe0  w    F .text	00000068 _ZNSt8_Rb_treeINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt4pairIKS5_St7variantIJidbS5_St9monostateEEESt10_Select1stISB_ESt4lessIS5_ESaISB_EE14_M_insert_nodeEPSt18_Rb_tree_node_baseSJ_PSt13_Rb_tree_nodeISB_E
@@ -1530,11 +1530,11 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0022cc3c g     F .text	00000040 __hi0bits
 00200362  w    F .text	00000000 VectorCC
 00224dc8 g     F .text	0000049e __gxx_personality_v0
-08033470 g     O .rodata	00000008 _ZTISt9exception
+08033458 g     O .rodata	00000008 _ZTISt9exception
 0020ebb0 g     F .text	00000058 sd_lld_init
 0021b630  w    F .text	00000018 _ZN12WorkerThreadILj1024E3ImuE9terminateEv
 00200362  w    F .text	00000000 Vector54
-08031fe8 g     O .rodata	00000014 _ZTV20DifferentialPressure
+08031fd4 g     O .rodata	00000014 _ZTV20DifferentialPressure
 00215b10 g     F .text	00000024 systemReset
 200089f8 g     O .bss	00000001 __lock___malloc_recursive_mutex
 0021a1d0 g     F .text	00000020 msd_wait_for_command_block
@@ -1564,7 +1564,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 20020af0 g     O .data	00000004 environ
 002248f4 g     F .text	00000004 _ZdlPvj
 00000000 g       *ABS*	00000000 __flash6_end__
-080359bc g       *ABS*	00000000 __ram6_init_text__
+080359a4 g       *ABS*	00000000 __ram6_init_text__
 00200362  w    F .text	00000000 Vector138
 0021a340 g     F .text	00000010 deinit_msd_driver
 002087a8 g     F .text	00000276 .hidden __aeabi_dadd
@@ -1611,7 +1611,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 002076c4 g     F .text	0000000c .hidden _Unwind_DeleteException
 002076c0 g     F .text	00000002 .hidden _Unwind_Complete
 0020add0 g     F .text	00000034 usbStallReceiveI
-08032658  w    O .rodata	00000014 _ZNSt8__detail9__variant12__gen_vtableILb1ENS0_20__variant_idx_cookieEOZNS0_17_Copy_assign_baseILb0EJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateEEaSERKSB_EUlOT_T0_E_JRKSt7variantIJidbS9_SA_EEEE9_S_vtableE
+08032644  w    O .rodata	00000014 _ZNSt8__detail9__variant12__gen_vtableILb1ENS0_20__variant_idx_cookieEOZNS0_17_Copy_assign_baseILb0EJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateEEaSERKSB_EUlOT_T0_E_JRKSt7variantIJidbS9_SA_EEEE9_S_vtableE
 00215930 g     F .text	0000001e lps33hw_reset_get
 00221270  w    F .text	0000000e _ZNSt8__detail9__variant17__gen_vtable_implILb1ENS0_12_Multi_arrayIPFNS0_16__variant_cookieEOZNS0_19__variant_constructIJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateERNS0_15_Copy_ctor_baseILb0EJidbSA_SB_EEERKSD_EEvOT0_OT1_EUlOT_E_RKSt7variantIJidbSA_SB_EEEJEEESt5tupleIJSS_EESt16integer_sequenceIjJLj1EEEE14__visit_invokeESO_SS_
 0021aaa0  w    F .text	0000000e _ZNK10BlackBoardI7ImuDataL14UpdateBehavior0EE11registerEvtEP14event_listenerm
@@ -1629,10 +1629,10 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0020b7a0 g     F .text	0000012c stm32_clock_init
 00000000 g       .ram4_init	00000000 __ram4_init__
 0022bef0 g     F .text	0000000c __sfp_lock_acquire
-080334bc g     O .rodata	00000012 _ZTSSt13bad_exception
+080334a4 g     O .rodata	00000012 _ZTSSt13bad_exception
 00208200 g     F .text	00000000 memchr
 00200362  w    F .text	00000000 Vector1A4
-08033650 g     O .rodata	00000014 _ZTVSt12length_error
+08033638 g     O .rodata	00000014 _ZTVSt12length_error
 0020c310 g     F .text	0000001c _pal_lld_init
 0022bfd4 g     F .text	00000208 _free_r
 002156c0 g     F .text	00000028 tlsf_init_heaps
@@ -1646,7 +1646,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00209870 g     F .text	00000098 rtcConvertDateTimeToStructTm
 0022d774 g     F .text	00000080 _sungetc_r
 002102c0 g     F .text	0000001c chMtxObjectInit
-080359bc g       .ram7	00000000 __flash0_init__
+080359a4 g       .ram7	00000000 __flash0_init__
 002143b0 g     F .text	0000003a f_close
 002087a4 g     F .text	0000027a .hidden __aeabi_dsub
 00226b6c g     F .text	000003d4 mktime
@@ -1656,7 +1656,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00210d80 g     F .text	0000007c chMBFetchTimeoutS
 20020910 g     O .data	00000004 __malloc_sbrk_base
 0020fc80 g     F .text	00000044 chThdDequeueAllI
-08033600 g     O .rodata	0000000c _ZTISt11logic_error
+080335e8 g     O .rodata	0000000c _ZTISt11logic_error
 0020d040 g     F .text	00000020 usb_lld_init
 00210e60 g     F .text	00000018 _core_init
 00210500 g     F .text	00000090 chMtxUnlockS
@@ -1666,7 +1666,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 20020000 g       .data	00000000 _data_start
 0021d250  w    F .text	00000194 _ZN4ctre18evaluate_recursiveINS_13regex_resultsIPKcJNS_16captured_contentILj1EvEENS4_ILj2EvEEEEES3_NS_35zero_terminated_string_end_iteratorELj1ELj0EJNS_3setIJNS9_IJNS9_IJNS_10char_rangeILc65ELc90EEENSA_ILc97ELc122EEENSA_ILc48ELc57EEENS_9characterILc95EEEEEEEEENSE_ILc46EEEEEEEJNS_12numeric_markILj2EEENS_8sequenceIJNS_4starIJNS9_IJNS_11enumerationIJLc32ELc9ELc10ELc11ELc12ELc13EEEEEEEEEENS_8optionalIJNSE_ILc35EEEEEENSN_IJNS_3anyEEEEEEENS_10assert_endENS_8end_markENS_6acceptEEEET_jT0_S12_T1_S11_N4ctll4listIJNS_6repeatIXT2_EXT3_EJDpT4_EEEDpT5_EEE
 00000000 g       *ABS*	00000000 __ram7_size__
-0803355c g     O .rodata	0000000d _ZTSSt9type_info
+08033544 g     O .rodata	0000000d _ZTSSt9type_info
 00200362  w    F .text	00000000 Vector1B4
 00222b40  w    F .text	0000001a _ZNSt8__detail9__variant26__variant_construct_singleIRNS0_15_Copy_ctor_baseILb0EJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateEEERKS8_EEvOT_OT0_
 00208aa8 g     F .text	0000006a .hidden __floatundidf
@@ -1677,7 +1677,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00217cf0 g     F .text	00000006 sdp3xStart
 0022ced4 g     F .text	000000d2 __lshift
 20008200  w    O .bss	00000758 _ZN12WorkerThreadILj1512E9BarometerE2wsE
-0803342c g     O .rodata	00000014 _ZTVSt9bad_alloc
+08033414 g     O .rodata	00000014 _ZTVSt9bad_alloc
 00224120  w    F .text	0000004c _ZN12WorkerThreadILj1512E10UsbStorageE3runEm
 20006350  w    O .bss	00000004 _ZN12WorkerThreadILj320E7BlinkerE6handleE
 00200362  w    F .text	00000000 Vector140
@@ -1688,7 +1688,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 002193a0 g     F .text	0000006c setMonthDay
 0020dc90 g     F .text	0000005c VectorE4
 0022adf4 g     F .text	0000008c __register_exitproc
-0803341c g     O .rodata	0000000d _ZTSSt9bad_alloc
+08033404 g     O .rodata	0000000d _ZTSSt9bad_alloc
 00219ca0 g     F .text	000001bc msd_scsi_process_start_read_write_10
 00213d70 g     F .text	0000021e f_read
 0021aba0  w    F .text	00000028 _ZNK10BlackBoardI16DiffPressureDataL14UpdateBehavior0EE10readUnlockEv
@@ -1702,7 +1702,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0020c060 g     F .text	00000038 Vector158
 00225498 g     F .text	00000084 _ZNK10__cxxabiv120__si_class_type_info12__do_dyncastEiNS_17__class_type_info10__sub_kindEPKS1_PKvS4_S6_RNS1_16__dyncast_resultE
 00207d2c g     F .text	00000000 .hidden __gnu_Unwind_Restore_VFP_D
-080359bc g       .ram7	00000000 __flash0_free__
+080359a4 g       .ram7	00000000 __flash0_free__
 0021b2e0  w    F .text	00000004 _ZN12WorkerThreadILj2048E6SdCardE19initInThreadContextEv
 0020fcd0 g     F .text	00000018 chTMObjectInit
 0020bfa0 g     F .text	00000034 Vector130
@@ -1718,7 +1718,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0021b7a0  w    F .text	0000000e _ZN17ConfigurationFileD1Ev
 00211400 g     F .text	0000001c ff_cre_syncobj
 200055e0 g     O .bss	00000014 adc
-080342f8 g     O .rodata	00000060 __month_lengths
+080342e0 g     O .rodata	00000060 __month_lengths
 00227720 g     F .text	00000066 strncpy
 2000898c g     O .bss	00000028 __malloc_current_mallinfo
 0021a530  w    F .text	0000000c _ZNK10BlackBoardI13BarometerDataL14UpdateBehavior0EE15broadcastUpdateEv
@@ -1746,7 +1746,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00225c40 g     F .text	00000014 __cxa_atexit
 00223f40  w    F .text	0000004c _ZN12WorkerThreadILj320E7BlinkerE3runEm
 00000000 g       *ABS*	00000000 __flash3_end__
-0803345c g     O .rodata	00000008 _ZTIN10__cxxabiv119__foreign_exceptionE
+08033444 g     O .rodata	00000008 _ZTIN10__cxxabiv119__foreign_exceptionE
 002166b0 g     F .text	00000024 shellCreate
 00215a40 g     F .text	00000004 _close_r
 00208a40 g     F .text	00000022 .hidden __aeabi_i2d
@@ -1805,13 +1805,13 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0022485c g     F .text	00000030 _ZSt19__throw_logic_errorPKc
 2007c000 g       .ram2	00000000 __ram2_clear__
 20020000 g       *ABS*	00000000 __ram3_end__
-080336d8 g     O .rodata	0000002c _ZTVN10__cxxabiv117__class_type_infoE
+080336c0 g     O .rodata	0000002c _ZTVN10__cxxabiv117__class_type_infoE
 00225384 g     F .text	00000038 __cxa_throw
 0022bde4 g     F .text	0000005a _fflush_r
 0022eb9c g     F .text	0000005e _calloc_r
 00221e80  w    F .text	0000004c _ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE9_M_appendEPKcj
 200035b8 g     O .bss	00000080 _pal_events
-0803360c g     O .rodata	0000000c _ZTISt12length_error
+080335f4 g     O .rodata	0000000c _ZTISt12length_error
 00004000 g       *ABS*	00000000 __ram2_size__
 0020f020 g     F .text	00000028 _dbg_check_lock_from_isr
 0022a898 g     F .text	0000000c __tz_lock
@@ -1845,7 +1845,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0021a540  w    F .text	0000004e _ZN10BlackBoardI13BarometerDataL14UpdateBehavior0EE5writeERKS0_
 0020a490 g     F .text	00000008 spiInit
 0020a7b0 g     F .text	0000001c spiReleaseBus
-08035290 g       *ABS*	00000000 __ram2_init_text__
+08035278 g       *ABS*	00000000 __ram2_init_text__
 002275f8 g     F .text	00000056 strlcat
 00221290  w    F .text	0000000e _ZNSt8__detail9__variant17__gen_vtable_implILb1ENS0_12_Multi_arrayIPFNS0_16__variant_cookieEOZNS0_19__variant_constructIJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateERNS0_15_Copy_ctor_baseILb0EJidbSA_SB_EEERKSD_EEvOT0_OT1_EUlOT_E_RKSt7variantIJidbSA_SB_EEEJEEESt5tupleIJSS_EESt16integer_sequenceIjJLj2EEEE14__visit_invokeESO_SS_
 200060a0  w    O .bss	000002b0 _ZN12WorkerThreadILj320E7BlinkerE2wsE
@@ -1885,9 +1885,9 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0022eb08 g     F .text	00000076 __submore
 0021a910 g     F .text	000000f0 _ZN6SdCard17writeSyslogHeaderEv
 0022ec08 g     F .text	0000000c __env_unlock
-080359bc g       *ABS*	00000000 __ram4_init_text__
+080359a4 g       *ABS*	00000000 __ram4_init_text__
 00200362  w    F .text	00000000 Vector180
-080336a8 g     O .rodata	0000000c _ZTIN10__cxxabiv117__class_type_infoE
+08033690 g     O .rodata	0000000c _ZTIN10__cxxabiv117__class_type_infoE
 00224200  w    F .text	00000018 _ZN12WorkerThreadILj1512E10UsbStorageE9terminateEv
 00221050  w    F .text	00000006 _ZNSt8__detail9__variant26__variant_construct_singleIRNS0_15_Move_ctor_baseILb0EJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateEEERKiEEvOT_OT0_
 20020000 g       .ram1	00000000 __ram1_noinit__
@@ -1924,7 +1924,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00220cd0  w    F .text	0000000a _ZSt28__variant_construct_by_indexILj2ESt7variantIJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateEEJRKbEEvRT0_DpOT1_
 00200362  w    F .text	00000000 Vector1C
 0020ef70 g     F .text	00000010 chSysIsCounterWithinX
-080333d8  w    O .rodata	00000014 _ZTV12WorkerThreadILj320E7BlinkerE
+080333c0  w    O .rodata	00000014 _ZTV12WorkerThreadILj320E7BlinkerE
 00208b48 g     F .text	00000040 .hidden __fixunsdfdi
 0020f540 g     F .text	0000004c chSchDoRescheduleAhead
 0020c840 g     F .text	00000030 Vector1BC
@@ -1951,7 +1951,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 20080000 g       *ABS*	00000000 __ram2_end__
 0020d880 g     F .text	00000010 usb_lld_stall_in
 00208b14 g     F .text	00000030 .hidden __fixdfdi
-08033618 g     O .rodata	00000010 _ZTSSt11logic_error
+08033600 g     O .rodata	00000010 _ZTSSt11logic_error
 20000600 g       .pstack	00000000 __process_stack_base__
 00219f30 g     F .text	00000294 msd_read_command_block
 0022568c g     F .text	00000040 _ZNSt11logic_errorD1Ev
@@ -1973,7 +1973,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00211210 g     F .text	00000054 _factory_init
 0021bcd0  w    F .text	00000006 _ZNSt8__detail9__variant17__gen_vtable_implILb1ENS0_12_Multi_arrayIPFNS0_16__variant_cookieEOZNS0_19__variant_constructIJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateERNS0_15_Copy_ctor_baseILb0EJidbSA_SB_EEERKSD_EEvOT0_OT1_EUlOT_E_RKSt7variantIJidbSA_SB_EEEJEEESt5tupleIJSS_EESt16integer_sequenceIjJLj4EEEE14__visit_invokeESO_SS_
 200200d8 g     O .data	00000004 _impure_ptr
-08033454 g     O .rodata	00000008 _ZTIN10__cxxabiv115__forced_unwindE
+0803343c g     O .rodata	00000008 _ZTIN10__cxxabiv115__forced_unwindE
 0020bce0 g     F .text	00000038 Vector70
 0021aed0  w    F .text	0000001c _ZN12WorkerThreadILj1024E14ShowBlackboardE4joinEv
 0022bcb4 g     F .text	0000012e __sflush_r
@@ -2003,14 +2003,14 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 2000566c g     O .bss	000000a0 dp
 00223ed0  w    F .text	00000054 _ZN12WorkerThreadILj320E7BlinkerE10threadFuncEPv
 0021bbc0  w    F .text	00000024 _ZNK10BlackBoardI7ImuDataL14UpdateBehavior0EE11writeUnlockEv
-080342e4 g     O .rodata	0000000c _C_numeric_locale
+080342cc g     O .rodata	0000000c _C_numeric_locale
 002111b0 g     F .text	00000050 chPoolFree
 0021ae90  w    F .text	0000001c _ZN12WorkerThreadILj2048E6SdCardE4joinEv
 20021af8 g       .ram0	00000000 __ram0_noinit__
 00225c54 g     F .text	00000064 fputc
 00209e30 g     F .text	00000174 sdcConnect
 00208c30 g     F .text	00000038 __init_ram_areas
-08033498 g     O .rodata	00000024 _ZTSN10__cxxabiv119__foreign_exceptionE
+08033480 g     O .rodata	00000024 _ZTSN10__cxxabiv119__foreign_exceptionE
 00000000 g       .bss	00000000 __flash7_start__
 00210d20 g     F .text	00000058 chMBPostAheadTimeout
 0020dc40 g     F .text	00000048 Vector4C
@@ -2030,7 +2030,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0021a350 g     F .text	00000060 init_msd_driver
 0020a260 g     F .text	00000074 sdcStop
 0020fdf0 g     F .text	00000020 _stats_increase_irq
-08032644  w    O .rodata	00000014 _ZNSt8__detail9__variant12__gen_vtableILb1ENS0_20__variant_idx_cookieEOZNS0_17_Move_assign_baseILb0EJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateEEaSEOSB_EUlOT_T0_E_JRSt7variantIJidbS9_SA_EEEE9_S_vtableE
+08032630  w    O .rodata	00000014 _ZNSt8__detail9__variant12__gen_vtableILb1ENS0_20__variant_idx_cookieEOZNS0_17_Move_assign_baseILb0EJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateEEaSEOSB_EUlOT_T0_E_JRSt7variantIJidbS9_SA_EEEE9_S_vtableE
 00225aa8 g     F .text	0000007c __cxa_begin_catch
 200089e0 g     O .bss	00000004 _timezone
 002258a0 g     F .text	00000014 _ZN10__cxxabiv117__class_type_infoD2Ev
@@ -2039,7 +2039,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 002252a4 g     F .text	00000008 _ZN10__cxxabiv112__unexpectedEPFvvE
 00200362  w    F .text	00000000 Vector15C
 0022d8ac g     F .text	0000125c __ssvfiscanf_r
-08033628 g     O .rodata	00000011 _ZTSSt12length_error
+08033610 g     O .rodata	00000011 _ZTSSt12length_error
 00000000 g       *ABS*	00000000 __ram7_end__
 20004334 g     O .bss	00000004 numOfCommand
 0020b3c0 g     F .text	00000054 Vector68
@@ -2067,7 +2067,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 002212a0  w    F .text	00000052 _ZNSt8_Rb_treeINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt4pairIKS5_St7variantIJidbS5_St9monostateEEESt10_Select1stISB_ESt4lessIS5_ESaISB_EE14_M_lower_boundEPSt13_Rb_tree_nodeISB_EPSt18_Rb_tree_node_baseRS7_
 20003ba4 g     O .bss	00000048 ch_factory
 002260d8 g     F .text	00000020 fwrite
-080334f4 g     O .rodata	0000000c _ZTIN10__cxxabiv120__si_class_type_infoE
+080334dc g     O .rodata	0000000c _ZTIN10__cxxabiv120__si_class_type_infoE
 40024000 g       .ram5_init	00000000 __ram5_init__
 002081a4 g     F .text	0000002a .hidden __gnu_unwind_frame
 0020f320 g     F .text	00000058 chSchReadyAheadI
@@ -2090,8 +2090,8 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00217690 g     F .text	00000100 sdLogvWriteLog
 0022a8bc g     F .text	00000328 _tzset_unlocked_r
 00200366  w    F .text	00000000 _unhandled_exception
-08031f00  w    O .rodata	00000014 _ZTV12WorkerThreadILj2048E6SdCardE
-08031eec  w    O .rodata	00000014 _ZTV12WorkerThreadILj1512E20DifferentialPressureE
+08031eec  w    O .rodata	00000014 _ZTV12WorkerThreadILj2048E6SdCardE
+08031ed8  w    O .rodata	00000014 _ZTV12WorkerThreadILj1512E20DifferentialPressureE
 0021b6f0  w    F .text	00000018 _ZN6SdCardD2Ev
 20003638 g     O .bss	00000034 I2CD2
 00200362  w    F .text	00000000 Vector170
@@ -2116,7 +2116,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0020c260 g     F .text	000000a8 extiEnableGroup1
 0021b710  w    F .text	00000018 _ZN14ShowBlackboardD1Ev
 0020f710 g     F .text	00000070 chThdCreate
-080332d8 g     O .rodata	00000014 _ZTV7Blinker
+080332c0 g     O .rodata	00000014 _ZTV7Blinker
 00200000 g       *ABS*	00000000 __flash0_size__
 20000600 g       .pstack	00000000 __main_thread_stack_base__
 0022c1dc g     F .text	00000048 _fwalk_reent
@@ -2127,7 +2127,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00207d90 g     F .text	00000000 .hidden __gnu_Unwind_Save_WMMXD
 0020a810 g     F .text	00000008 usbInit
 00211430 g     F .text	00000012 ff_req_grant
-080359bc g       *ABS*	00000000 __ram7_init_text__
+080359a4 g       *ABS*	00000000 __ram7_init_text__
 20008a10 g       .ram3_init	00000000 __ram3_init__
 0020e3d0 g     F .text	00000014 sdc_lld_set_data_clk
 00215c30 g     F .text	00000010 _kill
@@ -2138,7 +2138,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00221120  w    F .text	00000006 _ZNSt8__detail9__variant26__variant_construct_singleIRNS0_15_Move_ctor_baseILb0EJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateEEERKbEEvOT_OT0_
 0022befc g     F .text	0000000c __sfp_lock_release
 00200362  w    F .text	00000000 Vector184
-08033464 g     O .rodata	0000000c _ZTISt13bad_exception
+0803344c g     O .rodata	0000000c _ZTISt13bad_exception
 00221180  w    F .text	00000052 _ZNKSt8_Rb_treeINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt4pairIKS5_St7variantIJidbS5_St9monostateEEESt10_Select1stISB_ESt4lessIS5_ESaISB_EE14_M_lower_boundEPKSt13_Rb_tree_nodeISB_EPKSt18_Rb_tree_node_baseRS7_
 00219e80 g     F .text	0000005a msd_scsi_process_read_format_capacities
 00200362  w    F .text	00000000 Vector10C
@@ -2149,7 +2149,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00215990 g     F .text	00000032 lps33hw_pin_mode_set
 002003ac g       .text	00000000 _port_exit_from_isr
 20020000 g       .ram1_init	00000000 __ram1_init__
-08033f5c g     O .rodata	00000101 _ctype_
+08033f44 g     O .rodata	00000101 _ctype_
 0020d110 g     F .text	00000048 usb_lld_stop
 002081f0  w    F .text	00000002 .hidden __aeabi_idiv0
 00200200 g       .xtors	00000000 __init_array_start
@@ -2166,7 +2166,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0020e6d0 g     F .text	00000044 sdc_lld_send_cmd_long_crc
 00215c20 g     F .text	00000010 _exit
 0020a4c0 g     F .text	00000080 spiStart
-0803479c g       *ABS*	00000000 _textdata_start
+08034784 g       *ABS*	00000000 _textdata_start
 0022574c  w    F .text	0000006c _ZNSs4_Rep9_S_createEjjRKSaIcE
 0020fad0 g     F .text	00000070 chThdSleepUntilWindowed
 200037c4 g     O .bss	00000060 SD1
@@ -2196,7 +2196,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 002086c0 g     F .text	000000dc strlen
 00211350 g     F .text	00000030 disk_read
 2007c000 g       .ram2	00000000 __ram2_free__
-08033554 g     O .rodata	00000008 _ZTISt9type_info
+0803353c g     O .rodata	00000008 _ZTISt9type_info
 00207a84  w    F .text	00000004 .hidden __aeabi_unwind_cpp_pr1
 00222d90  w    F .text	0000006a _ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE9_M_assignERKS4_
 00219210 g     F .text	00000030 getYear
@@ -2205,7 +2205,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00200362  w    F .text	00000000 Vector1DC
 0020c020 g     F .text	00000038 Vector154
 0020fb40 g     F .text	00000060 chThdYield
-080334d0 g     O .rodata	0000000d _ZTSSt9exception
+080334b8 g     O .rodata	0000000d _ZTSSt9exception
 00000000 g       .ram4	00000000 __ram4_free__
 0022c2c8 g     F .text	0000053c __gethex
 00224220  w    F .text	0000001c _ZN12WorkerThreadILj1512E10UsbStorageE4joinEv
@@ -2217,7 +2217,7 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 00225808  w    F .text	00000024 _ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcESt20forward_iterator_tag
 0022aea0 g     F .text	0000003e div
 00220250  w    F .text	00000288 _ZN4ctre8match_reIN9__gnu_cxx17__normal_iteratorIPcNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEESA_NS_8sequenceIJNS_8optionalIJNS_3setIJNS_9characterILc43EEENSE_ILc45EEEEEEEEENS_4plusIJNSD_IJNSD_IJNS_10char_rangeILc48ELc57EEEEEENSE_ILc46EEEEEEEEEEEEEEDaT_T0_T1_
-08032630  w    O .rodata	00000014 _ZNSt8__detail9__variant12__gen_vtableILb1ENS0_16__variant_cookieEOZNS0_19__variant_constructIJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateERNS0_15_Copy_ctor_baseILb0EJidbS9_SA_EEERKSC_EEvOT0_OT1_EUlOT_E_JRKSt7variantIJidbS9_SA_EEEE9_S_vtableE
+0803261c  w    O .rodata	00000014 _ZNSt8__detail9__variant12__gen_vtableILb1ENS0_16__variant_cookieEOZNS0_19__variant_constructIJidbNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt9monostateERNS0_15_Copy_ctor_baseILb0EJidbS9_SA_EEERKSC_EEvOT0_OT1_EUlOT_E_JRKSt7variantIJidbS9_SA_EEEE9_S_vtableE
 0020e3f0 g     F .text	0000000c sdc_lld_stop_clk
 0020dcf0 g     F .text	00000080 rtc_lld_init
 0022d4f0 g     F .text	000000ce strchr
@@ -2281,14 +2281,14 @@ e000ed04 l       *ABS*	00000000 SCB_ICSR
 0021b810 g     F .text	00000074 _ZN20DifferentialPressure4initEv
 002157e0 g     F .text	00000018 lps33hw_from_lsb_to_degc
 002154d0 g     F .text	00000038 tlsf_create
-08031eb0  w    O .rodata	00000014 _ZTV12WorkerThreadILj1512E9BarometerE
+08031e9c  w    O .rodata	00000014 _ZTV12WorkerThreadILj1512E9BarometerE
 00200362  w    F .text	00000000 VectorA4
 20020984 g     O .data	0000016c __global_locale
 0020e490 g     F .text	00000032 sdc_lld_send_cmd_short_crc
 00002f00 g       *ABS*	00000000 __process_stack_size__
 0020e2b0 g     F .text	00000094 sdc_lld_start
 0020e270 g     F .text	00000038 sdc_lld_init
-08033478 g     O .rodata	00000020 _ZTSN10__cxxabiv115__forced_unwindE
+08033460 g     O .rodata	00000020 _ZTSN10__cxxabiv115__forced_unwindE
 002091f0 g     F .text	00000068 _mmcsd_get_capacity
 00208fc0 g     F .text	000000a8 oqPutTimeout
 0020d240 g     F .text	00000148 usb_lld_init_endpoint
