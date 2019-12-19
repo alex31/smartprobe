@@ -15,19 +15,9 @@ A CODER :
       
      * passer en paramètres :
        + enable du log des valeurs brutes de l'IMU
-       + enable du log des valeurs AHRS
-         => deduire des deux params precedents si on lance le thread IMU ou pas       
 
-     * IMU : reglage initial à haute fréquence pour estimer les biais et la position initiales
-       ° clignotement particulier pour indiquer que la sonde doit rester immobile
-       ° aquisition et envoi des données dans l'ahrs à 4khz tant que l'on a pas une 2 secondes sans pic sur les
-         gyros
-       ° estimation des biais des gyros (moyenne) qui seront ensuite soustrait avant envoi dans l'ahrs
-       ° à partir de la moyenne de l'estimation des acceleros : calcul des angles d'euler puis conversion
-         en quaternion à utiliser comme valeur initiale de l'AHRS
-       ° une fois cette valeur initiale transmise, on peut generer des events à chaque fois que l'on
-         envoie des données IMU sur le blackboard -> sensorslog
-
+     * IMU :
+       + logguer l'attitude sur le sensor.log (ou attitude + valeurs brutes de l'IMU en fonction de la conf)
 
      * vecteur vent 3D :
        ° passer la matrice issue de la calibration en paramètre
@@ -49,9 +39,8 @@ GRANDES LIGNES :
    ° écrire des modules
         * syslog periodique de la charge de calcul
 	* ahrs
-	  ° qui puisse donner 2 angles si la donnée heading n'est pas disponible
-	                      3 angles si la donnée heading est disponible :
-          ° https://github.com/bitcraze/crazyflie-firmware/blob/master/src/modules/src/sensfusion6.c#L107
+	  ° qui donne 3 angles si la donnée heading est disponible :
+   
 
 	* watchdog IWDG -> test au boot, si il y a eu hardfault -> log
 	* recup de données gps -> ref horaire, calcul du cap, choix du format
