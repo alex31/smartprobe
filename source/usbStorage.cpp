@@ -50,6 +50,8 @@ bool UsbStorage::loop()
     chThdSleepMilliseconds(10);
   } while (palReadLine(LINE_USB_VBUS) == PAL_LOW);
   
+  chRegSetThreadName("UsbStorage:wait ahrs join");
+  ahrs.terminate().join();
   chRegSetThreadName("UsbStorage:wait sdcard join");
   sdcard.terminate().join();
   chRegSetThreadName("UsbStorage:wait showBB join");

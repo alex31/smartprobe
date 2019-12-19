@@ -310,7 +310,7 @@ UINCDIR =
 ULIBDIR =
 
 # List all user libraries here
-ULIBS = -lstdc++
+ULIBS = -lstdc++ -lm
 
 #
 # End of user defines

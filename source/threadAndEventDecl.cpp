@@ -13,3 +13,4 @@ Imu imu(NORMALPRIO);
 SdCard sdcard(NORMALPRIO);
 ShowBlackboard showBB(NORMALPRIO);
 ConfigurationFile confFile(CONFIGURATION_FILENAME);
+Ahrs		  ahrs(NORMALPRIO);

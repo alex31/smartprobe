@@ -8,6 +8,14 @@
 #include "ttyConsole.hpp"
 
 
+
+namespace {
+  BarometerData baroData{};
+  DiffPressureData diffPressData{};
+  ImuData imuData{};
+  Vec3f   attitude{};
+};
+
 bool ShowBlackboard::init()
 {
   return true;
@@ -21,11 +29,13 @@ bool ShowBlackboard::loop()
   baro.blackBoard.read(baroData);
   dp.blackBoard.read(diffPressData);
   imu.blackBoard.read(imuData);
+  ahrs.blackBoard.read(attitude);
 
   if (shouldSendSerialMessages()) {
     chprintf(chp, "%4.2f\t%3.2f\t"
 	     "%.4f\t%.4f\t%.4f\t"
 	     "%.2f\t%.2f\t%.2f\t"
+	     "%.2f\t%.2f\t"
 	     "%.2f\t%.1f\t\r\n",
 	     baroData.pressure,
 	     baroData.temp,
@@ -35,6 +45,8 @@ bool ShowBlackboard::loop()
 	     diffPressData[0].temp,
 	     diffPressData[1].temp,
 	     diffPressData[2].temp,
+	     attitude.v[0],
+	     attitude.v[1],
 	     adc.getPowerSupplyVoltage(),
 	     adc.getCoreTemp()   );
   }

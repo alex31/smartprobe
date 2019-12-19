@@ -18,7 +18,7 @@ using namespace std::literals;
 
 #define PARAMETERS_MAP                                          \
   {"thread.frequency.d_press", {100, RANGEINT(10, 1000) }},	\
-  {"thread.frequency.imu", {100, RANGEINT(10, 1000) }},		\
+  {"thread.frequency.imu", {100, RANGEINT(10, 4000) }},		\
   {"thread.frequency.stream", {20, RANGEINT(1, 100) }},		\
   {"sensor.barometer.lpf", {0, NAMESET({ LPS33HW_LPF_ODR_DIV_2, "div2"}, {LPS33HW_LPF_ODR_DIV_9, "div9"}, \
 				       {LPS33HW_LPF_ODR_DIV_20, "div20"}) }}, \
@@ -51,4 +51,5 @@ using namespace std::literals;
   {"sensor.imu.accrange", {0, NAMESET({ICM20600_RANGE_2G, "2g"}, \
 				      {ICM20600_RANGE_4G, "4g"}, \
 				      {ICM20600_RANGE_8G, "8g"}, \
-				      {ICM20600_RANGE_16G, "16g"}) }}
+				      {ICM20600_RANGE_16G, "16g"}) }}, \
+  {"sensor.imu.estimationLoopDuration_ms", {500, RANGEINT(10, 4000) }}

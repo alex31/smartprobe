@@ -22,10 +22,6 @@ private:
   friend WorkerThread<TH_SHOWBLACKBOARD::threadStackSize, ShowBlackboard>;
   bool init(void) final;
   bool loop(void) final;
-
-  BarometerData baroData{};
-  DiffPressureData diffPressData{};
-  ImuData imuData{};
 };
 
 
