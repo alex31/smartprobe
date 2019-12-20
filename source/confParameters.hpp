@@ -4,6 +4,7 @@
 
 using namespace std::literals;
 
+enum AhrsType {RAW_IMU=0, HEADLESS_AHRS, COMPLETE_AHRS};
 
 #ifdef OLD_EXAMPLE
  #define PARAMETERS_MAP                                         \
@@ -22,6 +23,9 @@ using namespace std::literals;
   {"thread.frequency.stream", {20, RANGEINT(1, 100) }},		\
   {"sensor.barometer.lpf", {0, NAMESET({ LPS33HW_LPF_ODR_DIV_2, "div2"}, {LPS33HW_LPF_ODR_DIV_9, "div9"}, \
 				       {LPS33HW_LPF_ODR_DIV_20, "div20"}) }}, \
+  {"ahrs.type", {1, NAMESET({RAW_IMU, "raw_imu"}, \
+			    {HEADLESS_AHRS, "headless_ahrs"}, \
+			    {COMPLETE_AHRS, "complete_ahrs"}) }}, \
   {"sensor.barometer.odr", {4, NAMESET({LPS33HW_POWER_DOWN, "powerdown"}, {LPS33HW_ODR_1_Hz, "1hz"}, \
 				       {LPS33HW_ODR_10_Hz, "10hz"}, {LPS33HW_ODR_25_Hz, "25hz"}, \
 				       {LPS33HW_ODR_50_Hz, "50hz"}, {LPS33HW_ODR_75_Hz, "75hz"}) }},	\

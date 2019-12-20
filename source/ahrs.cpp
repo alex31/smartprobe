@@ -27,7 +27,7 @@ static sysinterval_t 	chVTTimeElapsedSinceX (systime_t start)
 
 namespace {
   ImuData imuData{};
-  systime_t dbgTimeStamp{};
+  //  systime_t dbgTimeStamp{};
 
   constexpr float rad2deg(const float rad) {return rad * 180 / M_PI;}
 }
@@ -77,11 +77,11 @@ bool Ahrs::loop()
   sensfusion6GetEulerRPY(&attitude.v[0], &attitude.v[1], &attitude.v[2]);
   blackBoard.write(attitude);
 
-  if (chVTTimeElapsedSinceX(dbgTimeStamp) > TIME_MS2I(1000)) {
-    SdCard::logSyslog(Severity::Info, "dt = %.3f milliseconds",
-		      TIME_I2US(timeStamp-lastTimeStamp) / 1e3);
-    dbgTimeStamp = chVTGetSystemTimeX();
-  }
+  // if (chVTTimeElapsedSinceX(dbgTimeStamp) > TIME_MS2I(1000)) {
+  //   SdCard::logSyslog(Severity::Info, "dt = %.5f milliseconds",
+  // 		      TIME_I2US(timeStamp-lastTimeStamp) / 1e3);
+  //   dbgTimeStamp = chVTGetSystemTimeX();
+  // }
   
   return true;
 }

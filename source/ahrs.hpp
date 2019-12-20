@@ -6,7 +6,7 @@
 
 
 namespace TH_AHRS {
-static constexpr size_t threadStackSize = 1024U;
+static constexpr size_t threadStackSize = 1536U;
 }
 
 

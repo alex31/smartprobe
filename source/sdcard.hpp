@@ -5,6 +5,7 @@
 #include "adc.hpp"
 #include "imu.hpp"
 #include "differentialPressure.hpp"
+#include "confParameters.hpp"
 
 namespace TH_SDCARD {
 static constexpr size_t threadStackSize = 2048U;
@@ -35,11 +36,13 @@ private:
   uint32_t freeSpaceInKo = 0;
   FileDes syslogFd = -1;
   FileDes sensorsFd = -1;
+  AhrsType ahrsType;
 
   event_listener_t baroEvent, diffPressEvent, imuEvent;
   BarometerData baroData{};
   DiffPressureData diffPressData{};
   ImuData imuData{};
+  Vec3f   attitude{};
 };
 
 

@@ -40,7 +40,6 @@ bool SdCard::init()
   bool retVal = sdLogInit();
   if (retVal) {
     self = this;
-    writeSyslogHeader();
   }
   else
     self = nullptr;
@@ -52,10 +51,17 @@ bool SdCard::initInThreadContext()
 {
   // registerEvt must be done in the thread that will wait on event,
   // so cannot be done in init method which is call by the parent thread
-  
+
   baro.blackBoard.registerEvt(&baroEvent, BARO_EVT);
   dp.blackBoard.registerEvt(&diffPressEvent, PDIF_EVT);
   imu.blackBoard.registerEvt(&imuEvent, IMU_EVT);
+
+  // wait for the conf file to be read and dictionary initialised.
+  // any event are sent after this inititialisation, so we wait for
+  // the first event to wtite the header and launch the worker logger thread
+  chEvtWaitAny(ALL_EVENTS);
+  ahrsType = static_cast<AhrsType>(CONF("ahrs.type"));
+  writeSyslogHeader();
 
   return true;
 }
@@ -64,37 +70,58 @@ bool SdCard::initInThreadContext()
 bool SdCard::loop()
 {
   //  chEvtWaitAll(IMU_EVT | BARO_EVT | PDIF_EVT);
-
+  SdioError se;
   const eventmask_t event = chEvtWaitOneTimeout(PDIF_EVT, TIME_MS2I(1000)); // log each new differential sample
 
   if (event) {
     baro.blackBoard.read(baroData);
     dp.blackBoard.read(diffPressData);
-    imu.blackBoard.read(imuData);
-    
-    const auto se =
-      logSensors("%4.2f\t%3.2f\t"
-		 "%.4f\t%.4f\t%.4f\t"
-		 "%.2f\t%.2f\t%.2f\t"
-		 "%.4f\t%.4f\t%.4f\t"
-		 "%.4f\t%.4f\t%.4f\t"
-		 "%.2f\t%.1f\t",
-		 baroData.pressure,
-		 baroData.temp,
-		 diffPressData[0].pressure,
-		 diffPressData[1].pressure,
-		 diffPressData[2].pressure,
-		 diffPressData[0].temp,
-		 diffPressData[1].temp,
-		 diffPressData[2].temp,
-		 imuData.acc.v[0],
-		 imuData.acc.v[1],
-		 imuData.acc.v[2],
-		 imuData.gyro.v[0],
-		 imuData.gyro.v[1],
-		 imuData.gyro.v[2],
-		 adc.getPowerSupplyVoltage(),
-		 adc.getCoreTemp()   );
+
+    if (ahrsType == RAW_IMU) {
+      imu.blackBoard.read(imuData);
+      se = logSensors("%4.2f\t%3.2f\t"
+		      "%.4f\t%.4f\t%.4f\t"
+		      "%.2f\t%.2f\t%.2f\t"
+		      "%.4f\t%.4f\t%.4f\t"
+		      "%.4f\t%.4f\t%.4f\t"
+		      "%.2f\t%.1f\t",
+		      baroData.pressure,
+		      baroData.temp,
+		      diffPressData[0].pressure,
+		      diffPressData[1].pressure,
+		      diffPressData[2].pressure,
+		      diffPressData[0].temp,
+		      diffPressData[1].temp,
+		      diffPressData[2].temp,
+		      imuData.acc.v[0],
+		      imuData.acc.v[1],
+		      imuData.acc.v[2],
+		      imuData.gyro.v[0],
+		      imuData.gyro.v[1],
+		      imuData.gyro.v[2],
+		      adc.getPowerSupplyVoltage(),
+		      adc.getCoreTemp()   );
+    } else  {
+          ahrs.blackBoard.read(attitude);
+	  se = logSensors("%4.2f\t%3.2f\t"
+			  "%.4f\t%.4f\t%.4f\t"
+			  "%.2f\t%.2f\t%.2f\t"
+			  "%.4f\t%.4f\t%.4f\t"
+			  "%.2f\t%.1f\t",
+			  baroData.pressure,
+			  baroData.temp,
+			  diffPressData[0].pressure,
+			  diffPressData[1].pressure,
+			  diffPressData[2].pressure,
+			  diffPressData[0].temp,
+			  diffPressData[1].temp,
+			  diffPressData[2].temp,
+			  attitude.v[0],
+			  attitude.v[1],
+			  attitude.v[2],
+			  adc.getPowerSupplyVoltage(),
+			  adc.getCoreTemp()   );
+    }
     
     switch (se) {
     case SDLOG_FATFS_ERROR : DebugTrace("sdWrite sensors: Fatfs error");
@@ -220,7 +247,7 @@ void  SdCard::writeSyslogHeader(void)
 #endif
 #endif
 
-
+  if (ahrsType == RAW_IMU) {
   logSensors("baro.p baro.t "
 	     "dp[0].p "
 	     "dp[1].p "
@@ -237,6 +264,23 @@ void  SdCard::writeSyslogHeader(void)
 	     "vcc "
 	     "CoreTemp "
 	     );
+  } else  if (ahrsType == HEADLESS_AHRS) {
+  logSensors("baro.p baro.t "
+	     "dp[0].p "
+	     "dp[1].p "
+	     "dp[2].p "
+	     "dp[0].t "
+	     "dp[1].t "
+	     "dp[2].t "
+	     "pitch   "
+	     "roll   "
+	     "yaw   "
+	     "vcc "
+	     "CoreTemp "
+	     );
+  } else {
+    SdCard::logSyslog(Severity::Fatal, "ahrsType HEADLESS_COMPLETE not yet implemented");
+  }
 }
 
 
