@@ -56,6 +56,8 @@ int main (void)
      SdCard::logSyslog(Severity::Fatal, "IMU fail");
    } else if (not ahrs.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "Ahrs fail");
+   } else if (not relwind.run(TIME_IMMEDIATE)) {
+     SdCard::logSyslog(Severity::Fatal, "relative wind fail");
    } else if (not showBB.run(PERIOD("thread.frequency.stream"))) {
      SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
    } else if (not usbStorage.run(TIME_IMMEDIATE)) {

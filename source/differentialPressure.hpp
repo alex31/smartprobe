@@ -19,7 +19,7 @@ struct DiffPressureData {
   };
   
   std::array<PressTemp, 3> pt;
-  PressTemp& operator [] (const size_t index) {
+  PressTemp& operator[](const size_t index) {
     return pt[index];
   }
   

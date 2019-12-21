@@ -32,9 +32,6 @@ GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
             -Wvla-larger-than=128 -Wduplicated-branches -Wdangling-else \
             -Wformat-overflow=2 
 
-
-
-
 ifeq ($(BUILD),$(DEBUG)) 
   USE_OPT =  -Og -ggdb3  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
@@ -154,6 +151,7 @@ VARIOUS = $(RELATIVE)/COMMON/various
 USBD_LIB = $(VARIOUS)/Chibios-USB-Devices
 FROZEN_LIB = ../../../../frozen/include
 CTRE_LIB = ../../../.././compile-time-regular-expressions/single-header
+EIGEN_LIB = ../../../.././eigen
 
 
 
@@ -232,7 +230,7 @@ ASMXSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 INCDIR = $(CONFDIR) $(ALLINC) $(TLSFINC) \
          $(CHIBIOS)/os/various $(VARIOUS) $(VARIOUS_INCL) \
          $(STMEMSLPS33HWDIR) \
-         $(CTRE_LIB) $(FROZEN_LIB) \
+         $(CTRE_LIB) $(FROZEN_LIB) $(EIGEN_LIB) \
 	 $(USBD_LIB)/mass_storage
 
 #

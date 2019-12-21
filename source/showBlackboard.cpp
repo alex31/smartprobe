@@ -14,6 +14,7 @@ namespace {
   DiffPressureData diffPressData{};
   ImuData imuData{};
   Vec3f   attitude{};
+  AirSpeed relAirSpeed{};
 };
 
 bool ShowBlackboard::init()
@@ -30,12 +31,14 @@ bool ShowBlackboard::loop()
   dp.blackBoard.read(diffPressData);
   imu.blackBoard.read(imuData);
   ahrs.blackBoard.read(attitude);
+  relwind.blackBoard.read(relAirSpeed);
 
   if (shouldSendSerialMessages()) {
     chprintf(chp, "%4.2f\t%3.2f\t"
 	     "%.4f\t%.4f\t%.4f\t"
 	     "%.2f\t%.2f\t%.2f\t"
 	     "%.2f\t%.2f\t"
+	     "%.2f\t%.2f\t%.2f\t"
 	     "%.2f\t%.1f\t\r\n",
 	     baroData.pressure,
 	     baroData.temp,
@@ -47,6 +50,9 @@ bool ShowBlackboard::loop()
 	     diffPressData[2].temp,
 	     attitude.v[0],
 	     attitude.v[1],
+	     relAirSpeed.velocity,
+	     relAirSpeed.alpha,
+	     relAirSpeed.beta,
 	     adc.getPowerSupplyVoltage(),
 	     adc.getCoreTemp()   );
   }

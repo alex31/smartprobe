@@ -56,4 +56,22 @@ enum AhrsType {RAW_IMU=0, HEADLESS_AHRS, COMPLETE_AHRS};
 				      {ICM20600_RANGE_4G, "4g"}, \
 				      {ICM20600_RANGE_8G, "8g"}, \
 				      {ICM20600_RANGE_16G, "16g"}) }}, \
-  {"sensor.imu.estimationLoopDuration_ms", {500, RANGEINT(10, 4000) }}
+  {"sensor.imu.estimationLoopDuration_ms", {500, RANGEINT(10, 4000) }}, \
+  {"airspeed.calibration.m11", {1.15, NONAMESET}}, \
+  {"airspeed.calibration.m12", {0.0, NONAMESET}}, \
+  {"airspeed.calibration.m13", {0.0, NONAMESET}}, \
+  {"airspeed.calibration.m14", {6.0, NONAMESET}}, \
+  {"airspeed.calibration.m15", {6.0, NONAMESET}}, \
+  {"airspeed.calibration.m21", {0.0, NONAMESET}}, \
+  {"airspeed.calibration.m22", {15.0, NONAMESET}}, \
+  {"airspeed.calibration.m23", {0.0, NONAMESET}}, \
+  {"airspeed.calibration.m24", {0.0, NONAMESET}}, \
+  {"airspeed.calibration.m25", {0.0, NONAMESET}}, \
+  {"airspeed.calibration.m31", {0.0, NONAMESET}}, \
+  {"airspeed.calibration.m32", {0.0, NONAMESET}}, \
+  {"airspeed.calibration.m33", {11.0, NONAMESET}}, \
+  {"airspeed.calibration.m34", {0.0, NONAMESET}}, \
+  {"airspeed.calibration.m35", {0.0, NONAMESET}}, \
+  {"airspeed.calibration.bias.velocity", {0.0, NONAMESET}}, \
+  {"airspeed.calibration.bias.alpha", {0.0, NONAMESET}}, \
+  {"airspeed.calibration.bias.beta", {0.0, NONAMESET}}

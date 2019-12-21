@@ -13,6 +13,9 @@
 #include "ttyConsole.hpp"
 #include "sdcard.hpp"
 #include "hardwareConf.hpp"
+#include "cpp_heap_alloc.hpp"
+
+
 
 
 /*===========================================================================*/
@@ -22,8 +25,8 @@
 // declaration des prototypes de fonction
 // ces declarations sont necessaires pour remplir le tableau commands[] ci-dessous
 using cmd_func_t =  void  (BaseSequentialStream *lchp, int argc,const char * const argv[]);
-static cmd_func_t cmd_mem, cmd_uid, cmd_restart, cmd_param, cmd_close,
-  cmd_rtc, cmd_toggleSendSerialMessages;
+static cmd_func_t cmd_mem, cmd_uid, cmd_restart, cmd_param, cmd_close, 
+  cmd_rtc, cmd_toggleSendSerialMessages, cmd_eigen;
 #if CH_DBG_THREADS_PROFILING
 static cmd_func_t cmd_threads;
 #endif
@@ -47,6 +50,7 @@ static const ShellCommand commands[] = {
 
   {"restart", cmd_restart},	// reboot MCU
   {"close", cmd_close},	// reboot MCU
+  {"eigen", cmd_eigen},	// test eigen
   {"t", cmd_toggleSendSerialMessages},	// reboot MCU
   {NULL, NULL}			// marqueur de fin de tableau
 };
@@ -100,6 +104,49 @@ static void cmd_close(BaseSequentialStream *lchp, int argc,const char* const arg
   sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
   chThdSleepMilliseconds(300);
   sdLogFinish();
+}
+
+/*
+ a = np.array([[ 5, 1 ,3], 
+                  [ 1, 1 ,1], 
+                  [ 1, 2 ,1]])
+ b = np.array([1, 2, 3])
+
+ print a.dot(b)
+       array([16, 6, 8])
+ */
+static void cmd_eigen(BaseSequentialStream *lchp, int argc,const char* const argv[])
+{
+  using namespace Eigen;
+  (void) lchp;
+  Vector2f v2f[3];
+
+  if (argc != 0) {
+    if (argc < 4) {
+      chprintf(lchp, "not enough argument (need 4)\r\n");
+      return;
+    }
+    
+    v2f[0] << atof(argv[0]), atof(argv[1]);
+    v2f[1] << atof(argv[2]), atof(argv[3]);
+    v2f[2] = v2f[0] + v2f[1];
+    chprintf(lchp, "[%f, %f] + [%f, %f] = [%f, %f]\r\n",
+	     v2f[0](0), v2f[0](1), 
+	     v2f[1](0), v2f[1](1), 
+	     v2f[2](0), v2f[2](1));
+  }
+
+  Eigen::Matrix<float, 3, 3>  mat;
+  mat << 5, 1, 3,
+         1, 1, 1,
+         1, 2, 1;
+  
+  Eigen::Matrix<float, 3, 1> u(1, 2, 3);
+
+  auto r = mat * u;
+
+  chprintf(lchp, "u[%d*%d] = [%f, %f, %f]\r\n", u.rows(), u.cols(), u(0), u(1), u(2));
+  chprintf(lchp, "r[%d*%d] = [%f, %f, %f]\r\n", r.rows(), r.cols(), r(0), r(1), r(2));
 }
 
 

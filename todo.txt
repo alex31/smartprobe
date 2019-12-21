@@ -14,20 +14,11 @@ A TESTER :
 
   
 A CODER :
-      
-  
 
      * vecteur vent 3D :
-       ° integrer eigen
-       ° voir le mail / code de murat
-       ° passer la matrice issue de la calibration en paramètre :
-         C11 C12 C13 C14 C15
-         C21 C22 C23 C24 C25
-         C31 C32 C33 C34 C35
-       ° utiliser pression absolue, pression diff, temperatures air pour calculer un vecteur vent 3D
-        dans le repère de la smartprobe -> envoi vers blackboard  -> sensorslog
-       ° nouveau thread en attente sur PDIF_EVT et qui genere un AIRVEC_EVT (repère de la smartprobe)
-         l'event sera WIND_EVT pour le vecteur vent en repère terrestre.
+	 + conf : utiliser un rho calculé ou un rho standard 15° niveau de la mer
+	 + conf : delta T
+
 
 A AMELIORER :
 
@@ -69,7 +60,6 @@ GRANDES LIGNES :
 
 
    ° integration de librairies externes
-	* eigen ?
 	* module SerialMessage
 	* micro python pour coder du comportement via le fichier de conf
 	  sans avoir à reflasher ?
