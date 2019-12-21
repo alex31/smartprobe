@@ -49,19 +49,25 @@ bool UsbStorage::loop()
     palWaitLineTimeout(LINE_USB_VBUS, TIME_INFINITE);
     chThdSleepMilliseconds(10);
   } while (palReadLine(LINE_USB_VBUS) == PAL_LOW);
-  
-  chRegSetThreadName("UsbStorage:wait ahrs join");
-  ahrs.terminate().join();
-  chRegSetThreadName("UsbStorage:wait sdcard join");
-  sdcard.terminate().join();
-  chRegSetThreadName("UsbStorage:wait showBB join");
-  showBB.terminate().join();
 
+  if (not emergency) {
+    chRegSetThreadName("UsbStorage:wait dp join");
+    dp.terminate().join();
+    chRegSetThreadName("UsbStorage:wait baro join");
+    baro.terminate().join();
+    chRegSetThreadName("UsbStorage:wait imu join");
+    imu.terminate().join();
+    chRegSetThreadName("UsbStorage:wait sdcard join");
+    sdcard.terminate().join();
+    chRegSetThreadName("UsbStorage:wait showBB join");
+    showBB.terminate().join();
+  }
+  
   sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
   chThdSleepMilliseconds(200);
   sdLogFinish();
   chThdSleepMilliseconds(100);
-
+  
   DebugTrace("UsbStorage:connected");
   chRegSetThreadName("UsbStorage:connected");
   /* connect sdcard sdc interface sdio */

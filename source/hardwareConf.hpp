@@ -146,4 +146,3 @@ static constexpr float PS_VOLTAGE_ABSOLUTE_MINIMUM = 4.4f;
 static constexpr char ROOTDIR[] = "SMARTPROBE";
 static constexpr char SYSLOG_FILENAME[] = "syslog";
 static constexpr char CONFIGURATION_FILENAME[] = "smartprobe.conf";
-static constexpr float RHO = 1.225f;

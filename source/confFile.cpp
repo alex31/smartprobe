@@ -205,6 +205,7 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string &line
   {
     using namespace ctre::literals;
     constexpr auto line_match =  ctre::match<R"(([\w\.]+)\s*=\s*([\+\-]?[\w\.]+)\s*#?.*)">;
+    //constexpr auto line_match =  ctre::match<R"(([\w\.]+)\s*=\s*([^#\s]+))">;
     constexpr auto empty_match =  ctre::match<R"((\s*)|(\s*#.*))">;
     constexpr auto double_match =  ctre::match<R"([\+\-]?[\d\.]+)">;
     constexpr auto integer_match =  ctre::match<R"([\+\-]?[\d]+)">;
@@ -245,29 +246,31 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string &line
     	if (not resolveDefine(paramVal, param.validator)) {
 	  success = false;
     	  SdCard::logSyslog(Severity::Fatal, "define %s for key %s is NOT KNOWN",
-    		 std::get<std::string>(paramVal).c_str(), k.c_str());
+			    std::get<std::string>(paramVal).c_str(), k.c_str());
     	} else {
     	  // type of default should be compatible with value read in configuration file
     	  if (param.defaut.index() != paramVal.index()) {
-	     success = false;
     	    // authorized mismatch are : default is double and read value is int
-    	    if ((not std::holds_alternative<int>(paramVal)) ||
-    		(not std::holds_alternative<double>(param.defaut))) {
+    	    if (std::holds_alternative<int>(paramVal) &&
+    		std::holds_alternative<double>(param.defaut)) {
+	      paramVal = atof(v.c_str());
+	    } else {
     	      SdCard::logSyslog(Severity::Fatal, "mismatch type for key %s : "
 				"read %s instead of specified %s",
 				k.c_str(),
 				variantName[paramVal.index()],
 				variantName[param.defaut.index()]
 				);
+	      success = false;
     	    }
-    	  }
-    	  if (not validate(k, v, paramVal, param.validator)) {
+	  }
+	  if (not validate(k, v, paramVal, param.validator)) {
 	    success = false;
-    	    SdCard::logSyslog(Severity::Fatal, "value %s for key %s "
+	    SdCard::logSyslog(Severity::Fatal, "value %s for key %s "
 			      "does not validate constraints\n",
 			      v.c_str(), k.c_str());
-    	  }
-    	}
+	  }
+	}
       }
     } else if (empty_match(line)) {
       paramVal = std::monostate{};
@@ -278,7 +281,7 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string &line
     }
     return {success, k, paramVal};
   }
-
+  
   bool resolveDefine(value_variant_t &value, const validator_variant_t   &validator)
   {
     if (not std::holds_alternative<std::string>(value)) {
@@ -409,7 +412,7 @@ bool ConfigurationFile::readConfFile(void)
 {
   FIL fil;
   FRESULT rc;
-  char lineBuffer[120] = {0};
+  char lineBuffer[240] = {0};
   bool readFileSuccess = true;
 
   //  auto m_test = ConfigurationFile_AT(*this, "filename.sensors");
@@ -420,7 +423,12 @@ bool ConfigurationFile::readConfFile(void)
   }
    
   do {
-    f_gets(lineBuffer, sizeof(lineBuffer)-1, &fil);
+    char *ptr = f_gets(lineBuffer, sizeof(lineBuffer), &fil);
+    if (ptr == nullptr) {
+      SdCard::logSyslog(Severity::Warning,
+			"fatfs f_gets error on file %s", fileName);
+      goto fail;
+    }
     strtok(lineBuffer, "\r\n"); // remove CRLN
     const auto [success, key, value] = parseLine(lineBuffer);
     readFileSuccess = success & readFileSuccess;

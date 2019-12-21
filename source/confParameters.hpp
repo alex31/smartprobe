@@ -5,6 +5,7 @@
 using namespace std::literals;
 
 enum AhrsType {RAW_IMU=0, HEADLESS_AHRS, COMPLETE_AHRS};
+constexpr double ESTIMATE_ROW = 0.0;
 
 #ifdef OLD_EXAMPLE
  #define PARAMETERS_MAP                                         \
@@ -26,6 +27,7 @@ enum AhrsType {RAW_IMU=0, HEADLESS_AHRS, COMPLETE_AHRS};
   {"ahrs.type", {1, NAMESET({RAW_IMU, "raw_imu"}, \
 			    {HEADLESS_AHRS, "headless_ahrs"}, \
 			    {COMPLETE_AHRS, "complete_ahrs"}) }}, \
+  {"sensor.barometer.temperatureBias", {-5.0, RANGEDOUBLE(-15.0, 0.0) }}, \
   {"sensor.barometer.odr", {4, NAMESET({LPS33HW_POWER_DOWN, "powerdown"}, {LPS33HW_ODR_1_Hz, "1hz"}, \
 				       {LPS33HW_ODR_10_Hz, "10hz"}, {LPS33HW_ODR_25_Hz, "25hz"}, \
 				       {LPS33HW_ODR_50_Hz, "50hz"}, {LPS33HW_ODR_75_Hz, "75hz"}) }},	\
@@ -57,6 +59,7 @@ enum AhrsType {RAW_IMU=0, HEADLESS_AHRS, COMPLETE_AHRS};
 				      {ICM20600_RANGE_8G, "8g"}, \
 				      {ICM20600_RANGE_16G, "16g"}) }}, \
   {"sensor.imu.estimationLoopDuration_ms", {500, RANGEINT(10, 4000) }}, \
+  {"airspeed.rho", {ESTIMATE_ROW, RANGEDOUBLE(0.0, 2.0)}},			\
   {"airspeed.calibration.m11", {1.15, NONAMESET}}, \
   {"airspeed.calibration.m12", {0.0, NONAMESET}}, \
   {"airspeed.calibration.m13", {0.0, NONAMESET}}, \

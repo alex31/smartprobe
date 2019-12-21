@@ -34,7 +34,7 @@ bool ShowBlackboard::loop()
   relwind.blackBoard.read(relAirSpeed);
 
   if (shouldSendSerialMessages()) {
-    chprintf(chp, "%4.2f\t%3.2f\t"
+    chprintf(chp, "%4.2f\t%3.2f\t%f\t"
 	     "%.4f\t%.4f\t%.4f\t"
 	     "%.2f\t%.2f\t%.2f\t"
 	     "%.2f\t%.2f\t"
@@ -42,6 +42,7 @@ bool ShowBlackboard::loop()
 	     "%.2f\t%.1f\t\r\n",
 	     baroData.pressure,
 	     baroData.temp,
+	     baroData.rho,
 	     diffPressData[0].pressure,
 	     diffPressData[1].pressure,
 	     diffPressData[2].pressure,

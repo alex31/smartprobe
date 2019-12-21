@@ -10,7 +10,6 @@
 
 bool Barometer::init()
 {
-  bool retVal = true;
   static const LPS33HWConfig lpsConfig = {
 					  .i2cp = &BaroI2CD,
 					  .slaveAdr = LPS33HW_I2C_SLAVE_SA0_LOW,
@@ -19,6 +18,7 @@ bool Barometer::init()
 					  .blockDataUpdateEnable = true,
 					  .dataReadyItrEnable = true };
 
+  bool retVal = true;
   i2cStart(&BaroI2CD, &i2ccfg_1000);
   palEnableLineEvent(LINE_BARO_DRDY, PAL_EVENT_MODE_FALLING_EDGE);
   
@@ -28,7 +28,8 @@ bool Barometer::init()
     retVal = false;
     SdCard::logSyslog(Severity::Fatal, "lps33hw init FAIL");
   }
-  
+
+  airSensorDelta = CONF("sensor.barometer.temperatureBias");
   return retVal;
 }
 
@@ -47,8 +48,28 @@ bool Barometer::loop()
   }
   wdata.pressure = lps33GetPressure(&lpsDriver);
   wdata.temp = lps33GetTemp(&lpsDriver);
+  estimateRho();
   blackBoard.write(wdata);
 
   return true;
 }
 
+/*
+    
+   ρ = p / {Rspecific * T} 
+
+where:
+
+    ρ =  = air density (kg/m³)[note 1]
+    p = = absolute pressure (Pa)[note 1]
+    T = absolute temperature (K)[note 1]
+    Rspecific =  287.058 J/(kg·K) 
+ */
+
+constexpr float Rspecific =  287.058f;
+const float kelvinDiff = 273.15f;
+void Barometer::estimateRho(void)
+{
+  const float kelvinCorrectedTemp = kelvinDiff + wdata.temp + airSensorDelta;
+  wdata.rho =  (wdata.pressure * 100) / (Rspecific * kelvinCorrectedTemp);
+}

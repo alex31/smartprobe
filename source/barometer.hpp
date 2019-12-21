@@ -11,8 +11,9 @@ namespace TH_BARO {
 struct BarometerData {
   float pressure;
   float temp;
+  float rho;
   bool operator != (const BarometerData &other) {
-    return (pressure != other.pressure) || (temp != other.temp);
+    return (pressure != other.pressure) || (temp != other.temp) || (rho != other.rho);
   };
 };
 
@@ -25,6 +26,8 @@ private:
   friend WorkerThread<TH_BARO::threadStackSize, Barometer>;
   bool init(void) final;
   bool loop(void) final;
+  void estimateRho(void);
+  float airSensorDelta{};
   BarometerData wdata = {};
   LPS33HWDriver lpsDriver;
 };

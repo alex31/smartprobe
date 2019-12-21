@@ -35,6 +35,8 @@ namespace {
   Vector5f vec;
   Vector3f bias;
   DiffPressureData dpData{};
+  BarometerData baroData{};
+  float stdRho{};
 }
 
 #warning "See Murat Bronz or Gautier Hattenberger for numpy vs eigen matrix operation"
@@ -69,29 +71,31 @@ namespace {
 
 bool Relwind::init()
 {
-    cal <<
-      CONF("airspeed.calibration.m11"),
-      CONF("airspeed.calibration.m12"),
-      CONF("airspeed.calibration.m13"),
-      CONF("airspeed.calibration.m14"),
-      CONF("airspeed.calibration.m15"),
-      CONF("airspeed.calibration.m21"),
-      CONF("airspeed.calibration.m22"),
-      CONF("airspeed.calibration.m23"),
-      CONF("airspeed.calibration.m24"),
-      CONF("airspeed.calibration.m25"),
-      CONF("airspeed.calibration.m31"),
-      CONF("airspeed.calibration.m32"),
-      CONF("airspeed.calibration.m33"),
-      CONF("airspeed.calibration.m34"),
-      CONF("airspeed.calibration.m35");
- 
+  cal <<
+    CONF("airspeed.calibration.m11"),
+    CONF("airspeed.calibration.m12"),
+    CONF("airspeed.calibration.m13"),
+    CONF("airspeed.calibration.m14"),
+    CONF("airspeed.calibration.m15"),
+    CONF("airspeed.calibration.m21"),
+    CONF("airspeed.calibration.m22"),
+    CONF("airspeed.calibration.m23"),
+    CONF("airspeed.calibration.m24"),
+    CONF("airspeed.calibration.m25"),
+    CONF("airspeed.calibration.m31"),
+    CONF("airspeed.calibration.m32"),
+    CONF("airspeed.calibration.m33"),
+    CONF("airspeed.calibration.m34"),
+    CONF("airspeed.calibration.m35");
+  
   bias <<
     CONF("airspeed.calibration.bias.velocity"),
     CONF("airspeed.calibration.bias.alpha"),
     CONF("airspeed.calibration.bias.beta");
-    
-    return true;
+  
+  stdRho = CONF("airspeed.rho");
+  
+  return true;
 }
 
 bool Relwind::initInThreadContext()
@@ -109,6 +113,14 @@ bool Relwind::loop()
 {
   chEvtWaitOne(PDIF_EVT);
   dp.blackBoard.read(dpData);
+  float rho;
+  
+  if (stdRho == 0.0f) {
+    baro.blackBoard.read(baroData);
+    rho = baroData.rho;
+  } else {
+    rho = stdRho;
+  }
 
   const float& p0 = dpData[0].pressure;
   const float& p1 = dpData[1].pressure;
@@ -126,7 +138,7 @@ bool Relwind::loop()
   if ((q < 0.0f) || isnan(X[0]) or isnan(X[1]) or isnan(X[2])) {
     airSpeed.velocity =  airSpeed.beta = airSpeed.alpha = 0.0f;
   } else {
-    airSpeed.velocity = sqrtf(q / (0.5f * RHO));
+    airSpeed.velocity = sqrtf(q / (0.5f * rho));
     airSpeed.beta = X[1] + bias[1];
     airSpeed.alpha = X[2] + bias[2];
   }
