@@ -31454,7 +31454,7 @@ OUTPUT(build/smartprobe_debug.elf elf32-littlearm)
  .comment       0x0000000000000079       0x7a ./build/obj/showBlackboard.o
  .comment       0x0000000000000079       0x7a ./build/obj/main.o
 
-.debug_line     0x0000000000000000    0x934d5
+.debug_line     0x0000000000000000    0x934cf
  .debug_line    0x0000000000000000       0xea ./build/obj/crt0_v7m.o
  .debug_line    0x00000000000000ea       0x83 ./build/obj/vectors.o
  .debug_line    0x000000000000016d       0x9c ./build/obj/chcoreasm_v7m.o
@@ -31534,12 +31534,12 @@ OUTPUT(build/smartprobe_debug.elf elf32-littlearm)
  .debug_line    0x000000000006362d     0x37f5 ./build/obj/threadAndEventDecl.o
  .debug_line    0x0000000000066e22     0x3093 ./build/obj/differentialPressure.o
  .debug_line    0x0000000000069eb5     0x3656 ./build/obj/imu.o
- .debug_line    0x000000000006d50b     0x557f ./build/obj/relativeWind.o
- .debug_line    0x0000000000072a8a    0x13ba2 ./build/obj/confFile.o
- .debug_line    0x000000000008662c     0x760c ./build/obj/ttyConsole.o
- .debug_line    0x000000000008dc38      0xe4c ./build/obj/blinker.o
- .debug_line    0x000000000008ea84     0x20d5 ./build/obj/showBlackboard.o
- .debug_line    0x0000000000090b59     0x297c ./build/obj/main.o
+ .debug_line    0x000000000006d50b     0x5579 ./build/obj/relativeWind.o
+ .debug_line    0x0000000000072a84    0x13ba2 ./build/obj/confFile.o
+ .debug_line    0x0000000000086626     0x760c ./build/obj/ttyConsole.o
+ .debug_line    0x000000000008dc32      0xe4c ./build/obj/blinker.o
+ .debug_line    0x000000000008ea7e     0x20d5 ./build/obj/showBlackboard.o
+ .debug_line    0x0000000000090b53     0x297c ./build/obj/main.o
 
 .debug_info     0x0000000000000000   0x3fd0f9
  .debug_info    0x0000000000000000       0x26 ./build/obj/crt0_v7m.o

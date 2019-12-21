@@ -121,14 +121,14 @@ bool Relwind::loop()
   
   vec << p0, p10, p20, p11, p22;
   const Vector3f X = cal * vec;
-  const float q = X(0) + bias(0);
+  const float q = X[0] + bias[0];
   
-  if ((q < 0.0f) || isnan(X(0)) or isnan(X(1)) or isnan(X(2))) {
+  if ((q < 0.0f) || isnan(X[0]) or isnan(X[1]) or isnan(X[2])) {
     airSpeed.velocity =  airSpeed.beta = airSpeed.alpha = 0.0f;
   } else {
     airSpeed.velocity = sqrtf(q / (0.5f * RHO));
-    airSpeed.beta = X(1) + bias(1);
-    airSpeed.alpha = X(2) + bias(2);
+    airSpeed.beta = X[1] + bias[1];
+    airSpeed.alpha = X[2] + bias[2];
   }
   blackBoard.write(airSpeed);
   
