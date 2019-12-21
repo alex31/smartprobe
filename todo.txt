@@ -15,9 +15,6 @@ A TESTER :
   
 A CODER :
 
-     * vecteur vent 3D :
-	 + conf : utiliser un rho calculé ou un rho standard 15° niveau de la mer
-	 + conf : delta T
 
 
 A AMELIORER :
@@ -42,9 +39,6 @@ GRANDES LIGNES :
 	* recup de données gps -> ref horaire, calcul du cap, choix du format
 	  dans le fichier de conf :
 	  ø nmea ou trame pprz (ou autre ?)
-	* calcul d'un vecteur vent dans le repaire de la sonde une fois
-	  la matrice de transformation issue de la calibration fournie
-	  dans le fichier de config
 	* calcul d'un vecteur vent dans le repaire terrestre si l'ahrs est
 	  en mode 3 angles et que l'autopilote fournit un vecteur vitesse en 3D
 	* code pour les leds :
