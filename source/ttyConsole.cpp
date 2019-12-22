@@ -14,6 +14,7 @@
 #include "sdcard.hpp"
 #include "hardwareConf.hpp"
 #include "cpp_heap_alloc.hpp"
+#include "tlsf_malloc.h"
 
 
 
@@ -26,7 +27,7 @@
 // ces declarations sont necessaires pour remplir le tableau commands[] ci-dessous
 using cmd_func_t =  void  (BaseSequentialStream *lchp, int argc,const char * const argv[]);
 static cmd_func_t cmd_mem, cmd_uid, cmd_restart, cmd_param, cmd_close, 
-  cmd_rtc, cmd_toggleSendSerialMessages, cmd_eigen;
+  cmd_rtc, cmd_toggleSendSerialMessages, cmd_eigen, cmd_chk;
 #if CH_DBG_THREADS_PROFILING
 static cmd_func_t cmd_threads;
 #endif
@@ -51,6 +52,7 @@ static const ShellCommand commands[] = {
   {"restart", cmd_restart},	// reboot MCU
   {"close", cmd_close},	// reboot MCU
   {"eigen", cmd_eigen},	// test eigen
+  {"chk", cmd_chk},	// check tlsh heap consistancy
   {"t", cmd_toggleSendSerialMessages},	// reboot MCU
   {NULL, NULL}			// marqueur de fin de tableau
 };
@@ -149,7 +151,13 @@ static void cmd_eigen(BaseSequentialStream *lchp, int argc,const char* const arg
   chprintf(lchp, "r[%d*%d] = [%f, %f, %f]\r\n", r.rows(), r.cols(), r(0), r(1), r(2));
 }
 
-
+static void cmd_chk(BaseSequentialStream *lchp, int argc,const char* const argv[])
+{
+  (void) argc;
+  (void) argv;
+  chprintf(lchp, "tlsf check = %d (0 is ok)\r\n",
+	   tlsf_check_r(&HEAP_DEFAULT));
+}
 /*
   conf :
 

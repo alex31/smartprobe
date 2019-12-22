@@ -100,7 +100,7 @@ bool SdCard::loop()
 		      imuData.gyro.v[1],
 		      imuData.gyro.v[2],
 		      adc.getPowerSupplyVoltage(),
-		      adc.getCoreTemp()   );
+		      adc.getCoreTemp());
     } else  {
           ahrs.blackBoard.read(attitude);
 	  se = logSensors("%4.2f\t%3.2f\t"
@@ -108,19 +108,11 @@ bool SdCard::loop()
 			  "%.2f\t%.2f\t%.2f\t"
 			  "%.4f\t%.4f\t%.4f\t"
 			  "%.2f\t%.1f\t",
-			  baroData.pressure,
-			  baroData.temp,
-			  diffPressData[0].pressure,
-			  diffPressData[1].pressure,
-			  diffPressData[2].pressure,
-			  diffPressData[0].temp,
-			  diffPressData[1].temp,
-			  diffPressData[2].temp,
-			  attitude.v[0],
-			  attitude.v[1],
-			  attitude.v[2],
-			  adc.getPowerSupplyVoltage(),
-			  adc.getCoreTemp()   );
+			  baroData.pressure, baroData.temp,
+			  diffPressData[0].pressure, diffPressData[1].pressure, diffPressData[2].pressure,
+			  diffPressData[0].temp, diffPressData[1].temp, diffPressData[2].temp,
+			  attitude.v[0], attitude.v[1], attitude.v[2],
+			  adc.getPowerSupplyVoltage(), adc.getCoreTemp());
     }
     
     switch (se) {
@@ -289,12 +281,12 @@ SdioError SdCard::logSensors (const char* fmt, ...)
   va_list ap;
 
   if (self != nullptr) {
-    va_start(ap, fmt);
     sdLogWriteLog(self->sensorsFd, "[%.3f] : ",
 		  TIME_I2MS(chVTGetSystemTimeX())/1000.0f);
-    auto retVal = sdLogvWriteLog(self->sensorsFd, fmt, ap);
-    sdLogWriteLog(self->sensorsFd, "\r\n");
+    va_start(ap, fmt);
+    auto retVal = sdLogvWriteLog(self->sensorsFd, fmt, &ap);
     va_end(ap);
+    sdLogWriteLog(self->sensorsFd, "\r\n");
     return retVal;
   } else {
     return SDLOG_NOT_READY;
@@ -303,24 +295,25 @@ SdioError SdCard::logSensors (const char* fmt, ...)
 
 SdioError SdCard::logSyslog (const Severity severity, const char* fmt, ...)
 {
-  va_list ap;
+  va_list ap, apc;
   
 #ifdef TRACE 
 #include "printf.h"
   {
     va_start(ap, fmt);
-    chvprintf(chp, fmt, ap);
+    va_copy(apc, ap);
+    chvprintf(chp, fmt, apc);
+    va_end(apc);
     chprintf(chp, "\r\n");
-    va_end(ap);
   }
 #endif
   
   if (self != nullptr) {
-    va_start(ap, fmt);
     sdLogWriteLog(self->syslogFd, "[%.3f] %s : ",
 		   TIME_I2MS(chVTGetSystemTimeX())/1000.0f,
 		   severityName.at(severity).data());
-    auto retVal = sdLogvWriteLog(self->syslogFd, fmt, ap);
+    va_start(ap, fmt);
+    auto retVal = sdLogvWriteLog(self->syslogFd, fmt, &ap);
     sdLogWriteLog(self->syslogFd, "\r\n");
     va_end(ap);
     return retVal;
@@ -331,20 +324,20 @@ SdioError SdCard::logSyslog (const Severity severity, const char* fmt, ...)
 
 SdioError SdCard::logSyslogRaw (const char* fmt, ...)
 {
-  va_list ap;
+  va_list ap, apc;
   
 #ifdef TRACE 
 #include "printf.h"
   {
     va_start(ap, fmt);
-    chvprintf(chp, fmt, ap);
-    va_end(ap);
+    va_copy(apc, ap);
+    chvprintf(chp, fmt, apc);
+    va_end(apc);
   }
 #endif
   
   if (self != nullptr) {
-    va_start(ap, fmt);
-    auto retVal = sdLogvWriteLog(self->syslogFd, fmt, ap);
+    auto retVal = sdLogvWriteLog(self->syslogFd, fmt, &ap);
     va_end(ap);
     return retVal;
   } else {

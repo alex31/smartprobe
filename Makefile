@@ -33,7 +33,7 @@ GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
             -Wformat-overflow=2 
 
 ifeq ($(BUILD),$(DEBUG)) 
-  USE_OPT =  -Og -ggdb3  -Wall -Wextra \
+  USE_OPT =  -O0 -g -ggdb3  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	    $(GCC_DIAG)
   PROJECT = smartprobe_debug
@@ -93,12 +93,12 @@ endif
 
 ##############################################################################
 # Architecture or project specific options
-#
+# 0x2F00
 # Stack size to be allocated to the Cortex-M process stack. This stack is
 # the stack used by the main() thread.
 ifeq ($(USE_PROCESS_STACKSIZE),)
 ifeq ($(BUILD),$(DEBUG))
-  USE_PROCESS_STACKSIZE = 0x2F00
+  USE_PROCESS_STACKSIZE = 0x4F00
 else
   USE_PROCESS_STACKSIZE = 0x1B00
 endif
