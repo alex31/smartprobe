@@ -5,6 +5,7 @@
 using namespace std::literals;
 
 enum AhrsType {RAW_IMU=0, HEADLESS_AHRS, COMPLETE_AHRS};
+enum DPressureFetchedParameter {PRESSURE_ONLY=0, PRESSURE_TEMPERATURE};
 constexpr double ESTIMATE_ROW = 0.0;
 
 #ifdef OLD_EXAMPLE
@@ -31,6 +32,9 @@ constexpr double ESTIMATE_ROW = 0.0;
   {"sensor.barometer.odr", {4, NAMESET({LPS33HW_POWER_DOWN, "powerdown"}, {LPS33HW_ODR_1_Hz, "1hz"}, \
 				       {LPS33HW_ODR_10_Hz, "10hz"}, {LPS33HW_ODR_25_Hz, "25hz"}, \
 				       {LPS33HW_ODR_50_Hz, "50hz"}, {LPS33HW_ODR_75_Hz, "75hz"}) }},	\
+  {"sensor.d_press.fetched", {1, NAMESET({PRESSURE_ONLY , "P"}, \
+					 {PRESSURE_TEMPERATURE, "P+T"}) }} ,	\
+  {"sensor.d_press.fetchTempFrequency", {1, RANGEINT(1, 1000) }},		\
   {"sensor.imu.gyrorate", {1, NAMESET({ICM20600_GYRO_RATE_8K_BW_250, "8khz_bw250"},	\
 				      {ICM20600_GYRO_RATE_1K_BW_176, "1khz_bw176"},	\
 				      {ICM20600_GYRO_RATE_1K_BW_92 , "1khz_bw92"},		\

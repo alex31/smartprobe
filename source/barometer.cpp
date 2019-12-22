@@ -19,7 +19,7 @@ bool Barometer::init()
 					  .dataReadyItrEnable = true };
 
   bool retVal = true;
-  i2cStart(&BaroI2CD, &i2ccfg_1000);
+  i2cStart(&BaroI2CD, &i2ccfg_400);
   palEnableLineEvent(LINE_BARO_DRDY, PAL_EVENT_MODE_FALLING_EDGE);
   
   const msg_t status = lps33Start(&lpsDriver, &lpsConfig);

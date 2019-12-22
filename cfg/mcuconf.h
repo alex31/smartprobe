@@ -411,7 +411,7 @@
 
 
 #define CHPRINTF_USE_STDLIB		    1
-#define CHPRINTF_BUFFER_SIZE		    160
+#define CHPRINTF_BUFFER_SIZE	SDLOG_MAX_MESSAGE_LEN	    
 
 
 #endif /* _MCUCONF_H_ */

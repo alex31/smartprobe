@@ -120,7 +120,7 @@ namespace {
       snprintf (buffer, sizeof(buffer), "%s", std::get<bool>(dvar) ? "true" : "false");
     } else  if (std::holds_alternative<std::string_view>(dvar)) {
       const auto &sv = std::get<std::string_view>(dvar);
-      strncpy(buffer, std::string(sv).c_str(), sizeof(buffer));
+      strlcpy(buffer, std::string(sv).c_str(), sizeof(buffer));
     } 
     
     return std::string(buffer);
@@ -138,7 +138,7 @@ namespace {
     } else  if (std::holds_alternative<bool>(vvar)) {
       snprintf (buffer, sizeof(buffer), "%s", std::get<bool>(vvar) ? "true" : "false");
     } else  if (std::holds_alternative<std::string>(vvar)) {
-      strncpy(buffer, std::get<std::string>(vvar).c_str(), sizeof(buffer));
+      strlcpy(buffer, std::get<std::string>(vvar).c_str(), sizeof(buffer));
     } 
     
     return std::string(buffer);
@@ -391,17 +391,6 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string &line
     return {it != conf_dict.end(), it->second};
   }
 
-  size_t strnlen(const char *str, const size_t maxlen)
-  {
-    size_t i;
-    for (i=0; i<maxlen; i++) {
-      if (str[i] == 0)
-	break;
-    }
-    return i;
-  }
-  
-  
 } // end of anonymous namespace
 
 bool ConfigurationFile::populate(void)
