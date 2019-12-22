@@ -20,9 +20,12 @@ A CODER :
 A AMELIORER :
 
    ° fix
+        * test au niveau de f_gets dans confFile.cpp : as-t'on le EOL (cas des lignes longues) 
 	* recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
 	* tester presence du dirty bit : indiquer par led et syslog
 	* porter fsck.vfat de linux à MCU pour permettre un fsck automatique si dirty bit au demarrage
+	* porter confFile.cpp sous linux pour le debugger avec valgrind pour s'assurer qu'il n'y a pas
+	  de pb memoire
 
 
 
@@ -31,16 +34,20 @@ GRANDES LIGNES :
 	  
    ° écrire des modules
         * syslog periodique de la charge de calcul
+	
 	* ahrs
 	  ° qui donne 3 angles si la donnée heading est disponible :
    
 
 	* watchdog IWDG -> test au boot, si il y a eu hardfault -> log
+	
 	* recup de données gps -> ref horaire, calcul du cap, choix du format
 	  dans le fichier de conf :
 	  ø nmea ou trame pprz (ou autre ?)
+	  
 	* calcul d'un vecteur vent dans le repaire terrestre si l'ahrs est
 	  en mode 3 angles et que l'autopilote fournit un vecteur vitesse en 3D
+	  
 	* code pour les leds :
 	  ° utiliser un module WS2812 : choix du timer, DMA
 	  ° blink verte  : heartbeat
@@ -48,7 +55,10 @@ GRANDES LIGNES :
 	  ° uniquement en cas d'erreur grave :
 	  °  blink jaune : pb sdcard
 	  °  blink rouge : pb capteur
+	  
         * quand on teste le 5V, tester aussi le 3.3V en utilisant la reference interne
+
+	* si le fichier de log fini en .txt : log texte, sinon : log binaire
 	    
 
 

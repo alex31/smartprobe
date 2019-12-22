@@ -391,6 +391,16 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string &line
     return {it != conf_dict.end(), it->second};
   }
 
+  size_t strnlen(const char *str, const size_t maxlen)
+  {
+    size_t i;
+    for (i=0; i<maxlen; i++) {
+      if (str[i] == 0)
+	break;
+    }
+    return i;
+  }
+  
   
 } // end of anonymous namespace
 
@@ -427,6 +437,16 @@ bool ConfigurationFile::readConfFile(void)
     if (ptr == nullptr) {
       SdCard::logSyslog(Severity::Warning,
 			"fatfs f_gets error on file %s", fileName);
+      goto fail;
+    }
+    if (strnlen(lineBuffer, sizeof(lineBuffer)) > (sizeof(lineBuffer)-2)) {
+      lineBuffer[40] = 0;
+      SdCard::logSyslog(Severity::Fatal,
+			"fatfs f_gets error on file %s "
+			"line beginning by ''%s''\r\ntoo long for the internal buffer size %d",
+			fileName,
+			lineBuffer,
+			sizeof(lineBuffer));
       goto fail;
     }
     strtok(lineBuffer, "\r\n"); // remove CRLN
