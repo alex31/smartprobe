@@ -311,6 +311,7 @@ float sensfusion6GetInvThrustCompensationForTilt()
 // See: http://en.wikipedia.org/wiki/Fast_inverse_square_root
 float invSqrt(float x)
 {
+#ifdef HAVE_NO_FPU_UNIT
   float halfx = 0.5f * x;
   float y = x;
   long i = *(long*)&y;
@@ -318,6 +319,9 @@ float invSqrt(float x)
   y = *(float*)&i;
   y = y * (1.5f - (halfx * y * y));
   return y;
+#else
+  return 1.0 / sqrtf(x);
+#endif
 }
 
 static float sensfusion6GetAccZ(const float ax, const float ay, const float az)

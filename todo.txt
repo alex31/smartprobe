@@ -15,7 +15,7 @@ A TESTER :
   
 A CODER :
 
-
+     * timestamp avec une decimale de plus si freq d'acquisition près de la milliseconde ou en dessous
 
 A AMELIORER :
 
