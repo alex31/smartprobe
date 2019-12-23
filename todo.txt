@@ -20,8 +20,10 @@ A CODER :
 A AMELIORER :
 
    ° fix
-	* syslog.txt : trouver un moyen de le flusher completement après chaque ecriture
-	  (petit fichier, pas d'impact dur les perfos)
+
+	* centraliser les tailles des piles des threads dans hardwareConf.hpp
+	* normaliser ces tailles
+	* renommer  hardwareConf.hpp en commonDefinition.hpp
 	* (LOW PRIO) utiliser le fork chibios d'ardupilot pour voir si le fix I²C evite des pb (en cas de crash inexpliqués)
 
 	* (LOW PRIO)recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
