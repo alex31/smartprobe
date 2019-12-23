@@ -39,7 +39,7 @@ namespace {
   float stdRho{};
 }
 
-#warning "See Murat Bronz or Gautier Hattenberger for numpy vs eigen matrix operation"
+#warning "Murat Bronz has yet to confirm that the calculus is correct"
 /*
   there is some concern about porting matrix operation from numpy to Eigein
   convention for matrix size is Line x Col
@@ -125,7 +125,6 @@ bool Relwind::loop()
   const float& p0 = dpData[0].pressure;
   const float& p1 = dpData[1].pressure;
   const float& p2 = dpData[2].pressure;
-
   const float p10 = p1 / p0;
   const float p11=  p10 * p10;
   const float p20=  p2 / p0;

@@ -33,7 +33,7 @@ GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
             -Wformat-overflow=2 
 
 ifeq ($(BUILD),$(DEBUG)) 
-  USE_OPT =  -O0 -g -ggdb3  -Wall -Wextra \
+  USE_OPT =  -Ofast -g -ggdb3  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	    $(GCC_DIAG)
   PROJECT = smartprobe_debug

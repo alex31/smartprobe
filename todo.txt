@@ -20,7 +20,24 @@ A CODER :
 A AMELIORER :
 
    ° fix
-	* tester si vsnprintf est bien reentrant
+	* WTF !!! vsnprintf de newlib et ses copains ne sont pas rentrants quand on affiche des float,
+	  la faute à la fonction dtoa. Vu que ces fonctions sont reentrantes dans la libC standard, le man
+	  dit que c'est reentrant :-(
+
+	  + utiliser struct _reent reent =  _REENT_INIT(reent) et
+	  + _snprintf_r(&reent, buffer ,
+                sizeof(buffer), "%f %6.2f %6.6f", f, f*f*f, f*f);
+	  + la struct reent prend 2K sur la pile
+	  + vu que le chprintf serialise les appels il n'est pas gene par ça quand on l'utilise seul
+	  + sdLog serialise aussi les appels : donc pas de pb si utilisé seul
+	  + par contre on ne peut pas utiliser sdLog et chprintf avec des float en même temps :
+	    memory corruption -> unhandled exception -> quelques heures de debug
+
+	  + solution envisagée : avoir une struct reent declarée statique pour le module sdLog
+	                         sdLog l'utilise
+				 probleme : ça oblige à utiliser le sprintf de la libc, on ne peut 
+				 plus utiliser la version light (mais incomplete) fournie par printf.c
+				 
 	* proteger le dictionaire des config par un mutex (accesseur etc)
 	* lecture de conf : predimensionner les std::string, buffer[80] ??
 	* utiliser le fork chibios d'ardupilot pour voir si le fix I²C evite des pb

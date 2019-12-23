@@ -9,7 +9,7 @@
 
 
 namespace TH_SHOWBLACKBOARD {
-static constexpr size_t threadStackSize = 1024U;
+static constexpr size_t threadStackSize = 1536U;
 }
 
 class ShowBlackboard : public WorkerThread<TH_SHOWBLACKBOARD::threadStackSize,
