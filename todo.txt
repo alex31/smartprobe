@@ -15,7 +15,8 @@ A TESTER :
   
 A CODER :
 
-     * timestamp avec une decimale de plus si freq d'acquisition en dessous de 5 millisecondes
+  ° verifier coherence entre entête et contenu de sdlog, ajout sortie IMU et vecteur vent relatif
+  ° afficher le vecteur vent relatif dans l'outil perl
 
 A AMELIORER :
 

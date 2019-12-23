@@ -22,6 +22,8 @@ namespace {
 	{Severity::Fatal, "FATAL"},
 	{Severity::Internal, "INTERNAL (please report bug)"}
     });
+
+  bool highTimeStampPrecision;
 }
 
 static constexpr uint32_t operator"" _seconde (unsigned long long int duration)
@@ -62,7 +64,7 @@ bool SdCard::initInThreadContext()
   // the first event to wtite the header and launch the worker logger thread
   chEvtWaitAny(ALL_EVENTS);
   ahrsType = static_cast<AhrsType>(CONF("ahrs.type"));
-
+  highTimeStampPrecision = CONF("thread.frequency.d_press") >= 100;
   return true;
 }
 
@@ -281,8 +283,8 @@ SdioError SdCard::logSensors (const char* fmt, ...)
   va_list ap;
 
   if (self != nullptr) {
-    sdLogWriteLog(self->sensorsFd, "[%.3f] : ",
-		  TIME_I2MS(chVTGetSystemTimeX())/1000.0f);
+    sdLogWriteLog(self->sensorsFd, highTimeStampPrecision ? "[%.4f] : " :  "[%.3f] : ",
+		  TIME_I2US(chVTGetSystemTimeX())/1e6f);
     va_start(ap, fmt);
     auto retVal = sdLogvWriteLog(self->sensorsFd, fmt, &ap);
     va_end(ap);
