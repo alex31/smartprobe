@@ -6,8 +6,6 @@
 #include "printf.h"
 #include "threadAndEventDecl.hpp"
 #include "ttyConsole.hpp"
-#include <reent.h>
-
 
 
 
@@ -17,8 +15,6 @@ namespace {
   ImuData imuData{};
   Vec3f   attitude{};
   AirSpeed relAirSpeed{};
-  struct _reent reent =  _REENT_INIT(reent);
-  char bp[240];
 };
 
 bool ShowBlackboard::init()
@@ -38,7 +34,7 @@ bool ShowBlackboard::loop()
   relwind.blackBoard.read(relAirSpeed);
 
   if (shouldSendSerialMessages()) {
-    const size_t count = _snprintf_r(&reent, bp, sizeof(bp),
+    DebugTrace(
 		"%4.2f\t%3.2f\t%f\t"
 		"%.4f\t%.4f\t%.4f\t"
 		"%.2f\t%.2f\t%.2f\t"
@@ -61,7 +57,6 @@ bool ShowBlackboard::loop()
 		relAirSpeed.beta,
 		adc.getPowerSupplyVoltage(),
 		adc.getCoreTemp()   );
-    streamWrite(chp, reinterpret_cast<uint8_t *>(bp), count);
   }
 
   return true;

@@ -52,6 +52,7 @@ bool SdCard::initInThreadContext()
   // registerEvt must be done in the thread that will wait on event,
   // so cannot be done in init method which is call by the parent thread
 
+  writeSyslogHeader();
   baro.blackBoard.registerEvt(&baroEvent, BARO_EVT);
   dp.blackBoard.registerEvt(&diffPressEvent, PDIF_EVT);
   imu.blackBoard.registerEvt(&imuEvent, IMU_EVT);
@@ -61,7 +62,6 @@ bool SdCard::initInThreadContext()
   // the first event to wtite the header and launch the worker logger thread
   chEvtWaitAny(ALL_EVENTS);
   ahrsType = static_cast<AhrsType>(CONF("ahrs.type"));
-  writeSyslogHeader();
 
   return true;
 }
@@ -316,6 +316,7 @@ SdioError SdCard::logSyslog (const Severity severity, const char* fmt, ...)
     auto retVal = sdLogvWriteLog(self->syslogFd, fmt, &ap);
     sdLogWriteLog(self->syslogFd, "\r\n");
     va_end(ap);
+    sdLogFlushLog(self->syslogFd);
     return retVal;
   } else {
     return SDLOG_NOT_READY;

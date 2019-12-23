@@ -15,38 +15,18 @@ A TESTER :
   
 A CODER :
 
-     * timestamp avec une decimale de plus si freq d'acquisition près de la milliseconde ou en dessous
+     * timestamp avec une decimale de plus si freq d'acquisition en dessous de 5 millisecondes
 
 A AMELIORER :
 
    ° fix
-	* WTF !!! vsnprintf de newlib et ses copains ne sont pas rentrants quand on affiche des float,
-	  la faute à la fonction dtoa. Vu que ces fonctions sont reentrantes dans la libC standard, le man
-	  dit que c'est reentrant :-(
-
-	  + utiliser struct _reent reent =  _REENT_INIT(reent) et
-	  + _snprintf_r(&reent, buffer ,
-                sizeof(buffer), "%f %6.2f %6.6f", f, f*f*f, f*f);
-	  + la struct reent prend 2K sur la pile
-	  + vu que le chprintf serialise les appels il n'est pas gene par ça quand on l'utilise seul
-	  + sdLog serialise aussi les appels : donc pas de pb si utilisé seul
-	  + par contre on ne peut pas utiliser sdLog et chprintf avec des float en même temps :
-	    memory corruption -> unhandled exception -> quelques heures de debug
-
-	  + solution envisagée : avoir une struct reent declarée statique pour le module sdLog
-	                         sdLog l'utilise
-				 probleme : ça oblige à utiliser le sprintf de la libc, on ne peut 
-				 plus utiliser la version light (mais incomplete) fournie par printf.c
-				 
 	* syslog.txt : trouver un moyen de le flusher completement après chaque ecriture
 	  (petit fichier, pas d'impact dur les perfos)
-	* proteger le dictionaire des config par un mutex (accesseur etc)
-	* lecture de conf : predimensionner les std::string, buffer[80] ??
-	* utiliser le fork chibios d'ardupilot pour voir si le fix I²C evite des pb
+	* (LOW PRIO) utiliser le fork chibios d'ardupilot pour voir si le fix I²C evite des pb (en cas de crash inexpliqués)
 
-	* recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
-	* tester presence du dirty bit : indiquer par led et syslog
-	* porter fsck.vfat de linux à MCU pour permettre un fsck automatique si dirty bit au demarrage
+	* (LOW PRIO)recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
+	* (LOW PRIO) tester presence du dirty bit : indiquer par led et syslog
+	* (LOW PRIO) porter fsck.vfat de linux à MCU pour permettre un fsck automatique si dirty bit au demarrage
 
 
 
@@ -66,6 +46,11 @@ GRANDES LIGNES :
 	* recup de données gps -> ref horaire, calcul du cap, choix du format
 	  dans le fichier de conf :
 	  ø nmea ou trame pprz (ou autre ?)
+
+	* choix pour la liaison série out :
+	  choix de la vitesse
+	  choix du format : shell avec out des données togglable en mode ascii
+	  ou sorties binaires (format pprz + ?)
 	  
 	* calcul d'un vecteur vent dans le repaire terrestre si l'ahrs est
 	  en mode 3 angles et que l'autopilote fournit un vecteur vitesse en 3D

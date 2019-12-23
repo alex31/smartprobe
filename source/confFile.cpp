@@ -54,6 +54,7 @@ namespace {
   {
     std::string rep;
     char buffer[80];
+    rep.reserve(63);
     
     if (std::holds_alternative<frozen::set<named_val_t, N>>(vtor)) {
       const frozen::set<named_val_t, N> &set = std::get<frozen::set<named_val_t, N>>(vtor);
@@ -218,7 +219,8 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string &line
 
     bool success = true;
     value_variant_t paramVal= std::monostate{};
-    std::string k = "";
+    std::string k;
+    k.reserve(63);
     
     if (auto [whole, key, val] = line_match(line); whole) {
       k = key;
@@ -395,6 +397,7 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string &line
 
 bool ConfigurationFile::populate(void)
 {
+  chMtxLock(&mu);
   bool success = readConfFile();
   if (not success)
     success = writeConfFile();
@@ -402,8 +405,9 @@ bool ConfigurationFile::populate(void)
   if (success) {
     success = verifyNotFilledParameters();
   }
+  chMtxUnlock(&mu);
   syslogInfoParameters();
-
+  
   return success;
 }
 
@@ -575,7 +579,11 @@ void ConfigurationFile::syslogInfoParameters(void)
 
 const value_variant_t& ConfigurationFile::operator[]  (const std::string_view key) 
 {
-  return dictionary[std::string(key)];
+  chMtxLock(&mu);
+  const value_variant_t& ret = dictionary[std::string(key)];
+  chMtxUnlock(&mu);
+  
+  return ret;
 }
 
 #pragma GCC diagnostic pop
