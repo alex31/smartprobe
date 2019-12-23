@@ -38,11 +38,11 @@ A AMELIORER :
 				 probleme : ça oblige à utiliser le sprintf de la libc, on ne peut 
 				 plus utiliser la version light (mais incomplete) fournie par printf.c
 				 
+	* syslog.txt : trouver un moyen de le flusher completement après chaque ecriture
+	  (petit fichier, pas d'impact dur les perfos)
 	* proteger le dictionaire des config par un mutex (accesseur etc)
 	* lecture de conf : predimensionner les std::string, buffer[80] ??
 	* utiliser le fork chibios d'ardupilot pour voir si le fix I²C evite des pb
-	* porter confFile.cpp sous linux pour le debugger avec valgrind pour trouver les pb mémoire
-	  (double free ?)	
 
 	* recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
 	* tester presence du dirty bit : indiquer par led et syslog
