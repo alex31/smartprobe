@@ -34,7 +34,7 @@ bool ShowBlackboard::loop()
   relwind.blackBoard.read(relAirSpeed);
 
   if (shouldSendSerialMessages()) {
-    DebugTrace(
+    chprintf(chp,
 		"%4.2f\t%3.2f\t%f\t"
 		"%.4f\t%.4f\t%.4f\t"
 		"%.2f\t%.2f\t%.2f\t"

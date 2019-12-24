@@ -11,15 +11,15 @@ GIT_VERSION += $(shell git rev-parse --abbrev-ref HEAD) : sha
 GIT_VERSION += $(shell git describe --abbrev=4 --dirty --always --tags)
 
 #$(info $$GIT_VERSION is [${GIT_VERSION}])
-
-DEBUG := DEBUG
+OPT_DMAX := DMAX
+OPT_DSPEED := DSPEED
+OPT_DNT := DNT
+OPT_DEBUG := DEBUG
 OPT_SPEED := SPEED
 OPT_SIZE := SIZE
 
 ifeq 	($(BUILD),)
-	BUILD := $(DEBUG)
-#BUILD := $(OPT_SPEED)
-#BUILD := $(OPT_SIZE)
+	BUILD := $(OPT_DEBUG)
 endif
 
 GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
@@ -32,18 +32,61 @@ GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
             -Wvla-larger-than=128 -Wduplicated-branches -Wdangling-else \
             -Wformat-overflow=2 
 
-ifeq ($(BUILD),$(DEBUG)) 
+ifeq ($(BUILD),$(OPT_DEBUG)) 
   USE_OPT =  -Og -ggdb3  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	    $(GCC_DIAG)
   PROJECT = smartprobe_debug
+  USE_PROCESS_STACKSIZE = 0x1F00
+  UDEFS = -DTRACE  -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
+          -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1
+
 endif
+
+ifeq ($(BUILD),$(OPT_DMAX)) 
+  USE_OPT =  -O0 -g -ggdb3  -Wall -Wextra \
+	    -falign-functions=16 -fomit-frame-pointer \
+	    $(GCC_DIAG)
+  PROJECT = smartprobe_debug
+  USE_PROCESS_STACKSIZE = 0x3F00
+  UDEFS = -DTRACE  -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
+          -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1
+
+endif
+
+
+ifeq ($(BUILD),$(OPT_DSPEED)) 
+  USE_OPT =  -Ofast -g -ggdb3  -Wall -Wextra \
+	    -falign-functions=16 -fomit-frame-pointer \
+	    $(GCC_DIAG)
+  PROJECT = smartprobe_debug
+  USE_PROCESS_STACKSIZE = 0x1F00
+  UDEFS = -DTRACE  -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 \
+          -DCH_DBG_ENABLE_CHECKS=0 -DCH_DBG_ENABLE_ASSERTS=0 -DTLSF_DEBUG=0 -D_DEBUG=0
+
+endif
+
+ifeq ($(BUILD),$(OPT_DNT)) 
+  USE_OPT =  -Og -ggdb3  -Wall -Wextra \
+	    -falign-functions=16 -fomit-frame-pointer \
+	    $(GCC_DIAG)
+  PROJECT = smartprobe_debug
+  USE_PROCESS_STACKSIZE = 0x2F00
+  UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
+          -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1
+
+endif
+
+
 
 ifeq ($(BUILD),$(OPT_SPEED)) 
   USE_OPT =  -Ofast -flto=4  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	     $(GCC_DIAG)
   PROJECT = smartprobe_speed
+  USE_PROCESS_STACKSIZE = 0x1B00
+  UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
+        -DCH_DBG_ENABLE_ASSERTS=0
 endif
 
 ifeq ($(BUILD),$(OPT_SIZE)) 
@@ -52,6 +95,9 @@ ifeq ($(BUILD),$(OPT_SIZE))
             --specs=nano.specs \
 	     $(GCC_DIAG)
   PROJECT = smartprobe_size
+  USE_PROCESS_STACKSIZE = 0x1B00
+  UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
+        -DCH_DBG_ENABLE_ASSERTS=0
 endif
 
 
@@ -96,13 +142,6 @@ endif
 # 0x2F00
 # Stack size to be allocated to the Cortex-M process stack. This stack is
 # the stack used by the main() thread.
-ifeq ($(USE_PROCESS_STACKSIZE),)
-ifeq ($(BUILD),$(DEBUG))
-  USE_PROCESS_STACKSIZE = 0x4F00
-else
-  USE_PROCESS_STACKSIZE = 0x1B00
-endif
-endif
 
 # Stack size to the allocated to the Cortex-M main/exceptions stack. This
 # stack is used for processing interrupts and exceptions.
@@ -281,24 +320,11 @@ CPPWARN = -Wall -Wextra -Wundef
 #
 
 # List all user C define here, like -D_DEBUG=1
-ifeq ($(BUILD),$(DEBUG))
-UDEFS = -DTRACE  -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 -DCH_DBG_ENABLE_CHECKS=1 \
-        -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1
-else
-UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
-        -DCH_DBG_ENABLE_ASSERTS=0
-endif
-
 UDEFS += -DCTRE_STRING_IS_UTF8=1 -DFROZEN_NO_EXCEPTIONS=1 -DGIT_VERSION="$(GIT_VERSION)"
 
 # Define ASM defines here
-ifeq ($(BUILD),$(DEBUG))
-UADEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 -DCH_DBG_ENABLE_CHECKS=1 \
-         -DCH_DBG_ENABLE_ASSERTS=1  -DTLSF_DEBUG=1 -D_DEBUG=1
-else
-UADEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
-         -DCH_DBG_ENABLE_ASSERTS=0
-endif
+UADEFS = $(UDEFS)
+
 
 
 # List all user directories here

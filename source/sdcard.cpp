@@ -297,12 +297,13 @@ SdioError SdCard::logSensors (const char* fmt, ...)
 
 SdioError SdCard::logSyslog (const Severity severity, const char* fmt, ...)
 {
-  va_list ap, apc;
+  va_list ap;
+  va_start(ap, fmt);
   
 #ifdef TRACE 
 #include "printf.h"
   {
-    va_start(ap, fmt);
+    va_list apc;
     va_copy(apc, ap);
     chvprintf(chp, fmt, apc);
     va_end(apc);
@@ -312,9 +313,8 @@ SdioError SdCard::logSyslog (const Severity severity, const char* fmt, ...)
   
   if (self != nullptr) {
     sdLogWriteLog(self->syslogFd, "[%.3f] %s : ",
-		   TIME_I2MS(chVTGetSystemTimeX())/1000.0f,
-		   severityName.at(severity).data());
-    va_start(ap, fmt);
+		  TIME_I2MS(chVTGetSystemTimeX())/1000.0f,
+		  severityName.at(severity).data());
     auto retVal = sdLogvWriteLog(self->syslogFd, fmt, &ap);
     sdLogWriteLog(self->syslogFd, "\r\n");
     va_end(ap);
@@ -327,12 +327,13 @@ SdioError SdCard::logSyslog (const Severity severity, const char* fmt, ...)
 
 SdioError SdCard::logSyslogRaw (const char* fmt, ...)
 {
-  va_list ap, apc;
+  va_list ap;
   
+  va_start(ap, fmt);
 #ifdef TRACE 
 #include "printf.h"
   {
-    va_start(ap, fmt);
+    va_list apc;
     va_copy(apc, ap);
     chvprintf(chp, fmt, apc);
     va_end(apc);

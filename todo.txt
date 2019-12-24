@@ -23,7 +23,7 @@ A AMELIORER :
    ° fix
 
 	* centraliser les tailles des piles des threads dans hardwareConf.hpp
-	* normaliser ces tailles
+	* normaliser les tailles des piles ds threads
 	* renommer  hardwareConf.hpp en commonDefinition.hpp
 	* (LOW PRIO) utiliser le fork chibios d'ardupilot pour voir si le fix I²C evite des pb (en cas de crash inexpliqués)
 
