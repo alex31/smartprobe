@@ -1,10 +1,7 @@
 #pragma once
 #include "workerClass.hpp"
+#include "hardwareConf.hpp"
 
-
-namespace TH_ADC {
-static constexpr size_t threadStackSize = 320U;
-}
 
 
 class Adc : public WorkerThread<TH_ADC::threadStackSize, Adc> {

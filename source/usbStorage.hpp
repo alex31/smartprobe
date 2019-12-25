@@ -1,9 +1,6 @@
 #pragma once
 #include "workerClass.hpp"
-
-namespace TH_USBSTORAGE {
-static constexpr size_t threadStackSize = 1512U;
-}
+#include "hardwareConf.hpp"
 
 class UsbStorage : public WorkerThread<TH_USBSTORAGE::threadStackSize, UsbStorage> {
 public:

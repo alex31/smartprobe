@@ -5,11 +5,10 @@
 #include "adc.hpp"
 #include "imu.hpp"
 #include "differentialPressure.hpp"
+#include "relativeWind.hpp"
 #include "confParameters.hpp"
+#include "hardwareConf.hpp"
 
-namespace TH_SDCARD {
-static constexpr size_t threadStackSize = 2048U;
-}
 
 enum class Severity {Debug, Info, Warning, Fatal, Internal};
 
@@ -31,6 +30,7 @@ private:
   bool loop(void) final;
   bool sdLogInit(void);
   void writeSyslogHeader(void);
+  void writeSensorlogHeader(void);
 
   static SdCard *self;
   uint32_t freeSpaceInKo = 0;
@@ -39,10 +39,6 @@ private:
   AhrsType ahrsType;
 
   event_listener_t baroEvent, diffPressEvent, imuEvent;
-  BarometerData baroData{};
-  DiffPressureData diffPressData{};
-  ImuData imuData{};
-  Vec3f   attitude{};
 };
 
 

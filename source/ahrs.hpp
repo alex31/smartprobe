@@ -3,11 +3,7 @@
 #include "imu.hpp"
 #include "sdcard.hpp"
 #include "stdutil.h"
-
-
-namespace TH_AHRS {
-static constexpr size_t threadStackSize = 1536U;
-}
+#include "hardwareConf.hpp"
 
 
 class Ahrs : public WorkerThread<TH_AHRS::threadStackSize,

@@ -3,11 +3,8 @@
 #include "imu.hpp"
 #include "sdcard.hpp"
 #include "stdutil.h"
+#include "hardwareConf.hpp"
 
-
-namespace TH_RELWIND {
-static constexpr size_t threadStackSize = 1536U;
-}
 
 struct AirSpeed {
   float velocity;

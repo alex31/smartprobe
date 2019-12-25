@@ -14,6 +14,11 @@
   
 
 namespace {
+  BarometerData baroData{};
+  DiffPressureData diffPressData{};
+  ImuData imuData{};
+  Vec3f   attitude{};
+  AirSpeed relAirSpeed{};
   
   constexpr auto severityName = frozen::make_map<Severity, frozen::string> ({
 	{Severity::Debug, "DEBUG"},
@@ -61,10 +66,11 @@ bool SdCard::initInThreadContext()
 
   // wait for the conf file to be read and dictionary initialised.
   // any event are sent after this inititialisation, so we wait for
-  // the first event to wtite the header and launch the worker logger thread
+  // the first event to write the header and launch the worker logger thread
   chEvtWaitAny(ALL_EVENTS);
   ahrsType = static_cast<AhrsType>(CONF("ahrs.type"));
   highTimeStampPrecision = CONF("thread.frequency.d_press") >= 100;
+  writeSensorlogHeader();
   return true;
 }
 
@@ -78,11 +84,13 @@ bool SdCard::loop()
   if (event) {
     baro.blackBoard.read(baroData);
     dp.blackBoard.read(diffPressData);
-
+    relwind.blackBoard.read(relAirSpeed);
+    
     if (ahrsType == RAW_IMU) {
       imu.blackBoard.read(imuData);
       se = logSensors("%4.2f\t%3.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
+		      "%.2f\t%.2f\t%.2f\t"
 		      "%.2f\t%.2f\t%.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
 		      "%.4f\t%.4f\t%.4f\t"
@@ -95,6 +103,9 @@ bool SdCard::loop()
 		      diffPressData[0].temp,
 		      diffPressData[1].temp,
 		      diffPressData[2].temp,
+		      relAirSpeed.velocity,
+		      relAirSpeed.alpha,
+		      relAirSpeed.beta,
 		      imuData.acc.v[0],
 		      imuData.acc.v[1],
 		      imuData.acc.v[2],
@@ -108,11 +119,19 @@ bool SdCard::loop()
 	  se = logSensors("%4.2f\t%3.2f\t"
 			  "%.4f\t%.4f\t%.4f\t"
 			  "%.2f\t%.2f\t%.2f\t"
+			  "%.2f\t%.2f\t%.2f\t"
 			  "%.4f\t%.4f\t%.4f\t"
 			  "%.2f\t%.1f\t",
 			  baroData.pressure, baroData.temp,
-			  diffPressData[0].pressure, diffPressData[1].pressure, diffPressData[2].pressure,
-			  diffPressData[0].temp, diffPressData[1].temp, diffPressData[2].temp,
+			  diffPressData[0].pressure,
+			  diffPressData[1].pressure,
+			  diffPressData[2].pressure,
+			  diffPressData[0].temp,
+			  diffPressData[1].temp,
+			  diffPressData[2].temp,
+			  relAirSpeed.velocity,
+			  relAirSpeed.alpha,
+			  relAirSpeed.beta,
 			  attitude.v[0], attitude.v[1], attitude.v[2],
 			  adc.getPowerSupplyVoltage(), adc.getCoreTemp());
     }
@@ -240,7 +259,10 @@ void  SdCard::writeSyslogHeader(void)
   logSyslog(Severity::Info, "Build time:   %s%s%s", __DATE__, " - ", __TIME__);
 #endif
 #endif
+}
 
+void  SdCard::writeSensorlogHeader(void)
+{
   if (ahrsType == RAW_IMU) {
   logSensors("baro.p baro.t "
 	     "dp[0].p "
@@ -249,6 +271,9 @@ void  SdCard::writeSyslogHeader(void)
 	     "dp[0].t "
 	     "dp[1].t "
 	     "dp[2].t "
+	     "velocity "
+	     "alpha "
+	     "beta "
 	     "acc.x "
 	     "acc.y "
 	     "acc.z "
@@ -266,6 +291,9 @@ void  SdCard::writeSyslogHeader(void)
 	     "dp[0].t "
 	     "dp[1].t "
 	     "dp[2].t "
+	     "velocity "
+	     "alpha "
+	     "beta "
 	     "pitch   "
 	     "roll   "
 	     "yaw   "

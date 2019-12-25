@@ -2,11 +2,9 @@
 #include "workerClass.hpp"
 #include "blackBoard.hpp"
 #include "spiPeriphICM20600.h"
+#include "hardwareConf.hpp"
 #include <array>
 
-namespace TH_IMU {
-static constexpr size_t threadStackSize = 1024U;
-}
 
 enum class ImuKindOfInit {BiasEstimation=0, Measure};
 constexpr const char*  imuKindOfInitStr[] = {"Bias Estimation", "Measure"};

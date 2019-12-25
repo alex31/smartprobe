@@ -1,9 +1,6 @@
 #pragma once
 #include "workerClass.hpp"
-
-namespace TH_BLINKER {
-static constexpr size_t threadStackSize = 320U;
-}
+#include "hardwareConf.hpp"
 
 class Blinker : public WorkerThread<TH_BLINKER::threadStackSize, Blinker> {
 public:

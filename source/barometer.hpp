@@ -3,10 +3,7 @@
 #include "workerClass.hpp"
 #include "blackBoard.hpp"
 #include "i2cMaster.h"
-
-namespace TH_BARO {
-  static constexpr size_t threadStackSize = 1512U;
-}
+#include "hardwareConf.hpp"
 
 struct BarometerData {
   float pressure;

@@ -5,12 +5,7 @@
 #include "imu.hpp"
 #include "differentialPressure.hpp"
 #include "sdcard.hpp"
-
-
-
-namespace TH_SHOWBLACKBOARD {
-static constexpr size_t threadStackSize = 1536U;
-}
+#include "hardwareConf.hpp"
 
 class ShowBlackboard : public WorkerThread<TH_SHOWBLACKBOARD::threadStackSize,
 					   ShowBlackboard> {

@@ -146,3 +146,35 @@ static constexpr float PS_VOLTAGE_ABSOLUTE_MINIMUM = 4.4f;
 static constexpr char ROOTDIR[] = "SMARTPROBE";
 static constexpr char SYSLOG_FILENAME[] = "syslog";
 static constexpr char CONFIGURATION_FILENAME[] = "smartprobe.conf";
+
+
+namespace TH_BLINKER {
+static constexpr size_t threadStackSize = 512U;
+}
+namespace TH_SDCARD {
+static constexpr size_t threadStackSize = 2048U;
+}
+namespace TH_SHOWBLACKBOARD {
+static constexpr size_t threadStackSize = 1536U;
+}
+namespace TH_ADC {
+static constexpr size_t threadStackSize = 512U;
+}
+namespace TH_USBSTORAGE {
+static constexpr size_t threadStackSize = 1536U;
+}
+namespace TH_IMU {
+static constexpr size_t threadStackSize = 1024U;
+}
+namespace TH_DIFFPRESS {
+static constexpr size_t threadStackSize = 1536U;
+}
+namespace TH_BARO {
+  static constexpr size_t threadStackSize = 1536U;
+}
+namespace TH_AHRS {
+static constexpr size_t threadStackSize = 1536U;
+}
+namespace TH_RELWIND {
+static constexpr size_t threadStackSize = 1536U;
+}

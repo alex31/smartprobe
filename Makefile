@@ -37,7 +37,7 @@ ifeq ($(BUILD),$(OPT_DEBUG))
 	    -falign-functions=16 -fomit-frame-pointer \
 	    $(GCC_DIAG)
   PROJECT = smartprobe_debug
-  USE_PROCESS_STACKSIZE = 0x1F00
+  USE_PROCESS_STACKSIZE = 0x2800
   UDEFS = -DTRACE  -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
           -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1
 
@@ -60,7 +60,7 @@ ifeq ($(BUILD),$(OPT_DSPEED))
 	    -falign-functions=16 -fomit-frame-pointer \
 	    $(GCC_DIAG)
   PROJECT = smartprobe_debug
-  USE_PROCESS_STACKSIZE = 0x1F00
+  USE_PROCESS_STACKSIZE = 0x2800
   UDEFS = -DTRACE  -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 \
           -DCH_DBG_ENABLE_CHECKS=0 -DCH_DBG_ENABLE_ASSERTS=0 -DTLSF_DEBUG=0 -D_DEBUG=0
 
@@ -84,7 +84,7 @@ ifeq ($(BUILD),$(OPT_SPEED))
 	    -falign-functions=16 -fomit-frame-pointer \
 	     $(GCC_DIAG)
   PROJECT = smartprobe_speed
-  USE_PROCESS_STACKSIZE = 0x1B00
+  USE_PROCESS_STACKSIZE = 0x2000
   UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
         -DCH_DBG_ENABLE_ASSERTS=0
 endif
@@ -95,7 +95,7 @@ ifeq ($(BUILD),$(OPT_SIZE))
             --specs=nano.specs \
 	     $(GCC_DIAG)
   PROJECT = smartprobe_size
-  USE_PROCESS_STACKSIZE = 0x1B00
+  USE_PROCESS_STACKSIZE = 0x2000
   UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
         -DCH_DBG_ENABLE_ASSERTS=0
 endif
