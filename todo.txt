@@ -15,21 +15,26 @@ A TESTER :
   
 A CODER :
 
-  ° verifier coherence entre entête et contenu de sdlog, ajout sortie IMU et vecteur vent relatif
+  ° verifier coherence entre entête et contenu de sdlog
+  ° ajout valeurs AHRS et vecteur vent relatif
   ° afficher le vecteur vent relatif dans l'outil perl
+  ° centraliser les tailles des piles des threads dans hardwareConf.hpp
+  ° normaliser les tailles des piles ds threads
+  ° renommer  hardwareConf.hpp en commonDefinition.hpp
 
 A AMELIORER :
 
    ° fix
 
-	* centraliser les tailles des piles des threads dans hardwareConf.hpp
-	* normaliser les tailles des piles ds threads
-	* renommer  hardwareConf.hpp en commonDefinition.hpp
+	* copier sur mac le fichier cubemx manquant en allant le chercher sur une machine linux
+	* module nmea : autoriser des caractères wildcard
 	* (LOW PRIO) utiliser le fork chibios d'ardupilot pour voir si le fix I²C evite des pb (en cas de crash inexpliqués)
 
 	* (LOW PRIO)recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
 	* (LOW PRIO) tester presence du dirty bit : indiquer par led et syslog
 	* (LOW PRIO) porter fsck.vfat de linux à MCU pour permettre un fsck automatique si dirty bit au demarrage
+	* utiliser module UART (DMA) au lieu de serial pour les I/O sur la liaison série ? a
+
 
 
 

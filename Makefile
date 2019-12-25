@@ -56,7 +56,7 @@ endif
 
 
 ifeq ($(BUILD),$(OPT_DSPEED)) 
-  USE_OPT =  -Ofast -g -ggdb3  -Wall -Wextra \
+  USE_OPT =  -Ofast -flto=4 -fno-fast-math -g -ggdb3  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	    $(GCC_DIAG)
   PROJECT = smartprobe_debug
@@ -80,7 +80,7 @@ endif
 
 
 ifeq ($(BUILD),$(OPT_SPEED)) 
-  USE_OPT =  -Ofast -flto=4  -Wall -Wextra \
+  USE_OPT =  -Ofast -fno-fast-math -flto=4  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	     $(GCC_DIAG)
   PROJECT = smartprobe_speed

@@ -202,11 +202,12 @@ namespace {
 
 
 
-std::tuple<bool, std::string, value_variant_t> parseLine(const std::string &line)
+std::tuple<bool, std::string, value_variant_t> parseLine(const std::string_view line)
   {
     using namespace ctre::literals;
-    constexpr auto line_match =  ctre::match<R"(([\w\.]+)\s*=\s*([\+\-]?[\w\.]+)\s*#?.*)">;
-    //constexpr auto line_match =  ctre::match<R"(([\w\.]+)\s*=\s*([^#\s]+))">;
+    //    constexpr auto line_match =  ctre::match<R"(([\w\.]+)\s*=\s*([\+\-]?[\w\.]+)\s*#?.*)">;
+    //    constexpr auto line_match =  ctre::match<R"(([\w\.]+)\s*=\s*([^\s#]+))">;
+    constexpr auto line_match =  ctre::match<R"(([\w\.]+)\s*=\s*(\S+)\s*)">;
     constexpr auto empty_match =  ctre::match<R"((\s*)|(\s*#.*))">;
     constexpr auto double_match =  ctre::match<R"([\+\-]?[\d\.]+)">;
     constexpr auto integer_match =  ctre::match<R"([\+\-]?[\d]+)">;
@@ -278,7 +279,7 @@ std::tuple<bool, std::string, value_variant_t> parseLine(const std::string &line
       paramVal = std::monostate{};
     } else {
       success = false;
-      paramVal = std::string("syntax error on line : ") + line;
+      paramVal = std::string("syntax error on line : ") + std::string(line);
       SdCard::logSyslog(Severity::Fatal, "%s", std::get<std::string>(paramVal).c_str());
     }
     return {success, k, paramVal};
@@ -442,7 +443,7 @@ bool ConfigurationFile::readConfFile(void)
 			sizeof(lineBuffer));
       goto fail;
     }
-    strtok(lineBuffer, "\r\n"); // remove CRLN
+    strtok(lineBuffer, "\r\n#"); // remove CRLN and comments
     const auto [success, key, value] = parseLine(lineBuffer);
     readFileSuccess = success & readFileSuccess;
     if (success && not std::holds_alternative<std::monostate>(value)) {
