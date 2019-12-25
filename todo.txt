@@ -26,7 +26,6 @@ A AMELIORER :
 
    ° fix
 
-	* copier sur mac le fichier cubemx manquant en allant le chercher sur une machine linux
 	* module nmea : autoriser des caractères wildcard
 	* (LOW PRIO) utiliser le fork chibios d'ardupilot pour voir si le fix I²C evite des pb (en cas de crash inexpliqués)
 
