@@ -178,3 +178,6 @@ static constexpr size_t threadStackSize = 1536U;
 namespace TH_RELWIND {
 static constexpr size_t threadStackSize = 1536U;
 }
+namespace TH_DYNSWDIO {
+static constexpr size_t threadStackSize = 512U;
+}

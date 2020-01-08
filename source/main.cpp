@@ -9,6 +9,7 @@
 #include "threadAndEventDecl.hpp"
 #include "blinker.hpp"
 #include "usbStorage.hpp"
+#include "dynSwdio.hpp"
 #include "printf.h"
 
 
@@ -38,6 +39,7 @@ int main (void)
 {
   Blinker       bl(NORMALPRIO+1);
   UsbStorage    usbStorage(NORMALPRIO);
+  DynSwdio	dynSwdio(NORMALPRIO);
 
   bl.run(TIME_MS2I(1000));
   consoleInit();    // initialisation des objets liés au shell
@@ -64,6 +66,8 @@ int main (void)
      SdCard::logSyslog(Severity::Fatal, "USB Storage fail");
    } else if (not adc.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "ADC fail");
+  } else if (not dynSwdio.run(TIME_IMMEDIATE)) {
+     SdCard::logSyslog(Severity::Fatal, "dynSwdio fail");
   } else {
     // if all went ok, main thead now can rest
     chThdSleep(TIME_INFINITE);
