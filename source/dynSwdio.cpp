@@ -30,6 +30,12 @@ bool DynSwdio::loop()
   sdcard.terminate().join();
   chRegSetThreadName("DynSwdio:wait showBB join");
   showBB.terminate().join();
+
+  sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
+  chThdSleepMilliseconds(300);
+  sdLogFinish();
+  chThdSleepMilliseconds(300);
+  
   DebugTrace("Enter SWDIO mode");
   chThdSleepMilliseconds(100); // wait for dma buffer to be flushed to sdcard
   palSetLineMode(LINE_SWCLK, PAL_MODE_ALTERNATE(AF_LINE_SWCLK));

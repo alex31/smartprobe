@@ -64,9 +64,9 @@ bool UsbStorage::loop()
   }
   
   sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
-  chThdSleepMilliseconds(200);
+  chThdSleepMilliseconds(300);
   sdLogFinish();
-  chThdSleepMilliseconds(100);
+  chThdSleepMilliseconds(300);
   
   DebugTrace("UsbStorage:connected");
   chRegSetThreadName("UsbStorage:connected");
