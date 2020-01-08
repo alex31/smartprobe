@@ -10,12 +10,13 @@
 
 A TESTER :
     
+  ° affichage du vecteur vent relatif dans l'outil perl
 
   
 A CODER :
 
-  ° afficher le vecteur vent relatif dans l'outil perl
   ° verifier les tailles des piles des threads
+  ° integrer FatFS 0.14
 
 A AMELIORER :
 
