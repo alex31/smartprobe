@@ -131,6 +131,7 @@ static void sensfusion6UpdateQImpl(float gx, float gy, float gz, float ax, float
   float qDot1, qDot2, qDot3, qDot4;
   float _2q0, _2q1, _2q2, _2q3, _4q0, _4q1, _4q2 ,_8q1, _8q2, q0q0, q1q1, q2q2, q3q3;
 
+  
   // Rate of change of quaternion from gyroscope
   qDot1 = 0.5f * (-quat.q1 * gx - quat.q2 * gy - quat.q3 * gz);
   qDot2 = 0.5f * (quat.q0 * gx + quat.q2 * gz - quat.q3 * gy);
@@ -177,8 +178,13 @@ static void sensfusion6UpdateQImpl(float gx, float gy, float gz, float ax, float
     qDot2 -= beta * s1;
     qDot3 -= beta * s2;
     qDot4 -= beta * s3;
+  } else {
+    q0q0 = quat.q0 * quat.q0;
+    q1q1 = quat.q1 * quat.q1;
+    q2q2 = quat.q2 * quat.q2;
+    q3q3 = quat.q3 * quat.q3;
   }
-
+  
   // Integrate rate of change of quaternion to yield quaternion
   quat.q0 += qDot1 * dt;
   quat.q1 += qDot2 * dt;
@@ -186,7 +192,7 @@ static void sensfusion6UpdateQImpl(float gx, float gy, float gz, float ax, float
   quat.q3 += qDot4 * dt;
 
   // Normalise quaternion
-  recipNorm = invSqrt(quat.q0*quat.q0 + quat.q1*quat.q1 + quat.q2*quat.q2 + quat.q3*quat.q3);
+  recipNorm = invSqrt(q0q0 + q1q1 + q2q2 + q3q3);
   quat.q0 *= recipNorm;
   quat.q1 *= recipNorm;
   quat.q2 *= recipNorm;
@@ -205,10 +211,6 @@ static void sensfusion6UpdateQImpl(float gx, float gy, float gz, float ax, float
   float halfvx, halfvy, halfvz;
   float halfex, halfey, halfez;
   float qa, qb, qc;
-
-  gx = gx * M_PI_F / 180;
-  gy = gy * M_PI_F / 180;
-  gz = gz * M_PI_F / 180;
 
   // Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)
   if(!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f)))
@@ -289,9 +291,9 @@ void sensfusion6GetEulerRPY(float* roll, float* pitch, float* yaw)
   if (gx<-1) gx=-1;
 
   *yaw = atan2f(2*(quat.q0*quat.q3 + quat.q1*quat.q2),
-		quat.q0*quat.q0 + quat.q1*quat.q1 - quat.q2*quat.q2 - quat.q3*quat.q3) * 180 / M_PI_F;
-  *pitch = asinf(gx) * 180 / M_PI_F; //Pitch seems to be inverted
-  *roll = atan2f(gy, gz) * 180 / M_PI_F;
+		quat.q0*quat.q0 + quat.q1*quat.q1 - quat.q2*quat.q2 - quat.q3*quat.q3);
+  *pitch = asinf(gx); //Pitch seems to be inverted
+  *roll = atan2f(gy, gz);
 }
 
 float sensfusion6GetAccZWithoutGravity(const float ax, const float ay, const float az)
@@ -320,7 +322,7 @@ float invSqrt(float x)
   y = y * (1.5f - (halfx * y * y));
   return y;
 #else
-  return 1.0 / sqrtf(x);
+  return 1.0f / sqrtf(x);
 #endif
 }
 

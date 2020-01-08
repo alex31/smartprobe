@@ -132,7 +132,7 @@ bool SdCard::loop()
 			  relAirSpeed.velocity,
 			  relAirSpeed.alpha,
 			  relAirSpeed.beta,
-			  attitude.v[0], attitude.v[1], attitude.v[2],
+			  rad2deg(attitude.v[0]), rad2deg(attitude.v[1]), rad2deg(attitude.v[2]),
 			  adc.getPowerSupplyVoltage(), adc.getCoreTemp());
     }
     

@@ -3,6 +3,7 @@
 #include "hardwareConf.hpp"
 
 
+constexpr float rad2deg(const float rad) {return rad * 180 / M_PI;}
 
 class Adc : public WorkerThread<TH_ADC::threadStackSize, Adc> {
 public:

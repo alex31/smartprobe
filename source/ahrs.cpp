@@ -28,8 +28,6 @@ static sysinterval_t 	chVTTimeElapsedSinceX (systime_t start)
 namespace {
   ImuData imuData{};
   //  systime_t dbgTimeStamp{};
-
-  constexpr float rad2deg(const float rad) {return rad * 180 / M_PI;}
 }
 
 
@@ -71,7 +69,7 @@ bool Ahrs::loop()
   systime_t lastTimeStamp = timeStamp;
   timeStamp = chVTGetSystemTimeX();
   imu.blackBoard.read(imuData);
-  sensfusion6UpdateQ(rad2deg(imuData.gyro.v[0]), rad2deg(imuData.gyro.v[1]), rad2deg(imuData.gyro.v[2]),
+  sensfusion6UpdateQ(imuData.gyro.v[0], imuData.gyro.v[1], imuData.gyro.v[2],
 		     imuData.acc.v[0], imuData.acc.v[1], imuData.acc.v[2],
 		     TIME_I2US(timeStamp-lastTimeStamp) / 1e6);
   sensfusion6GetEulerRPY(&attitude.v[0], &attitude.v[1], &attitude.v[2]);

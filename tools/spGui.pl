@@ -6,7 +6,7 @@
 
 use strict;
 use warnings;
-use feature ':5.22';
+use feature ':5.26';
 use Device::SerialPort;
 use Modern::Perl '2015';
 use Tk;
@@ -44,7 +44,13 @@ my %varDataIn = (
     'baroPress' => 0,		
     'baroTemp' => 0,
     'vcc' => 0,
-    'dpScale' => 1
+    'dpScale' => 1,
+    'rho' => 0,
+    'roll' => 0,
+    'pitch' => 0,
+    'velo' => 0,
+    'alpha' => 0,
+    'beta' => 0
 );
 
 
@@ -141,7 +147,12 @@ sub generatePanel ()
         '-sliderrelief' => 'solid')->pack(-side => 'left', -anchor => 's', -expand => 'true');
 
     labelLabelFrame($infoFrame, "Vcc = ", \ ($varDataIn{'vcc'}), 'left', 6);
-    
+    labelLabelFrame($infoFrame, "Rho = ", \ ($varDataIn{'rho'}), 'left', 6);
+    labelLabelFrame($infoFrame, "Roll = ", \ ($varDataIn{'roll'}), 'left', 6);
+    labelLabelFrame($infoFrame, "Pitch = ", \ ($varDataIn{'pitch'}), 'left', 6);
+    labelLabelFrame($infoFrame, "AirSpeed = ", \ ($varDataIn{'velo'}), 'left', 6);
+    labelLabelFrame($infoFrame, "Alpha = ", \ ($varDataIn{'alpha'}), 'left', 6);
+    labelLabelFrame($infoFrame, "Beta = ", \ ($varDataIn{'beta'}), 'left', 6);
 }
 
 sub generatePressTempFrame ($$$$$$$$) {
@@ -254,13 +265,22 @@ sub getSerial()
 sub serialCb()
 {
     my $line = readline($serialHandle);
-    my ($bp, $bt, $dp1, $dp2, $dp3, $dt1, $dt2, $dt3, $vcc, $mcut) = split (/\s+/, $line);
+    my ($bp, $bt, $rho, $dp1, $dp2, $dp3, $dt1, $dt2, $dt3, $roll, $pitch,
+	$velo, $alpha, $beta, $vcc, $mcut) = split (/\s+/, $line);
 
+    return unless defined $mcut;
+    
     $varDataIn{'baroTemp'} = $bt;
     $varDataIn{'vcc'} = $vcc;
     $varDataIn{'dpTemp'}->[0] = $dt1;
     $varDataIn{'dpTemp'}->[1] = $dt2;
     $varDataIn{'dpTemp'}->[2] = $dt3;
+    $varDataIn{'rho'} = $rho;
+    $varDataIn{'roll'} = $roll;
+    $varDataIn{'pitch'} = $pitch;
+    $varDataIn{'velo'} = $velo;
+    $varDataIn{'alpha'} = $alpha;
+    $varDataIn{'beta'} = $beta;
     $tkObject{'baropg'}->value($bp * 10);
     $tkObject{'dppg'}->[0]->value($dp1 * $varDataIn{'dpScale'});
     $tkObject{'dppg'}->[1]->value($dp2 * $varDataIn{'dpScale'});

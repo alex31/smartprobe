@@ -60,12 +60,7 @@ GRANDES LIGNES :
 	
 	  
 	* code pour les leds :
-	  ° utiliser un module WS2812 : choix du timer, DMA
-	  ° blink verte  : heartbeat
-	  ° blink bleu :   usb_storage
-	  ° uniquement en cas d'erreur grave :
-	  °  blink jaune : pb sdcard
-	  °  blink rouge : pb capteur
+	  ° utiliser un module WS2812 et integrer le code existant led2812
 	  
         * quand on teste le 5V, tester aussi le 3.3V en utilisant la reference interne
 

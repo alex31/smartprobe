@@ -40,6 +40,7 @@ namespace {
 }
 
 #warning "Murat Bronz has yet to confirm that the calculus is correct"
+#warning "all angles should be in radian for homogeneity"
 /*
   there is some concern about porting matrix operation from numpy to Eigein
   convention for matrix size is Line x Col
