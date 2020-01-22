@@ -60,7 +60,7 @@ int main (void)
      SdCard::logSyslog(Severity::Fatal, "Ahrs fail");
    } else if (not relwind.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "relative wind fail");
-   } else if (not showBB.run(PERIOD("thread.frequency.stream"))) {
+  } else if (not showBB.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
    } else if (not usbStorage.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "USB Storage fail");

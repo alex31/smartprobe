@@ -10,16 +10,17 @@
 
 A TESTER :
     
+  ° verifier les tailles des piles des threads
 
   
 A CODER :
 
-  ° afficher le vecteur vent relatif dans l'outil perl
-  ° verifier les tailles des piles des threads
+  ° afficher le vecteur vent relatif dans l'outil perl avec un canvas et des segments
+  
 
 A AMELIORER :
 
-   ° fix
+  ° fix
 
 	* module nmea : autoriser des caractères wildcard
 	* (LOW PRIO) utiliser le fork chibios d'ardupilot pour voir si le fix I²C evite des pb (en cas de crash inexpliqués)
