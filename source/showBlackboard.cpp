@@ -34,7 +34,7 @@ bool ShowBlackboard::initInThreadContext()
 
 bool ShowBlackboard::init()
 {
-  delay = PERIOD("thread.frequency.stream");
+  delay = PERIOD("thread.frequency.stream_console");
   sumCount = 0;
   return true;
 }

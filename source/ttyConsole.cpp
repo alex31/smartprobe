@@ -15,6 +15,7 @@
 #include "hardwareConf.hpp"
 #include "cpp_heap_alloc.hpp"
 #include "tlsf_malloc.h"
+#include "threadAndEventDecl.hpp"
 
 
 
@@ -215,14 +216,6 @@ static void cmd_restart(BaseSequentialStream *lchp, int argc,const char* const a
 #define  CONSOLE_DEV_USB 0
 #endif
 
-#if CONSOLE_DEV_USB == 0
-static const SerialConfig ftdiConfig =  {
-  115200,
-  0,
-  USART_CR2_STOP1_BITS | USART_CR2_LINEN,
-  0
-};
-#endif
 
 
 #define MAX_CPU_INFO_ENTRIES 20
@@ -420,6 +413,12 @@ void consoleInit (void)
   usbSerialInit(&SDU1, &USBDRIVER); 
   chp = (BaseSequentialStream *) &SDU1;
 #else
+  static const SerialConfig ftdiConfig =  {
+		static_cast<uint32_t>(CONF("uart.baud")),
+		0,
+		USART_CR2_STOP1_BITS | USART_CR2_LINEN,
+		0
+  };
   sdStart(&CONSOLE_DEV_SD, &ftdiConfig);
   chp = (BaseSequentialStream *) &CONSOLE_DEV_SD;
 #endif

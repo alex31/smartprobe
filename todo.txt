@@ -23,14 +23,9 @@ A AMELIORER :
   ° fix
 
 	* module nmea : autoriser des caractères wildcard
-	* (LOW PRIO) utiliser le fork chibios d'ardupilot pour voir si le fix I²C evite des pb (en cas de crash inexpliqués)
 
-	* (LOW PRIO)recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
-	* (LOW PRIO) tester presence du dirty bit : indiquer par led et syslog
-	* (LOW PRIO) porter fsck.vfat de linux à MCU pour permettre un fsck automatique si dirty bit au demarrage
-	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour les I/O sur la liaison série ? a
-
-
+	* (LOW PRIO) recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
+	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour les I/O sur la liaison série ?
 
 
 
@@ -39,26 +34,23 @@ GRANDES LIGNES :
 	  
    ° écrire des modules
 
-	* choix pour la liaison série out :
-	  choix de la vitesse
-	  choix du format : shell avec out des données togglable en mode ascii
-	  ou sorties binaires (format pprz + ?)
-
-	* recup de données gps -> ref horaire, calcul du cap, choix du format
-	  dans le fichier de conf :
-	  ø nmea ou trame pprz (ou autre ?)
+	* choix pour la liaison série :
+	  + choix de la vitesse
+	  + modes :
+	    	  ° SHELL (avec stream ascii togglable par la commande shell 't')
+		  ° NMEA_IN+PPRZ_OUT
+		  ° UBLOX_IN+PPRZ_OUT
+		  ° PPRZ_IN_OUT
+	  + recup de données gps -> ref horaire, calcul du cap
 	  
 	* syslog periodique de la charge de calcul
 	
-	* ahrs
-	  ° qui donne 3 angles si la donnée heading est disponible :
+	* ahrs complet qui donne 3 angles si la donnée cap est disponible 
 
 	* calcul d'un vecteur vent dans le repaire terrestre si l'ahrs est
 	  en mode 3 angles et que l'autopilote fournit un vecteur vitesse en 3D
    
-
 	* watchdog IWDG -> test au boot, si il y a eu hardfault -> log
-	
 	  
 	* code pour les leds :
 	  ° utiliser un module WS2812 et integrer le code existant led2812
@@ -67,16 +59,24 @@ GRANDES LIGNES :
 
 	* si le fichier de log fini en .txt : log texte, sinon : log binaire
 	    
-	* access en USB2 pour accelerer l'acces USB Storage
 
 
    ° integration de librairies externes
-	* module SerialMessage
-	* micro python pour coder du comportement via le fichier de conf
-	  sans avoir à reflasher ?
+	* module pprz_link
+	* coder du comportement via le fichier de conf sans avoir à reflasher :
+	  +  micro python ?
+	     OU
+	  + langage adhoc en utilisant un parser et un lexer ?
+	  
 	* quand le projet devra être distribué : mettre toutes les
 	  dépendences externes en sous modules git
 	
+
+
+
+EVOLUTION SMARTPROBE V2 (et au delà)
+
+	* access en USB2 pour accelerer l'acces USB Storage
 
 
              _____     __  __    ___          

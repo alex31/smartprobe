@@ -330,7 +330,7 @@ SdioError SdCard::logSyslog (const Severity severity, const char* fmt, ...)
   
 #ifdef TRACE 
 #include "printf.h"
-  {
+  if ((reinterpret_cast<SerialDriver *>(chp))->state == SD_READY) {
     va_list apc;
     va_copy(apc, ap);
     chvprintf(chp, fmt, apc);
@@ -360,7 +360,7 @@ SdioError SdCard::logSyslogRaw (const char* fmt, ...)
   va_start(ap, fmt);
 #ifdef TRACE 
 #include "printf.h"
-  {
+   if ((reinterpret_cast<SerialDriver *>(chp))->state == SD_READY) {
     va_list apc;
     va_copy(apc, ap);
     chvprintf(chp, fmt, apc);
