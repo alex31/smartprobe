@@ -11,6 +11,7 @@
 #include "usbStorage.hpp"
 #include "dynSwdio.hpp"
 #include "transmitBlackboard.hpp"
+#include "receiveBlackboard.hpp"
 #include "printf.h"
 
 
@@ -42,6 +43,7 @@ int main (void)
   UsbStorage    usbStorage(NORMALPRIO);
   DynSwdio	dynSwdio(NORMALPRIO);
   TransmitBlackboard transmitBB(NORMALPRIO);
+  ReceiveBlackboard receiveBB(NORMALPRIO);
   
   bl.run(TIME_MS2I(1000));
 
@@ -89,6 +91,7 @@ int main (void)
       goto error;
 #endif
       transmitBB.run(TIME_IMMEDIATE);
+      receiveBB.run(TIME_IMMEDIATE);
       break;
     case NMEA_IN:
 #ifdef TRACE
