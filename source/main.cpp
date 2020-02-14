@@ -10,7 +10,7 @@
 #include "blinker.hpp"
 #include "usbStorage.hpp"
 #include "dynSwdio.hpp"
-#include "transmitBlackboard.hpp"
+#include "transmitPprzlink.hpp"
 #include "receivePprzlink.hpp"
 #include "printf.h"
 
@@ -42,8 +42,8 @@ int main (void)
   Blinker       bl(NORMALPRIO+1);
   UsbStorage    usbStorage(NORMALPRIO);
   DynSwdio	dynSwdio(NORMALPRIO);
-  TransmitBlackboard transmitBB(NORMALPRIO);
-  ReceivePprzlink receiveBB(NORMALPRIO);
+  TransmitPprzlink transmitPPL(NORMALPRIO);
+  ReceivePprzlink receivePPL(NORMALPRIO);
   
   bl.run(TIME_MS2I(1000));
 
@@ -90,8 +90,8 @@ int main (void)
       SdCard::logSyslog(Severity::Fatal, "-DTRACE non compatible with mode PPRZ_IN_OUT");
       goto error;
 #endif
-      transmitBB.run(TIME_IMMEDIATE);
-      receiveBB.run(TIME_IMMEDIATE);
+      transmitPPL.run(TIME_IMMEDIATE);
+      receivePPL.run(TIME_IMMEDIATE);
       break;
     case NMEA_IN:
 #ifdef TRACE
