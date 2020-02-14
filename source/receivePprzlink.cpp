@@ -1,6 +1,6 @@
 #include <ch.h>
 #include <hal.h>
-#include "receiveBlackboard.hpp"
+#include "receivePprzlink.hpp"
 #include "blackBoard.hpp"
 #include "stdutil.h"
 #include "printf.h"
@@ -18,20 +18,20 @@ namespace {
   uint8_t rx_buffer[255];
   void new_message_cb(uint8_t sender_id, uint8_t receiver_id, uint8_t class_id, uint8_t message_id, uint8_t *buf);
   uint8_t nextChar=0U;
-  static ReceiveBlackboard *rbb = nullptr; // hack waiting for user_data field in callback
+  static ReceivePprzlink *rbb = nullptr; // hack waiting for user_data field in callback
   static void rtcSetTime(uint16_t week, uint32_t itow);
 };
 
 
 
-bool ReceiveBlackboard::initInThreadContext()
+bool ReceivePprzlink::initInThreadContext()
 {
 
 
   return true;
 }
 
-bool ReceiveBlackboard::init()
+bool ReceivePprzlink::init()
 {
   rbb = this;
   dev_rx = pprzlink_device_rx_init(
@@ -49,7 +49,7 @@ bool ReceiveBlackboard::init()
 
   
 
-bool ReceiveBlackboard::loop()
+bool ReceivePprzlink::loop()
 {
   /*
     ° we won't (ever !) do polling
@@ -85,7 +85,7 @@ namespace {
 		   .utm_zone = pprzlink_get_GPS_utm_zone(buf),	
 		   .gps_nb_err = pprzlink_get_GPS_gps_nb_err(buf) 
     };
-    rbb->blackBoard.write(wdata); // hack waiting for user_data field in callback
+    rbb->pprzlink.write(wdata); // hack waiting for user_data field in callback
     SdCard::logSyslog(Severity::Info, "DEBUG> gps east = %ld north = %ld",
 		      wdata.utm_east, wdata.utm_north);
   }

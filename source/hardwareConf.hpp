@@ -161,7 +161,7 @@ static constexpr size_t threadStackSize = 1536U;
 namespace TH_TRANSMITBLACKBOARD {
 static constexpr size_t threadStackSize = 1536U;
 }
-namespace TH_RECEIVEBLACKBOARD {
+namespace TH_RECEIVEPPRZLINK {
 static constexpr size_t threadStackSize = 1536U;
 }
 namespace TH_ADC {

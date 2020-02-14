@@ -11,7 +11,7 @@
 #include "usbStorage.hpp"
 #include "dynSwdio.hpp"
 #include "transmitBlackboard.hpp"
-#include "receiveBlackboard.hpp"
+#include "receivePprzlink.hpp"
 #include "printf.h"
 
 
@@ -43,7 +43,7 @@ int main (void)
   UsbStorage    usbStorage(NORMALPRIO);
   DynSwdio	dynSwdio(NORMALPRIO);
   TransmitBlackboard transmitBB(NORMALPRIO);
-  ReceiveBlackboard receiveBB(NORMALPRIO);
+  ReceivePprzlink receiveBB(NORMALPRIO);
   
   bl.run(TIME_MS2I(1000));
 
