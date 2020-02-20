@@ -21,9 +21,8 @@ static systime_t 	chVTGetSystemTime (void)
  
 static sysinterval_t 	chVTTimeElapsedSinceX (systime_t start)
  	Returns the elapsed time since the specified start time. More...
- 
 
- */
+*/
 
 namespace {
   //convention for matrix size is Line x Col
@@ -38,36 +37,6 @@ namespace {
   BarometerData baroData{};
   float stdRho{};
 }
-
-#warning "Murat Bronz has yet to confirm that the calculus is correct"
-#warning "all angles should be in radian for homogeneity"
-/*
-  there is some concern about porting matrix operation from numpy to Eigein
-  convention for matrix size is Line x Col
-
-  if the initial program what is done is :
-
-    A = np.array([[1.15, 0.,  0., 6.0 , 6.0],
-                  [0., 15.0,  0.,  0. , 0. ],
-                  [0.,   0., 11.,  0. , 0. ]])
-
-    vec = np.array([p0,p10,p20,p11,p22])
-    X= A.dot(vec)
-
-    so the numpy method dot permit to do a dot product between matrices and vectors
-
-    Eigein dot method is more compliant to the math definition and 
-    can only make Scalar = Vector[N] dot Vector[N] 
-    
-    according to https://stackoverflow.com/questions/21562986/numpy-matrix-vector-multiplication
-    i have used Eigen multiply operator after verifying that with examples givent in SO the eigen 
-    result is correct (see cmd_eigen function in ttyConsole.cpp)
-
-    but I am far for sure about that.
-   
-    #warning will be removed after Murat and/or Gautier should verify that.
- */
-
 
 
 bool Relwind::init()
