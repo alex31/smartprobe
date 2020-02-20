@@ -75,6 +75,7 @@ bool SdCard::initInThreadContext()
 }
 
 
+
 bool SdCard::loop()
 {
   //  chEvtWaitAll(IMU_EVT | BARO_EVT | PDIF_EVT);
@@ -133,7 +134,8 @@ bool SdCard::loop()
 			  relAirSpeed.alpha,
 			  relAirSpeed.beta,
 			  rad2deg(attitude.v[0]), rad2deg(attitude.v[1]), rad2deg(attitude.v[2]),
-			  adc.getPowerSupplyVoltage(), adc.getCoreTemp());
+			  adc.getPowerSupplyVoltage(),
+			  adc.getCoreTemp());
     }
     
     switch (se) {
