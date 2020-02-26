@@ -30,6 +30,8 @@ GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
             -Wshadow -Wparentheses -fmax-errors=5 \
             -ftrack-macro-expansion=2 -Wno-error=strict-overflow -Wstrict-overflow=2 \
             -Wvla-larger-than=128 -Wduplicated-branches -Wdangling-else \
+	    -Wmisleading-indentation -Wduplicated-cond -Wduplicated-branches \
+            -Wlogical-op  \
             -Wformat-overflow=2 
 
 ifeq ($(BUILD),$(OPT_DEBUG)) 

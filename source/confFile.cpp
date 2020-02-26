@@ -53,7 +53,7 @@ namespace {
   std::string variant2str(const validator_variant_t &vtor)
   {
     std::string rep;
-    char buffer[80];
+    char buffer[160];
     rep.reserve(63);
     
     if (std::holds_alternative<frozen::set<named_val_t, N>>(vtor)) {
