@@ -110,7 +110,7 @@ namespace {
     if (std::holds_alternative<int>(dvar)) {
       const auto [success, sv] = getNameByValue<numberOfSets>(std::get<int>(dvar), vtor);
       if (success) 
-	snprintf (buffer, sizeof(buffer), "%.*s [%d]",
+	snprintf (buffer, sizeof(buffer), "%.*s # [%d]",
 		  int(sv.length()), sv.data(),
 		  std::get<int>(dvar));
        else 
