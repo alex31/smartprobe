@@ -53,7 +53,7 @@ namespace {
   std::string variant2str(const validator_variant_t &vtor)
   {
     std::string rep;
-    char buffer[160];
+    char buffer[80];
     rep.reserve(63);
     
     if (std::holds_alternative<frozen::set<named_val_t, N>>(vtor)) {
@@ -110,7 +110,7 @@ namespace {
     if (std::holds_alternative<int>(dvar)) {
       const auto [success, sv] = getNameByValue<numberOfSets>(std::get<int>(dvar), vtor);
       if (success) 
-	snprintf (buffer, sizeof(buffer), "%.*s [%d]",
+	snprintf (buffer, sizeof(buffer), "%.*s # [%d]",
 		  int(sv.length()), sv.data(),
 		  std::get<int>(dvar));
        else 
