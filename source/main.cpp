@@ -66,8 +66,6 @@ int main (void)
      SdCard::logSyslog(Severity::Fatal, "Ahrs fail");
    } else if (not relwind.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "relative wind fail");
-   } else if (not showBB.run(TIME_IMMEDIATE)) {
-     SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
    } else if (not usbStorage.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "USB Storage fail");
    } else if (not adc.run(TIME_IMMEDIATE)) {
@@ -83,6 +81,9 @@ int main (void)
       consoleLaunch();  // lancement du shell
       SdCard::logSyslog(Severity::Warning, "mode shell : you should compile with "
 			"-DTRACE for more verbosity");
+      if (not showBB.run(TIME_IMMEDIATE)) {
+	SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
+   } 
 #endif
       break;
     case PPRZ_IN_OUT:
