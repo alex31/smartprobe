@@ -16,9 +16,10 @@
 namespace {
   struct pprzlink_device_rx dev_rx;
   uint8_t rx_buffer[255];
-  void new_message_cb(uint8_t sender_id, uint8_t receiver_id, uint8_t class_id, uint8_t message_id, uint8_t *buf);
-  uint8_t nextChar=0U;
   static ReceivePprzlink *rbb = nullptr; // hack waiting for user_data field in callback
+
+  void new_message_cb(uint8_t sender_id, uint8_t receiver_id, uint8_t class_id,
+		      uint8_t message_id, uint8_t *buf);
   static void rtcSetTime(uint16_t week, uint32_t itow);
 };
 
@@ -36,9 +37,9 @@ bool ReceivePprzlink::init()
   rbb = this;
   dev_rx = pprzlink_device_rx_init(
 				   [] (void) -> int { // char_available
-				     return 1;
+				     return true; // not sdGetWouldBlock(&ExtSD);
 				   },
-				   [] (void) -> uint8_t  {return nextChar;}, // get_char
+				   [] (void) -> uint8_t  {return sdGet(&ExtSD);}, // get_char
 				   rx_buffer
 				   );
 
@@ -57,7 +58,6 @@ bool ReceivePprzlink::loop()
     ° perhaps there is a way to avoid module scoped global var nextChar ?
    */
   
-  nextChar = sdGet(&ExtSD);
   pprzlink_check_and_parse(&dev_rx, &new_message_cb);
   return true;
 }
@@ -88,6 +88,32 @@ namespace {
     rbb->pprzlink.write(wdata); // hack waiting for user_data field in callback
     SdCard::logSyslog(Severity::Info, "DEBUG> gps east = %ld north = %ld",
 		      wdata.utm_east, wdata.utm_north);
+  } else if (message_id == PPRZ_MSG_ID_AEROPROBE) {
+#warning AEROPROBE receive message for DEBUG  in test_pprzlink_in_loop branch ONLY
+    int16_t velocity   = pprzlink_get_AEROPROBE_velocity(buf);  	 	
+    int16_t a_attack   = pprzlink_get_AEROPROBE_a_attack(buf); 	 		
+    int16_t a_sideslip = pprzlink_get_AEROPROBE_a_sideslip(buf);		
+    int32_t altitude   = pprzlink_get_AEROPROBE_altitude(buf);
+    int32_t dynamic_p  = pprzlink_get_AEROPROBE_dynamic_p(buf);	 	
+    int32_t static_p   = pprzlink_get_AEROPROBE_static_p(buf);	    	
+    uint8_t checksum   = pprzlink_get_AEROPROBE_checksum(buf);
+    SdCard::logSyslog(Severity::Info, "RECEIVE loopback message for AEROPROBE "
+		      "velocity   =%d; " 
+		      "a_attack   =%d; " 
+		      "a_sideslip =%d; " 
+		      "altitude   =%ld; " 
+		      "dynamic_p  =%ld; " 
+		      "static_p   =%ld; " 
+		      "checksum   =%u",
+		      velocity, 
+		      a_attack, 
+		      a_sideslip,
+		      altitude, 
+		      dynamic_p,
+		      static_p, 
+		      checksum); 
+		      
+    
   }
   }
   

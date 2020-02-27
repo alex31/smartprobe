@@ -91,7 +91,24 @@ bool TransmitPprzlink::loop()
     int32_t dynamic_p =  diffPressData[0].pressure * 100;	 	
     int32_t static_p =   baroData.pressure * 100U;	 	    	
     uint8_t checksum =   0;
-    
+
+#warning AEROPROBE syslog for DEBUG  in test_pprzlink_in_loop branch ONLY
+    SdCard::logSyslog(Severity::Info, "SEND message for AEROPROBE "
+		      "velocity   =%d; " 
+		      "a_attack   =%d; " 
+		      "a_sideslip =%d; " 
+		      "altitude   =%ld; " 
+		      "dynamic_p  =%ld; " 
+		      "static_p   =%ld; " 
+		      "checksum   =%u",
+		      velocity, 
+		      a_attack, 
+		      a_sideslip,
+		      altitude, 
+		      dynamic_p,
+		      static_p, 
+		      checksum); 
+
     pprzlink_msg_send_AEROPROBE(&dev_tx,
 				0U, /* sender_id */
 				0U, /* receiver_id */
