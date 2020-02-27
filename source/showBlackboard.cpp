@@ -39,7 +39,8 @@ bool ShowBlackboard::init()
   return true;
 }
 
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdouble-promotion"
 bool ShowBlackboard::loop()
 {
   const eventmask_t event = chEvtWaitOneTimeout(PDIF_EVT, TIME_MS2I(1000));
@@ -91,6 +92,6 @@ bool ShowBlackboard::loop()
   
   return true;
 }
-  
+ #pragma GCC diagnostic pop 
 
 

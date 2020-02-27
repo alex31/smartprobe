@@ -74,7 +74,7 @@ bool DifferentialPressure::initSdp(Sdp3xDriver &sdp, const uint8_t numSlave)
   SdCard::logSyslog(Severity::Info, "SDP3x id=0x%lx%lx scale=%f",
 		    static_cast<uint32_t>(id.sn>>32),
 		    static_cast<uint32_t>(id.sn & 0xffffffff),
-		    sdp3xGetScale(&sdp));
+		    static_cast<double>(sdp3xGetScale(&sdp)));
   return true;
 }
 
