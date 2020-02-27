@@ -7,9 +7,11 @@
 
 bool DynSwdio::init()
 {
+#if SWDIO_DETECTION != 0
   palSetLineMode(LINE_SWCLK, PAL_MODE_INPUT_PULLDOWN);
   chThdSleepMilliseconds(1);
   palEnableLineEvent(LINE_SWCLK, PAL_EVENT_MODE_BOTH_EDGES);
+#endif
   return true;
 }
 
@@ -17,7 +19,11 @@ bool DynSwdio::init()
 bool DynSwdio::loop()
 {
   chRegSetThreadName("DynSwdio:polling");
-  
+
+#if SWDIO_DETECTION == 0
+  chThdSleep(TIME_INFINITE);
+#else
+
   palWaitLineTimeout(LINE_SWCLK, TIME_INFINITE);
 
   chRegSetThreadName("DynSwdio:wait dp join");
@@ -40,7 +46,8 @@ bool DynSwdio::loop()
   chThdSleepMilliseconds(100); // wait for dma buffer to be flushed to sdcard
   palSetLineMode(LINE_SWCLK, PAL_MODE_ALTERNATE(AF_LINE_SWCLK));
   chSysHalt("swdio will take over");
- 
+ #endif
+  
   return true;
 }
 

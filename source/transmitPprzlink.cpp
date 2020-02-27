@@ -45,7 +45,7 @@ bool TransmitPprzlink::init()
 				[] ([[maybe_unused]] uint8_t n) -> int  {return true;},
                                 [] (uint8_t c)                  -> void {sdPut(&ExtSD, c);},
 				nullptr);
-  if (ExtSD.state == SD_UNINIT) {
+  if (ExtSD.state != SD_READY) {
     static const SerialConfig serialConfig =  {
 		static_cast<uint32_t>(CONF("uart.baud")),
 		0,
@@ -60,11 +60,8 @@ bool TransmitPprzlink::init()
 
 bool TransmitPprzlink::loop()
 {
-  const eventmask_t event = chEvtWaitOneTimeout(PDIF_EVT, TIME_MS2I(1000));
+  chEvtWaitOne(PDIF_EVT);
 
-  if (not event)
-    return true;
-  
   baro.blackBoard.read(baroData);
   dp.blackBoard.read(diffPressData);
   imu.blackBoard.read(imuData);
@@ -93,35 +90,35 @@ bool TransmitPprzlink::loop()
     uint8_t checksum =   0;
 
 #warning AEROPROBE syslog for DEBUG  in test_pprzlink_in_loop branch ONLY
-    SdCard::logSyslog(Severity::Info, "SEND message for AEROPROBE "
-		      "velocity   =%d; " 
-		      "a_attack   =%d; " 
-		      "a_sideslip =%d; " 
-		      "altitude   =%ld; " 
-		      "dynamic_p  =%ld; " 
-		      "static_p   =%ld; " 
-		      "checksum   =%u",
-		      velocity, 
-		      a_attack, 
-		      a_sideslip,
-		      altitude, 
-		      dynamic_p,
-		      static_p, 
-		      checksum); 
+     SdCard::logSyslog(Severity::Info, "SEND message for AEROPROBE "
+     		      "velocity   =%d; " 
+     		      "a_attack   =%d; " 
+     		      "a_sideslip =%d; " 
+     		      "altitude   =%ld; " 
+     		      "dynamic_p  =%ld; " 
+     		      "static_p   =%ld; " 
+     		      "checksum   =%u",
+     		      velocity, 
+     		      a_attack, 
+     		      a_sideslip,
+     		      altitude, 
+     		      dynamic_p,
+     		      static_p, 
+     		      checksum); 
 
     pprzlink_msg_send_AEROPROBE(&dev_tx,
-				0U, /* sender_id */
-				0U, /* receiver_id */
-				&freeCounter,
-				&velocity,
-				&a_attack,
-				&a_sideslip,
-				&altitude,
-				&dynamic_p,
-				&static_p,
-				&checksum
-				);
-				
+     				0U, /* sender_id */
+     				0U, /* receiver_id */
+     				&freeCounter,
+     				&velocity,
+     				&a_attack,
+     				&a_sideslip,
+     				&altitude,
+     				&dynamic_p,
+     				&static_p,
+     				&checksum
+     				);
+    
   }
 
   freeCounter++;

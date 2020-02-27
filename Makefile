@@ -22,6 +22,8 @@ ifeq 	($(BUILD),)
 	BUILD := $(OPT_DEBUG)
 endif
 
+SWDIO_DETECTION := 1
+
 GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
 	    -Wno-error=cpp \
             -Wno-error=unused-function \
@@ -329,6 +331,8 @@ CPPWARN = -Wall -Wextra -Wundef
 
 # List all user C define here, like -D_DEBUG=1
 UDEFS += -DCTRE_STRING_IS_UTF8=1 -DFROZEN_NO_EXCEPTIONS=1 -DGIT_VERSION="$(GIT_VERSION)"
+
+UDEFS += -DSWDIO_DETECTION=$(SWDIO_DETECTION)
 
 # Define ASM defines here
 UADEFS = $(UDEFS)
