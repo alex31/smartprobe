@@ -103,11 +103,16 @@ bool Imu::estimateBiasAndPosition(void)
   bias.gyro = bias.gyro / count;
   bias.acc = bias.acc / count;
 
+  
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdouble-promotion"
+
   SdCard::logSyslog(Severity::Info, "calibration loop : %d iteration in %d milliseconds",
 		    count, loopDurationMs);
   SdCard::logSyslog(Severity::Info, "calibration loop : gyro bias = r:%f, p:%f, y:%f",
 		    bias.gyro.v[0],  bias.gyro.v[1],  bias.gyro.v[2]);
 
+#pragma GCC diagnostic pop
   return true;
 }
 

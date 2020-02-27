@@ -31,8 +31,13 @@ GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
             -ftrack-macro-expansion=2 -Wno-error=strict-overflow -Wstrict-overflow=2 \
             -Wvla-larger-than=128 -Wduplicated-branches -Wdangling-else \
 	    -Wmisleading-indentation -Wduplicated-cond -Wduplicated-branches \
-            -Wlogical-op  \
-            -Wformat-overflow=2 
+            -Wlogical-op -Wdouble-promotion \
+            -Wformat-overflow=2
+
+G++_DIAG =   -Wnon-virtual-dtor -Woverloaded-virtual   \
+	     -Wnull-dereference
+
+UNUSED_DIAGS = -Wcast-align -Wsign-conversion -Wconversion
 
 ifeq ($(BUILD),$(OPT_DEBUG)) 
   USE_OPT =  -Og -ggdb3  -Wall -Wextra \
@@ -112,7 +117,7 @@ endif
 
 # C++ specific options here (added to USE_OPT).
 ifeq ($(USE_CPPOPT),)
-  USE_CPPOPT = -std=gnu++2a -fno-rtti -fno-exceptions -fno-threadsafe-statics
+  USE_CPPOPT = -std=gnu++2a -fno-rtti -fno-exceptions -fno-threadsafe-statics $(G++_DIAG)
 endif
 
 # Enable this if you want the linker to remove unused code and data

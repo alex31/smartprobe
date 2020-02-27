@@ -19,6 +19,8 @@
 
 
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdouble-promotion"
 
 /*===========================================================================*/
 /* START OF EDITABLE SECTION                                           */
@@ -502,3 +504,5 @@ static float stampThreadGetCpuPercent (const ThreadCpuInfo *ti, const uint32_t i
   return ti->cpu[idx];
 }
 #endif
+
+#pragma GCC diagnostic pop

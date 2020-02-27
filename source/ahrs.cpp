@@ -46,7 +46,7 @@ bool Ahrs::init()
 		       .y = 0.0f};
   SdCard::logSyslog(Severity::Info, "calibration loop, initial attitude "
 		    ": pitch=%f roll=%f",
-		    rad2deg(pitch), rad2deg(roll));
+		    double(rad2deg(pitch)), double(rad2deg(roll)));
 
   sensfusion6Init(&euler);
   return true;

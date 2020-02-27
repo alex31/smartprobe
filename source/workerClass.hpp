@@ -16,7 +16,7 @@ public:
   bool run(sysinterval_t time);
   WorkerThread& terminate();
   WorkerThread& join();
-  ~WorkerThread() {terminate().join();};
+  virtual ~WorkerThread() {terminate().join();};
   
 protected:
   static void threadFunc(void *o);
