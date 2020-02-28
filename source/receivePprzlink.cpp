@@ -37,13 +37,13 @@ bool ReceivePprzlink::init()
   rbb = this;
   dev_rx = pprzlink_device_rx_init(
 				   [] (void) -> int { // char_available
-				     return true; // not sdGetWouldBlock(&ExtSD);
+				     return true; // always true, sdGet will block
 				   },
 				   [] (void) -> uint8_t  {return sdGet(&ExtSD);}, // get_char
 				   rx_buffer
 				   );
 
-  while (ExtSD.state == SD_UNINIT)
+  while (ExtSD.state != SD_READY)
     chThdSleepMilliseconds(1); // wait for emitter to configure uart
   return true;
 }
@@ -52,12 +52,6 @@ bool ReceivePprzlink::init()
 
 bool ReceivePprzlink::loop()
 {
-  /*
-    ° we won't (ever !) do polling
-      sdGet is blocking and we call  pprzlink_check_and_parse when one char is avalaible
-    ° perhaps there is a way to avoid module scoped global var nextChar ?
-   */
-  
   pprzlink_check_and_parse(&dev_rx, &new_message_cb);
   return true;
 }

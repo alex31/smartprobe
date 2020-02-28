@@ -79,14 +79,13 @@ bool TransmitPprzlink::loop()
     relAirSpeedSum /= sumCount;
     sumCount = 0;
 
-#warning "verifier que les pressions soient bien en hectopascal"
     
     int16_t velocity =   relAirSpeedSum.velocity * 100U; 	 	
     int16_t a_attack =   relAirSpeedSum.alpha * 100; 	 		
     int16_t a_sideslip = relAirSpeedSum.beta * 100U; 	 		
     int32_t altitude =   0;	 	
     int32_t dynamic_p =  diffPressData[0].pressure * 100;	 	
-    int32_t static_p =   baroData.pressure * 100U;	 	    	
+    int32_t static_p =   baroData.pressure * 100U; // pascal	 	    	
     uint8_t checksum =   0;
 
     pprzlink_msg_send_AEROPROBE(&dev_tx,

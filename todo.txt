@@ -15,7 +15,7 @@ A TESTER :
   
 A CODER :
 
-  ° afficher le vecteur vent relatif dans l'outil perl avec un canvas et des segments
+
   
 
 A AMELIORER :
@@ -58,6 +58,10 @@ GRANDES LIGNES :
         * quand on teste le 5V, tester aussi le 3.3V en utilisant la reference interne
 
 	* si le fichier de log fini en .txt : log texte, sinon : log binaire
+
+	* passage en USB2
+
+	* utilisation d'une autre liaison série dédiée au debug pour smartprobe de dev
 	    
 
 
