@@ -75,6 +75,9 @@ bool SdCard::initInThreadContext()
 }
 
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdouble-promotion"
+
 bool SdCard::loop()
 {
   //  chEvtWaitAll(IMU_EVT | BARO_EVT | PDIF_EVT);
@@ -133,7 +136,8 @@ bool SdCard::loop()
 			  relAirSpeed.alpha,
 			  relAirSpeed.beta,
 			  rad2deg(attitude.v[0]), rad2deg(attitude.v[1]), rad2deg(attitude.v[2]),
-			  adc.getPowerSupplyVoltage(), adc.getCoreTemp());
+			  adc.getPowerSupplyVoltage(),
+			  adc.getCoreTemp());
     }
     
     switch (se) {
@@ -149,7 +153,7 @@ bool SdCard::loop()
   return true;
 }
 
-  
+#pragma GCC diagnostic pop 
 
 
 bool  SdCard::sdLogInit(void)
@@ -312,7 +316,7 @@ SdioError SdCard::logSensors (const char* fmt, ...)
 
   if (self != nullptr) {
     sdLogWriteLog(self->sensorsFd, highTimeStampPrecision ? "[%.4f] : " :  "[%.3f] : ",
-		  TIME_I2US(chVTGetSystemTimeX())/1e6f);
+		  TIME_I2US(chVTGetSystemTimeX())/1e6);
     va_start(ap, fmt);
     auto retVal = sdLogvWriteLog(self->sensorsFd, fmt, &ap);
     va_end(ap);
@@ -341,7 +345,7 @@ SdioError SdCard::logSyslog (const Severity severity, const char* fmt, ...)
   
   if (self != nullptr) {
     sdLogWriteLog(self->syslogFd, "[%.3f] %s : ",
-		  TIME_I2MS(chVTGetSystemTimeX())/1000.0f,
+		  TIME_I2MS(chVTGetSystemTimeX())/1000.0,
 		  severityName.at(severity).data());
     auto retVal = sdLogvWriteLog(self->syslogFd, fmt, &ap);
     sdLogWriteLog(self->syslogFd, "\r\n");

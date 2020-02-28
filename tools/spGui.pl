@@ -124,7 +124,7 @@ sub generatePanel ()
 			   \ ($varDataIn{'baroPress'}),
 			   \ ($varDataIn{'baroTemp'}),
 			   \ ($tkObject{'baropg'}),
-			   9800, 10200, 'yellow'
+			   9800, 10300, 'yellow'
 	);
 
     for (my $i=0; $i<3; $i++) {
@@ -147,7 +147,7 @@ sub generatePanel ()
         '-sliderrelief' => 'solid')->pack(-side => 'left', -anchor => 's', -expand => 'true');
 
     labelLabelFrame($infoFrame, "Vcc = ", \ ($varDataIn{'vcc'}), 'left', 6);
-    labelLabelFrame($infoFrame, "Rho = ", \ ($varDataIn{'rho'}), 'left', 6);
+    labelLabelFrame($infoFrame, "Rho = ", \ ($varDataIn{'rho'}), 'left', 8);
     labelLabelFrame($infoFrame, "Roll = ", \ ($varDataIn{'roll'}), 'left', 6);
     labelLabelFrame($infoFrame, "Pitch = ", \ ($varDataIn{'pitch'}), 'left', 6);
     labelLabelFrame($infoFrame, "AirSpeed = ", \ ($varDataIn{'velo'}), 'left', 6);

@@ -10,17 +10,26 @@
 
 A TESTER :
     
+<<<<<<< HEAD
   ° affichage du vecteur vent relatif dans l'outil perl
+=======
+  ° verifier les tailles des piles des threads
+>>>>>>> master
 
   
 A CODER :
 
+<<<<<<< HEAD
   ° verifier les tailles des piles des threads
   ° integrer FatFS 0.14
+=======
+  ° afficher le vecteur vent relatif dans l'outil perl avec un canvas et des segments
+  
+>>>>>>> master
 
 A AMELIORER :
 
-   ° fix
+  ° fix
 
 	* module nmea : autoriser des caractères wildcard
 	* (LOW PRIO) utiliser le fork chibios d'ardupilot pour voir si le fix I²C evite des pb (en cas de crash inexpliqués)

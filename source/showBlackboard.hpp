@@ -16,6 +16,7 @@ public:
 private:
   friend WorkerThread<TH_SHOWBLACKBOARD::threadStackSize, ShowBlackboard>;
   bool init(void) final;
+  bool initInThreadContext(void) final;
   bool loop(void) final;
 };
 

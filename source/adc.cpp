@@ -105,13 +105,13 @@ bool Adc::calculateThreshold()
 			  100.0f);
   
   SdCard::logSyslog(Severity::Info, "Power supply Voltage = %.2f, "
-	    "shutdown threshold voltage  = %.2f", 
-	    averageVoltage, sampleToPsVoltage(psThreshold));
+		    "shutdown threshold voltage  = %.2f", 
+		    double(averageVoltage), double(sampleToPsVoltage(psThreshold)));
   
   if (averageVoltage < PS_VOLTAGE_ABSOLUTE_MINIMUM) {
     SdCard::logSyslog(Severity::Fatal, "Power supply Voltage = %.2f is "
 	      "less than absolute minimum %.2f", 
-	      averageVoltage, PS_VOLTAGE_ABSOLUTE_MINIMUM);
+	      double(averageVoltage), double(PS_VOLTAGE_ABSOLUTE_MINIMUM));
     return false;
   }
   
