@@ -188,3 +188,6 @@ static constexpr size_t threadStackSize = 1536U;
 namespace TH_DYNSWDIO {
 static constexpr size_t threadStackSize = 512U;
 }
+namespace TH_RTCSYNC {
+static constexpr size_t threadStackSize = 512U;
+}

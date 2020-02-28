@@ -12,6 +12,20 @@
 
 #define PERIOD(k) (CH_CFG_ST_FREQUENCY / CONF(k))
 
+struct PprzGpsData {
+  uint8_t  mode;
+  int32_t  utm_east;
+  int32_t  utm_north;
+  int16_t  course;
+  int32_t  alt;
+  uint16_t speed;
+  int16_t  climb;
+  uint16_t week;
+  uint32_t itow;
+  uint8_t  utm_zone;
+  uint8_t  gps_nb_err;   
+};
+
 
 namespace {
   struct pprzlink_device_rx dev_rx;
@@ -20,7 +34,7 @@ namespace {
 
   void new_message_cb(uint8_t sender_id, uint8_t receiver_id, uint8_t class_id,
 		      uint8_t message_id, uint8_t *buf);
-  static void rtcSetTime(uint16_t week, uint32_t itow);
+  static RTCDateTime weekItowToRTC(uint16_t week, uint32_t itow);
 };
 
 
@@ -66,7 +80,7 @@ namespace {
     // check message/class IDs to before extracting data from the messages
     if (message_id == PPRZ_MSG_ID_GPS) {
       // get data from GPS
-      GpsData wdata {
+      PprzGpsData pprzGps {
 		     .mode = pprzlink_get_GPS_mode(buf),
 		     .utm_east = pprzlink_get_GPS_utm_east(buf),
 		     .utm_north = pprzlink_get_GPS_utm_north(buf),
@@ -79,15 +93,44 @@ namespace {
 		     .utm_zone = pprzlink_get_GPS_utm_zone(buf),	
 		     .gps_nb_err = pprzlink_get_GPS_gps_nb_err(buf) 
       };
-      rbb->pprzlink.write(wdata); // hack waiting for user_data field in callback
-      SdCard::logSyslog(Severity::Info, "DEBUG> gps east = %ld north = %ld",
-			wdata.utm_east, wdata.utm_north);
+
+      CommonGpsData commonGps = {
+				 .utm_east = pprzGps.mode,
+				 .utm_north =  pprzGps.utm_north,
+				 .course = pprzGps.course,	     
+				 .alt = pprzGps.alt,	     
+				 .speed = pprzGps.speed,	     
+				 .climb =   pprzGps.climb,       
+				 .rtcTime = weekItowToRTC(pprzGps.week, pprzGps.itow)       
+      };
+
+      if (pprzGps.itow and pprzGps.week) {
+	rbb->blackBoard.write(commonGps); // hack waiting for user_data field in callback
+	SdCard::logSyslog(Severity::Info, "DEBUG> gps east = %ld north = %ld",
+			  commonGps.utm_east, commonGps.utm_north);
+      } else {
+	SdCard::logSyslog(Severity::Warning, "DEBUG> gps message with ITOW and WEEK = 0");
+      }
     } 
   }
   
-  static void rtcSetTime(uint16_t week, uint32_t itow)
+  // static void rtcSetTime(uint16_t week, uint32_t itow)
+  // {
+  //   if (itow != 0) {
+  //     // Unix timestamp of the GPS epoch 1980-01-06 00:00:00 UTC
+  //     constexpr uint32_t unixToGpsEpoch = 315964800;
+  //     struct tm time_tm;
+  //     time_t univTime = ((week * 7 * 24 * 3600) + (itow / 1000)) + unixToGpsEpoch;
+  //     gmtime_r(&univTime, &time_tm);
+  //     // Chibios date struct
+  //     RTCDateTime date;
+  //     rtcConvertStructTmToDateTime(&time_tm, 0, &date);
+  //     rtcSetTime(&RTCD1, &date);
+  //   }
+  // }
+
+  static RTCDateTime weekItowToRTC(uint16_t week, uint32_t itow)
   {
-    if (itow != 0) {
       // Unix timestamp of the GPS epoch 1980-01-06 00:00:00 UTC
       constexpr uint32_t unixToGpsEpoch = 315964800;
       struct tm time_tm;
@@ -96,8 +139,8 @@ namespace {
       // Chibios date struct
       RTCDateTime date;
       rtcConvertStructTmToDateTime(&time_tm, 0, &date);
-      rtcSetTime(&RTCD1, &date);
-    }
+      return date;
   }
+
   
 }

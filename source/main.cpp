@@ -12,6 +12,7 @@
 #include "dynSwdio.hpp"
 #include "transmitPprzlink.hpp"
 #include "receivePprzlink.hpp"
+#include "rtcSync.hpp"
 #include "printf.h"
 
 
@@ -43,7 +44,7 @@ int main (void)
   UsbStorage    usbStorage(NORMALPRIO);
   DynSwdio	dynSwdio(NORMALPRIO);
   TransmitPprzlink transmitPPL(NORMALPRIO);
-  ReceivePprzlink receivePPL(NORMALPRIO);
+  RtcSync	rtcSync(NORMALPRIO);
   
   bl.run(TIME_MS2I(1000));
 
@@ -72,6 +73,8 @@ int main (void)
      SdCard::logSyslog(Severity::Fatal, "ADC fail");
   } else if (not dynSwdio.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "dynSwdio fail");
+  } else if (not rtcSync.run(TIME_S2I(60))) { // sync rtc with gps every minutes
+     SdCard::logSyslog(Severity::Fatal, "rtcSync fail");
   } else {
     const SerialMode smode = static_cast<SerialMode>(CONF("uart.mode"));
     switch (smode) {

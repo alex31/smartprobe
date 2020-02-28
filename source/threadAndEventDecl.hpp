@@ -8,6 +8,7 @@
 #include "confFile.hpp"
 #include "ahrs.hpp"
 #include "relativeWind.hpp"
+#include "receivePprzlink.hpp"
 
 #define CONF(k)  (ConfigurationFile_AT(confFile, k))
 
@@ -20,3 +21,4 @@ extern  ShowBlackboard 		showBB;
 extern  ConfigurationFile 	confFile;
 extern  Ahrs			ahrs;
 extern  Relwind			relwind;
+extern  ReceivePprzlink		receivePPL;
