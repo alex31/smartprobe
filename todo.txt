@@ -37,11 +37,10 @@ GRANDES LIGNES :
 	* choix pour la liaison série :
 	  + choix de la vitesse
 	  + modes :
-	    	  ° SHELL (avec stream ascii togglable par la commande shell 't')
-		  ° NMEA_IN+PPRZ_OUT
-		  ° UBLOX_IN+PPRZ_OUT
-		  ° PPRZ_IN_OUT
-	  + recup de données gps -> ref horaire, calcul du cap
+	    	  ° SHELL (avec stream ascii togglable par la commande shell 't') : OK
+		  ° PPRZ_IN_OUT : OK
+		  ° NMEA_IN : NYI
+	  + recup de données gps -> calcul de vecteur vitesse 3D en reference terrestre
 	  
 	* syslog periodique de la charge de calcul
 	

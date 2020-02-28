@@ -76,6 +76,7 @@ ifeq ($(BUILD),$(OPT_DSPEED))
 
 endif
 
+
 ifeq ($(BUILD),$(OPT_DNT)) 
   USE_OPT =  -Og -ggdb3  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
@@ -86,7 +87,6 @@ ifeq ($(BUILD),$(OPT_DNT))
           -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1
 
 endif
-
 
 
 ifeq ($(BUILD),$(OPT_SPEED)) 
