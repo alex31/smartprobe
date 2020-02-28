@@ -10,6 +10,9 @@
 #include "blinker.hpp"
 #include "usbStorage.hpp"
 #include "dynSwdio.hpp"
+#include "transmitPprzlink.hpp"
+#include "receivePprzlink.hpp"
+#include "rtcSync.hpp"
 #include "printf.h"
 
 
@@ -40,11 +43,15 @@ int main (void)
   Blinker       bl(NORMALPRIO+1);
   UsbStorage    usbStorage(NORMALPRIO);
   DynSwdio	dynSwdio(NORMALPRIO);
-
+  TransmitPprzlink transmitPPL(NORMALPRIO);
+  RtcSync	rtcSync(NORMALPRIO);
+  
   bl.run(TIME_MS2I(1000));
+
+#ifdef TRACE
   consoleInit();    // initialisation des objets liés au shell
   consoleLaunch();  // lancement du shell
-
+#endif
 
   if (not sdcard.run(TIME_IMMEDIATE)) {
     chprintf(chp, "SDCARD fail");
@@ -60,15 +67,49 @@ int main (void)
      SdCard::logSyslog(Severity::Fatal, "Ahrs fail");
    } else if (not relwind.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "relative wind fail");
-  } else if (not showBB.run(TIME_IMMEDIATE)) {
-     SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
    } else if (not usbStorage.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "USB Storage fail");
    } else if (not adc.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "ADC fail");
   } else if (not dynSwdio.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "dynSwdio fail");
+  } else if (not rtcSync.run(TIME_S2I(60))) { // sync rtc with gps every minutes
+     SdCard::logSyslog(Severity::Fatal, "rtcSync fail");
   } else {
+    const SerialMode smode = static_cast<SerialMode>(CONF("uart.mode"));
+    switch (smode) {
+    case SHELL:
+#ifndef TRACE
+      consoleInit();    // initialisation des objets liés au shell
+      consoleLaunch();  // lancement du shell
+      SdCard::logSyslog(Severity::Warning, "mode shell : you should compile with "
+			"-DTRACE for more verbosity");
+      if (not showBB.run(TIME_IMMEDIATE)) {
+	SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
+   } 
+#endif
+      break;
+    case PPRZ_IN_OUT:
+#ifdef TRACE
+      SdCard::logSyslog(Severity::Fatal, "-DTRACE non compatible with mode PPRZ_IN_OUT");
+      goto error;
+#endif
+      transmitPPL.run(TIME_IMMEDIATE);
+      receivePPL.run(TIME_IMMEDIATE);
+      break;
+    case NMEA_IN:
+#ifdef TRACE
+      SdCard::logSyslog(Severity::Fatal, "-DTRACE non compatible with mode NMEA_IN");
+      goto error;
+#endif
+      break;
+    case UBLOX_IN:
+#ifdef TRACE
+      SdCard::logSyslog(Severity::Fatal, "-DTRACE non compatible with mode UBLOX_IN");
+      goto error;
+#endif
+      break;
+    }
     // if all went ok, main thead now can rest
     chThdSleep(TIME_INFINITE);
   }
@@ -76,6 +117,10 @@ int main (void)
   // if something goes wrong, control finish here
   // still offer usb storage facility, so in case of configuration file
   // error, one can still mount the device to read syslog and fix conf file
+#ifdef TRACE
+ error:
+#endif
+  
   palSetLine(LINE_LED_RED);
   usbStorage.setModeEmergency();
   usbStorage.run(TIME_IMMEDIATE);

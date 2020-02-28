@@ -77,6 +77,7 @@ static constexpr uint32_t SAMPLE_MAX = (1<<ADC_RESOLUTION_IN_BITS) - 1;
 static constexpr I2CDriver& BaroI2CD      = I2CD2;
 static constexpr I2CDriver& DiffPressI2CD = I2CD4;
 static constexpr SPIDriver& ImuSPID	  = SPID1;
+static constexpr SerialDriver& ExtSD	  = SD1;
 
 static constexpr uint32_t I2C_FAST_400KHZ_DNF3_R200NS_F50NS_PCLK54MHZ_TIMINGR = 0x10800C27;
 static constexpr uint32_t I2C_FAST_1MHZ_DNF3_R100NS_F50NS_PCLK54MHZ_TIMINGR  = 0x00800617;
@@ -157,6 +158,12 @@ static constexpr size_t threadStackSize = 2048U;
 namespace TH_SHOWBLACKBOARD {
 static constexpr size_t threadStackSize = 1536U;
 }
+namespace TH_TRANSMITPPRZLINK {
+static constexpr size_t threadStackSize = 1536U;
+}
+namespace TH_RECEIVEPPRZLINK {
+static constexpr size_t threadStackSize = 1536U;
+}
 namespace TH_ADC {
 static constexpr size_t threadStackSize = 512U;
 }
@@ -179,5 +186,8 @@ namespace TH_RELWIND {
 static constexpr size_t threadStackSize = 1536U;
 }
 namespace TH_DYNSWDIO {
+static constexpr size_t threadStackSize = 512U;
+}
+namespace TH_RTCSYNC {
 static constexpr size_t threadStackSize = 512U;
 }

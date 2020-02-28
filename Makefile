@@ -22,6 +22,8 @@ ifeq 	($(BUILD),)
 	BUILD := $(OPT_DEBUG)
 endif
 
+SWDIO_DETECTION := 1
+
 GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
 	    -Wno-error=cpp \
             -Wno-error=unused-function \
@@ -45,7 +47,8 @@ ifeq ($(BUILD),$(OPT_DEBUG))
 	    $(GCC_DIAG)
   PROJECT = smartprobe_debug
   USE_PROCESS_STACKSIZE = 0x2800
-  UDEFS = -DTRACE  -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
+# add -DTRACE to UDEFS for shell mode
+  UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
           -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1
 
 endif
@@ -56,7 +59,7 @@ ifeq ($(BUILD),$(OPT_DMAX))
 	    $(GCC_DIAG)
   PROJECT = smartprobe_debug
   USE_PROCESS_STACKSIZE = 0x3F00
-  UDEFS = -DTRACE  -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
+  UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
           -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1
 
 endif
@@ -68,10 +71,11 @@ ifeq ($(BUILD),$(OPT_DSPEED))
 	    $(GCC_DIAG)
   PROJECT = smartprobe_debug
   USE_PROCESS_STACKSIZE = 0x2800
-  UDEFS = -DTRACE  -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 \
+  UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 \
           -DCH_DBG_ENABLE_CHECKS=0 -DCH_DBG_ENABLE_ASSERTS=0 -DTLSF_DEBUG=0 -D_DEBUG=0
 
 endif
+
 
 ifeq ($(BUILD),$(OPT_DNT)) 
   USE_OPT =  -Og -ggdb3  -Wall -Wextra \
@@ -83,7 +87,6 @@ ifeq ($(BUILD),$(OPT_DNT))
           -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1
 
 endif
-
 
 
 ifeq ($(BUILD),$(OPT_SPEED)) 
@@ -198,7 +201,7 @@ USBD_LIB = $(VARIOUS)/Chibios-USB-Devices
 FROZEN_LIB = ../../../../frozen/include
 CTRE_LIB = ../../../.././compile-time-regular-expressions/single-header
 EIGEN_LIB = ../../../.././eigen
-
+EXTLIB = ext
 
 
 
@@ -277,7 +280,7 @@ INCDIR = $(CONFDIR) $(ALLINC) $(TLSFINC) \
          $(CHIBIOS)/os/various $(VARIOUS) $(VARIOUS_INCL) \
          $(STMEMSLPS33HWDIR) \
          $(CTRE_LIB) $(FROZEN_LIB) $(EIGEN_LIB) \
-	 $(USBD_LIB)/mass_storage
+	 $(USBD_LIB)/mass_storage $(EXTLIB)
 
 #
 # Project, sources and paths
@@ -328,6 +331,8 @@ CPPWARN = -Wall -Wextra -Wundef
 
 # List all user C define here, like -D_DEBUG=1
 UDEFS += -DCTRE_STRING_IS_UTF8=1 -DFROZEN_NO_EXCEPTIONS=1 -DGIT_VERSION="$(GIT_VERSION)"
+
+UDEFS += -DSWDIO_DETECTION=$(SWDIO_DETECTION)
 
 # Define ASM defines here
 UADEFS = $(UDEFS)

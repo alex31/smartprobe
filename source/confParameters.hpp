@@ -6,6 +6,7 @@ using namespace std::literals;
 
 enum AhrsType {RAW_IMU=0, HEADLESS_AHRS, COMPLETE_AHRS};
 enum DPressureFetchedParameter {PRESSURE_ONLY=0, PRESSURE_TEMPERATURE};
+enum SerialMode {SHELL, PPRZ_IN_OUT, NMEA_IN, UBLOX_IN};
 constexpr double ESTIMATE_ROW = 0.0;
 
 #ifdef OLD_EXAMPLE
@@ -22,12 +23,18 @@ constexpr double ESTIMATE_ROW = 0.0;
 #define PARAMETERS_MAP                                          \
   {"thread.frequency.d_press", {100, RANGEINT(10, 2000) }},	\
   {"thread.frequency.imu", {100, RANGEINT(10, 4000) }},		\
-  {"thread.frequency.stream", {20, RANGEINT(1, 100) }},		\
+  {"thread.frequency.stream_console", {10, RANGEINT(1, 100) }},		\
+  {"thread.frequency.transmit_uart", {10, RANGEINT(1, 100) }},		\
   {"sensor.barometer.lpf", {0, NAMESET({ LPS33HW_LPF_ODR_DIV_2, "div2"}, {LPS33HW_LPF_ODR_DIV_9, "div9"}, \
 				       {LPS33HW_LPF_ODR_DIV_20, "div20"}) }}, \
   {"ahrs.type", {1, NAMESET({RAW_IMU, "raw_imu"}, \
 			    {HEADLESS_AHRS, "headless_ahrs"}, \
 			    {COMPLETE_AHRS, "complete_ahrs"}) }}, \
+  {"uart.mode", {1, NAMESET({SHELL, "shell"},			  \
+			    {PPRZ_IN_OUT, "pprz_in_out"}, \
+			    {NMEA_IN, "nmea_in"}, \
+			    {UBLOX_IN, "ublox_in"}) }}, \
+  {"uart.baud", {115200, RANGEINT(9600, 460800) }},	\
   {"sensor.barometer.temperatureBias", {-5.0, RANGEDOUBLE(-15.0, 0.0) }}, \
   {"sensor.barometer.odr", {4, NAMESET({LPS33HW_POWER_DOWN, "powerdown"}, {LPS33HW_ODR_1_Hz, "1hz"}, \
 				       {LPS33HW_ODR_10_Hz, "10hz"}, {LPS33HW_ODR_25_Hz, "25hz"}, \
