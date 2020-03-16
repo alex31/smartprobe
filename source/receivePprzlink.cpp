@@ -8,9 +8,7 @@
 #include "ttyConsole.hpp"
 #include "sdcard.hpp"
 #include "pprzlink/pprzlink_smartprobe.h"
-
-
-#define PERIOD(k) (CH_CFG_ST_FREQUENCY / CONF(k))
+#include "util.hpp"
 
 struct PprzGpsData {
   uint8_t  mode;
@@ -30,7 +28,7 @@ struct PprzGpsData {
 namespace {
   struct pprzlink_device_rx dev_rx;
   uint8_t rx_buffer[255];
-  static ReceivePprzlink *rbb = nullptr; // hack waiting for user_data field in callback
+  static ReceivePprzlink *rpl = nullptr; // hack waiting for user_data field in callback
 
   void new_message_cb(uint8_t sender_id, uint8_t receiver_id, uint8_t class_id,
 		      uint8_t message_id, uint8_t *buf);
@@ -39,16 +37,11 @@ namespace {
 
 
 
-bool ReceivePprzlink::initInThreadContext()
-{
-
-
-  return true;
-}
 
 bool ReceivePprzlink::init()
 {
-  rbb = this;
+  ReceiveBaselink::init();
+  rpl = this;
   dev_rx = pprzlink_device_rx_init(
 				   [] (void) -> int { // char_available
 				     return true; // always true, sdGet will block
@@ -57,8 +50,6 @@ bool ReceivePprzlink::init()
 				   rx_buffer
 				   );
 
-  while (ExtSD.state != SD_READY)
-    chThdSleepMilliseconds(1); // wait for emitter to configure uart
   return true;
 }
 
@@ -95,17 +86,18 @@ namespace {
       };
 
       CommonGpsData commonGps = {
+				 .rtcTime = weekItowToRTC(pprzGps.week, pprzGps.itow),
 				 .utm_east = pprzGps.mode,
 				 .utm_north =  pprzGps.utm_north,
-				 .course = pprzGps.course,	     
 				 .alt = pprzGps.alt,	     
+				 .course = pprzGps.course,	     
 				 .speed = pprzGps.speed,	     
-				 .climb =   pprzGps.climb,       
-				 .rtcTime = weekItowToRTC(pprzGps.week, pprzGps.itow)       
+				 .climb =   pprzGps.climb,
+				 .utm_zone =  pprzGps.utm_zone
       };
 
       if (pprzGps.itow and pprzGps.week) {
-	rbb->blackBoard.write(commonGps); // hack waiting for user_data field in callback
+	rpl->blackBoard.write(commonGps); // hack waiting for user_data field in callback
 	SdCard::logSyslog(Severity::Info, "DEBUG> gps east = %ld north = %ld",
 			  commonGps.utm_east, commonGps.utm_north);
       } else {

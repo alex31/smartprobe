@@ -1,5 +1,5 @@
 #pragma once
-#include "workerClass.hpp"
+#include "receiveBaselink.hpp"
 #include "barometer.hpp"
 #include "adc.hpp"
 #include "imu.hpp"
@@ -8,29 +8,16 @@
 #include "hardwareConf.hpp"
 
 
-struct CommonGpsData {
-  int32_t     utm_east;
-  int32_t     utm_north;
-  int16_t     course;
-  int32_t     alt;
-  uint16_t    speed;
-  int16_t     climb;        
-  RTCDateTime rtcTime;
-};
 
-class ReceivePprzlink : public WorkerThread<TH_RECEIVEPPRZLINK::threadStackSize,
-					      ReceivePprzlink> {
+
+class ReceivePprzlink : public ReceiveBaselink {
 public:
   ReceivePprzlink(const tprio_t m_prio) :
-    WorkerThread<TH_RECEIVEPPRZLINK::threadStackSize,
-		 ReceivePprzlink>("receivePprzlink", m_prio) {};
-  BlackBoard<CommonGpsData, UpdateBehavior::Always> blackBoard;
+    ReceiveBaselink(m_prio) {};
 private:
-  friend WorkerThread<TH_RECEIVEPPRZLINK::threadStackSize, ReceivePprzlink>;
+  friend WorkerThread<TH_RECEIVEBASELINK::threadStackSize, ReceivePprzlink>;
   bool init(void) final;
-  bool initInThreadContext(void) final;
   bool loop(void) final;
-  event_listener_t gpsEvent;
 };
 
 

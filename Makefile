@@ -22,7 +22,7 @@ ifeq 	($(BUILD),)
 	BUILD := $(OPT_DEBUG)
 endif
 
-SWDIO_DETECTION := 1
+SWDIO_DETECTION := 0
 
 GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
 	    -Wno-error=cpp \
@@ -202,7 +202,7 @@ FROZEN_LIB = ../../../../frozen/include
 CTRE_LIB = ../../../.././compile-time-regular-expressions/single-header
 EIGEN_LIB = ../../../.././eigen
 EXTLIB = ext
-
+PPRZ_MATH = $(VARIOUS)/paparazzi/math
 
 
 # Licensing files.
@@ -245,6 +245,9 @@ CSRC = $(ALLCSRC) \
        $(VARIOUS)/i2cMaster.c \
        $(VARIOUS)/spiPeriphICM20600.c \
        $(VARIOUS)/rtcAccess.c \
+       $(VARIOUS)/nmeaFrame.c \
+       $(EXTLIB)/fnmatch.c \
+       $(PPRZ_MATH)/pprz_geodetic_float.c \
        $(USBD_LIB)/mass_storage/usb_msd.c
 
 
@@ -280,7 +283,7 @@ INCDIR = $(CONFDIR) $(ALLINC) $(TLSFINC) \
          $(CHIBIOS)/os/various $(VARIOUS) $(VARIOUS_INCL) \
          $(STMEMSLPS33HWDIR) \
          $(CTRE_LIB) $(FROZEN_LIB) $(EIGEN_LIB) \
-	 $(USBD_LIB)/mass_storage $(EXTLIB)
+	 $(USBD_LIB)/mass_storage $(PPRZ_MATH)  $(EXTLIB)
 
 #
 # Project, sources and paths

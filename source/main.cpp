@@ -12,7 +12,9 @@
 #include "dynSwdio.hpp"
 #include "transmitPprzlink.hpp"
 #include "receivePprzlink.hpp"
+#include "receiveNmealink.hpp"
 #include "rtcSync.hpp"
+#include "util.hpp"
 #include "printf.h"
 
 
@@ -25,9 +27,6 @@
   ° connecter C0 sur led0
 
  */
-
-
-#define PERIOD(k) (CH_CFG_ST_FREQUENCY / CONF(k))
 
 
 void _init_chibios() __attribute__ ((constructor(101)));
@@ -102,6 +101,7 @@ int main (void)
       SdCard::logSyslog(Severity::Fatal, "-DTRACE non compatible with mode NMEA_IN");
       goto error;
 #endif
+      receiveNMEA.run(TIME_IMMEDIATE);
       break;
     case UBLOX_IN:
 #ifdef TRACE

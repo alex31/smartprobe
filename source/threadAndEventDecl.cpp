@@ -7,12 +7,13 @@ void _fini(void) { }
 }
 
 DifferentialPressure dp(NORMALPRIO);
-Barometer baro(NORMALPRIO);
-Adc adc(NORMALPRIO);
-Imu imu(NORMALPRIO);
-SdCard sdcard(NORMALPRIO);
-ShowBlackboard showBB(NORMALPRIO);
+Barometer 	  baro(NORMALPRIO);
+Adc 		  adc(NORMALPRIO);
+Imu		  imu(NORMALPRIO);
+SdCard            sdcard(NORMALPRIO);
+ShowBlackboard    showBB(NORMALPRIO);
 ConfigurationFile confFile(CONFIGURATION_FILENAME);
 Ahrs		  ahrs(NORMALPRIO);
 Relwind		  relwind(NORMALPRIO);
-ReceivePprzlink receivePPL(NORMALPRIO);
+ReceivePprzlink   receivePPL(NORMALPRIO);
+ReceiveNmealink	  receiveNMEA(NORMALPRIO);

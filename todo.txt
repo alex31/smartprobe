@@ -14,7 +14,10 @@ A TESTER :
 
   
 A CODER :
-
+ * coder le log charge cpu et occupation des piles
+ * remettre (après test) le code nmea avec fnmatch et wildcard
+ * verif latlong to utm ?
+ * voir pquoi on ne reçoit pas les evenements GPS
 
   
 

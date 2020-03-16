@@ -7,9 +7,7 @@
 #include "threadAndEventDecl.hpp"
 #include "ttyConsole.hpp"
 #include "pprzlink/pprzlink_smartprobe.h"
-
-#define PERIOD(k) (CH_CFG_ST_FREQUENCY / CONF(k))
-
+#include "util.hpp"
 
 namespace {
   BarometerData    baroData{};
