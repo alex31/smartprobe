@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <cstring>
+#include <string>
 #include <array>
 
 // g++ --std=c++17 -Wall -Wextra gps2smartprobe.cpp -o gps2smartprobe
@@ -87,19 +88,26 @@ int set_interface_attribs(int fd, int speed)
 }
 
 
-int init_uart(const char* portName, const uint32_t baudRate)
+int init_file(const std::string& portName)
 {
-  int fd = open(portName, O_RDWR | O_NOCTTY | O_SYNC);
+  int fd = open(portName.c_str(), O_RDWR | O_NOCTTY | O_SYNC);
   if (fd < 0) {
     std::cerr << "Error opening " <<  portName << std::endl;
-    return fd;
   }
+  return fd;
+}
 
-  /*baudrate 115200, 8 bits, no parity, 1 stop bit */
-  if (set_interface_attribs(fd, getLinuxBaudRate(baudRate)) < 0)
-    return fd;
+int init_uart(const std::string& portName, const uint32_t baudRate)
+{
+  int fd = init_file(portName);
 
-  fcntl(fd, F_SETFL, 0);
+  if (fd >= 0) {
+    /*baudrate 115200, 8 bits, no parity, 1 stop bit */
+    if (set_interface_attribs(fd, getLinuxBaudRate(baudRate)) < 0)
+      return fd;
+    
+    fcntl(fd, F_SETFL, 0);
+  }
   
   return fd;
 }
@@ -109,13 +117,19 @@ int main(int argc, char* argv[])
 {
   if (argc != 4) {
     std::cerr << "need 3 arguments : gps smartprobe and speed" << std::endl;
+    exit(-1);
   }
-  const char* gpsDev = argv[1];
-  const char* smartprobeDev = argv[2];
+  const std::string gpsDev = argv[1];
+  const std::string smartprobeDev = argv[2];
   const uint32_t baud = atoi(argv[3]);
 
-
-  int gpsFd = init_uart(gpsDev, baud);
+  int gpsFd = -1;
+  if (gpsDev.find("/dev/") != std::string::npos) {
+    gpsFd = init_uart(gpsDev, baud);
+  } else {
+    gpsFd = init_file(gpsDev);
+  }
+  
   if (gpsFd < 0) {
     std::cout << "device " << gpsDev << "not found or unsupported baudrate " << baud << std::endl;
   }
