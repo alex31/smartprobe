@@ -25,8 +25,8 @@ A AMELIORER :
 
   ° fix
 
-	* module nmea : autoriser des caractères wildcard
-	                remplacer assert par chDbgAssert
+	* fix du latlongToUtm
+	  
 
 	* (LOW PRIO) recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
 	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour les I/O sur la liaison série ?
@@ -43,7 +43,7 @@ GRANDES LIGNES :
 	  + modes :
 	    	  ° SHELL (avec stream ascii togglable par la commande shell 't') : OK
 		  ° PPRZ_IN_OUT : OK
-		  ° NMEA_IN : NYI
+		  ° NMEA_IN : OK
 	  + recup de données gps -> calcul de vecteur vitesse 3D en reference terrestre
 	  
 	* syslog periodique de la charge de calcul

@@ -8,8 +8,12 @@
 #include <string>
 #include <assert.h>
 #include <cmath>
+#include "paparazzi/math/pprz_geodetic_float.h"
+//#include "sw/airborne/math/pprz_geodetic_float.h"
 
-//g++ -std=c++17 -Wall -Wextra -I. nmeaFrame.c nmeaUnitTest.cpp
+//g++ -std=c++17 -Wall -Wextra -I.  -I/home/alex/DEV/STM32/CHIBIOS/COMMON/various nmeaFrame.c /home/alex/DEV/STM32/CHIBIOS/COMMON/various/paparazzi/math/pprz_geodetic_float.c nmeaUnitTest.cpp
+
+//g++ -std=c++17 -Wall -Wextra -I.  -I/home/alex/DEV/PAPARAZZI/paparazzi nmeaFrame.c -I/home/alex/DEV/PAPARAZZI/paparazzi/sw/include -I/home/alex/DEV/PAPARAZZI/paparazzi/sw/airborne /home/alex/DEV/PAPARAZZI/paparazzi/sw/airborne/math/pprz_geodetic_float.c nmeaUnitTest.cpp
 
 
 typedef void (nmea_cb_t) (const void * const userData,
@@ -18,9 +22,12 @@ typedef void (nmea_cb_t) (const void * const userData,
 namespace {
   struct DayMonthYear;
 
-  double sideSign(const char side);
-  nmea_cb_t gga_cb, zda_cb, vtg_cb, pubx00_cb;
+  template <typename T>
+  constexpr T deg2rad(const T deg) {return deg * static_cast<T>(M_PI) / static_cast<T>(180.0);}
 
+  double sideSign(const char side);
+  nmea_cb_t zda_cb, pubx00_cb;
+  double nmeaAngleToRad(const double nmeaAngle);
   void error_cb (const NmeaError error, const void * const userData,
 		 const char * const msg);
 
@@ -67,37 +74,12 @@ namespace {
 	     {.fieldIndex = 0}
     }
   },
-  {.fieldClass = "$G?GGA", .msgCb = &gga_cb,
-   .field = {
-      {.fieldName = "utc time",     .fieldType = NMEA_DOUBLE,  .fieldIndex = 1},
-      {.fieldName = "latitude",     .fieldType = NMEA_DOUBLE,  .fieldIndex = 2},
-      {.fieldName = "nord/sud",     .fieldType = NMEA_CHAR,    .fieldIndex = 3},
-      {.fieldName = "longitude",    .fieldType = NMEA_DOUBLE,  .fieldIndex = 4},
-      {.fieldName = "est/ouest",    .fieldType = NMEA_CHAR,    .fieldIndex = 5},
-      {.fieldName = "status",       .fieldType = NMEA_INT,     .fieldIndex = 6},
-      {.fieldName = "nb sat",       .fieldType = NMEA_INT,     .fieldIndex = 7},
-      {.fieldName = "hdop",         .fieldType = NMEA_FLOAT,   .fieldIndex = 8},
-      {.fieldName = "Altitude",     .fieldType = NMEA_FLOAT,   .fieldIndex = 9},
-      // *MANDATORY* marker of end of list
-      {.fieldIndex = 0}
-    }
-  },
   {.fieldClass = "$G?ZDA", .msgCb = &zda_cb,
    .field = {
       {.fieldName = "utc time",     .fieldType = NMEA_DOUBLE,  .fieldIndex = 1},
       {.fieldName = "day",   .fieldType = NMEA_INT,   .fieldIndex = 2},
       {.fieldName = "month", .fieldType = NMEA_INT,   .fieldIndex = 3},
       {.fieldName = "year",  .fieldType = NMEA_INT,   .fieldIndex = 4},
-      // *MANDATORY* marker of end of list
-      {.fieldIndex = 0}
-    }
-  },
-  {.fieldClass = "$G?VTG", .msgCb = &vtg_cb,
-   .field = {
-      {.fieldName = "COG",          .fieldType = NMEA_FLOAT,   .fieldIndex = 1},
-      {.fieldName = "COG mag",      .fieldType = NMEA_FLOAT,   .fieldIndex = 3},
-      {.fieldName = "SOG km/h",     .fieldType = NMEA_FLOAT,   .fieldIndex = 7},
-      {.fieldName = "mode indic",   .fieldType = NMEA_CHAR,    .fieldIndex = 9},
       // *MANDATORY* marker of end of list
       {.fieldIndex = 0}
     }
@@ -241,29 +223,6 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 
 
 namespace {
-  void gga_cb ([[maybe_unused]] const void * const userData,
-	       const uint32_t argc, const NmeaParam  * const argv)
-  {
-    assert (argc == 9);
-    assert (argv[0].fieldDesc->fieldType == NMEA_DOUBLE);
-    assert (argv[1].fieldDesc->fieldType == NMEA_DOUBLE);
-    assert (argv[2].fieldDesc->fieldType == NMEA_CHAR  );
-    assert (argv[3].fieldDesc->fieldType == NMEA_DOUBLE);
-    assert (argv[4].fieldDesc->fieldType == NMEA_CHAR  );
-    assert (argv[5].fieldDesc->fieldType == NMEA_INT   );
-    assert (argv[6].fieldDesc->fieldType == NMEA_INT   );
-    assert (argv[7].fieldDesc->fieldType == NMEA_FLOAT );
-    assert (argv[8].fieldDesc->fieldType == NMEA_FLOAT );
-    
-    
-    std::cout << "GGA lat= " << argv[1].f_d * sideSign(argv[2].f_c) <<
-      " lon = " << argv[3].f_d * sideSign(argv[4].f_c) << std::endl;
-    
-  };
-  
-
-  
-
   void zda_cb ([[maybe_unused]] const void * const userData,
 	       const uint32_t argc, const NmeaParam  * const argv)
   {
@@ -275,21 +234,6 @@ namespace {
 
     std::cout << "ZDA utc = " << argv[0].f_d << std::endl;
   }
-  
-  void vtg_cb ([[maybe_unused]] const void * const userData,
-	       const uint32_t argc, const NmeaParam * const argv)
-  {
-    // should verify that type of arg is what you use
-    // tu be sure not to use bad field in the union
-    assert (argc == 4);
-    assert (argv[0].fieldDesc->fieldType == NMEA_FLOAT);
-    assert (argv[1].fieldDesc->fieldType == NMEA_FLOAT);
-    assert (argv[2].fieldDesc->fieldType == NMEA_FLOAT);
-    assert (argv[3].fieldDesc->fieldType == NMEA_CHAR);
-
-    std::cout << "VTG cog = " << argv[0].f_f << " sog = " <<  argv[2].f_f
-	      << std::endl;
-  };
 
   /*
     Parameter Value	    Unit		Description
@@ -334,10 +278,27 @@ namespace {
     assert (argv[12].fieldDesc->fieldType == NMEA_INT  );
     
     std::cout << "PUBX utc = " << argv[0].f_d
+	      << " lat= " << argv[1].f_d * sideSign(argv[2].f_c) 
+	      << " lon = " << argv[3].f_d * sideSign(argv[4].f_c)
+	      << " alt = " << argv[5].f_f
 	      << " velocity down = " << argv[9].f_f
 	      << " nb sat = " << argv[12].f_i
 	      <<  std::endl;
 
+
+
+    UtmCoor_f utm{};
+    LlaCoor_f latlong = {
+			 .lat = float(nmeaAngleToRad(argv[1].f_d)*sideSign(argv[2].f_c)),
+			 .lon = float(nmeaAngleToRad(argv[3].f_d)*sideSign(argv[4].f_c)),
+			 .alt = argv[5].f_f};
+ 
+    utm_of_lla_f(&utm, &latlong);
+    std::cout << "UTM east = " << utm.east * 100
+	      << " north = "   << utm.north * 100
+	      << " zone = "    << utm.zone+0
+	      << " alt = "     << utm.alt
+	      <<  std::endl;;
   };
 
   void error_cb ([[maybe_unused]] const NmeaError error, [[maybe_unused]] const void * const userData,
@@ -361,6 +322,13 @@ namespace {
     };
   }
 
-  
+  double nmeaAngleToRad(const double nmeaAngle)
+  {
+    const double deg = floor(nmeaAngle/100.0);
+    const double min = nmeaAngle-(deg*100.0);
+    const double fracDeg = deg+(min/60.0);
+    return deg2rad(fracDeg);
+  }
+
 }
 
