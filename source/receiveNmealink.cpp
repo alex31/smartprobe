@@ -22,7 +22,7 @@ namespace {
 
   double nmeaAngleToRad(const double nmeaAngle);
   
-  nmea_cb_t gga_cb, zda_cb, vtg_cb, pubx00_cb;
+  nmea_cb_t zda_cb, pubx00_cb;
   void error_cb (const NmeaError error, const void * const userData,
 		 const char * const msg);
 
@@ -47,37 +47,12 @@ namespace {
 	     {.fieldIndex = 0}
     }
   },
-  {.fieldClass = "$GNGGA", .msgCb = &gga_cb,
-   .field = {
-      {.fieldName = "utc time",     .fieldType = NMEA_DOUBLE,  .fieldIndex = 1},
-      {.fieldName = "latitude",     .fieldType = NMEA_DOUBLE,  .fieldIndex = 2},
-      {.fieldName = "nord/sud",     .fieldType = NMEA_CHAR,    .fieldIndex = 3},
-      {.fieldName = "longitude",    .fieldType = NMEA_DOUBLE,  .fieldIndex = 4},
-      {.fieldName = "est/ouest",    .fieldType = NMEA_CHAR,    .fieldIndex = 5},
-      {.fieldName = "status",       .fieldType = NMEA_INT,     .fieldIndex = 6},
-      {.fieldName = "nb sat",       .fieldType = NMEA_INT,     .fieldIndex = 7},
-      {.fieldName = "hdop",         .fieldType = NMEA_FLOAT,   .fieldIndex = 8},
-      {.fieldName = "Altitude",     .fieldType = NMEA_FLOAT,   .fieldIndex = 9},
-      // *MANDATORY* marker of end of list
-      {.fieldIndex = 0}
-    }
-  },
   {.fieldClass = "$GNZDA", .msgCb = &zda_cb,
    .field = {
       {.fieldName = "utc time",     .fieldType = NMEA_DOUBLE,  .fieldIndex = 1},
       {.fieldName = "day",   .fieldType = NMEA_INT,   .fieldIndex = 2},
       {.fieldName = "month", .fieldType = NMEA_INT,   .fieldIndex = 3},
       {.fieldName = "year",  .fieldType = NMEA_INT,   .fieldIndex = 4},
-      // *MANDATORY* marker of end of list
-      {.fieldIndex = 0}
-    }
-  },
-  {.fieldClass = "$GNVTG", .msgCb = &vtg_cb,
-   .field = {
-      {.fieldName = "COG",          .fieldType = NMEA_FLOAT,   .fieldIndex = 1},
-      {.fieldName = "COG mag",      .fieldType = NMEA_FLOAT,   .fieldIndex = 3},
-      {.fieldName = "SOG km/h",     .fieldType = NMEA_FLOAT,   .fieldIndex = 7},
-      {.fieldName = "mode indic",   .fieldType = NMEA_CHAR,    .fieldIndex = 9},
       // *MANDATORY* marker of end of list
       {.fieldIndex = 0}
     }
@@ -97,10 +72,6 @@ namespace {
     uint8_t  month;
   } dayMonthYear{};
 
-  struct CogSog {
-    float cog;
-    float sog;
-  } cogSog{};
 
   static ReceiveNmealink *rnl = nullptr; 
 };
@@ -132,53 +103,6 @@ bool ReceiveNmealink::loop()
   
 
 namespace {
-  void gga_cb ([[maybe_unused]] const void * const userData,
-	       const uint32_t argc, const NmeaParam  * const argv)
-  {
-    // should verify that type of arg is what you use
-    // tu be sure not to use bad field in the union
-    chDbgAssert (argc == 9, "nmea callback num field error");
-    chDbgAssert (argv[0].fieldDesc->fieldType == NMEA_DOUBLE, "nmea callback type of field error");
-    chDbgAssert (argv[1].fieldDesc->fieldType == NMEA_DOUBLE, "nmea callback type of field error");
-    chDbgAssert (argv[2].fieldDesc->fieldType == NMEA_CHAR  , "nmea callback type of field error");
-    chDbgAssert (argv[3].fieldDesc->fieldType == NMEA_DOUBLE, "nmea callback type of field error");
-    chDbgAssert (argv[4].fieldDesc->fieldType == NMEA_CHAR  , "nmea callback type of field error");
-    chDbgAssert (argv[5].fieldDesc->fieldType == NMEA_INT   , "nmea callback type of field error");
-    chDbgAssert (argv[6].fieldDesc->fieldType == NMEA_INT   , "nmea callback type of field error");
-    chDbgAssert (argv[7].fieldDesc->fieldType == NMEA_FLOAT , "nmea callback type of field error");
-    chDbgAssert (argv[8].fieldDesc->fieldType == NMEA_FLOAT , "nmea callback type of field error");
-
-    UtmCoor_f utm{};
-    LlaCoor_f latlong = {
-			 .lat = float(nmeaAngleToRad(argv[1].f_d)*sideSign(argv[2].f_c)),
-			 .lon = float(nmeaAngleToRad(argv[3].f_d)*sideSign(argv[4].f_c)),
-			 .alt = argv[8].f_f};
-    utm_of_lla_f(&utm, &latlong);
-    commonGps = {
-	       .rtcTime = zdaToRTCD(dayMonthYear),
-	       .utm_east = static_cast<int32_t>(utm.east * 100),
-	       .utm_north = static_cast<int32_t>(utm.north * 100),
-	       .alt = static_cast<int32_t>(utm.alt * 1000),
-	       .course =  static_cast<int16_t>(cogSog.cog * 10),
-	       .speed =  static_cast<uint16_t>(cogSog.sog * 1000 / 36),
-	       // TODO : recuperer climb dans PUBX,00
-	       .climb = 0, 
-	       .utm_zone = utm.zone
-    };
-    rnl->blackBoard.write(commonGps);
-    SdCard::logSyslog(Severity::Info, "DEBUG> UTM: east = %ld north = %ld zone=%u "
-		      "LATLONG(rad) lat=%.6f long=%.6f alt=%.1f",
-		      commonGps.utm_east, commonGps.utm_north, commonGps.utm_zone,
-		      static_cast<double>(latlong.lat),
-		      static_cast<double>(latlong.lon),
-		      static_cast<double>(latlong.alt)
-		      );
-    
-  };
-  
-
-  
-
   void zda_cb ([[maybe_unused]] const void * const userData,
 	       const uint32_t argc, const NmeaParam  * const argv)
   {
@@ -206,30 +130,7 @@ namespace {
 
      }
   
-  void vtg_cb ([[maybe_unused]] const void * const userData,
-		 const uint32_t argc, const NmeaParam * const argv)
-  {
-    // should verify that type of arg is what you use
-    // tu be sure not to use bad field in the union
-    chDbgAssert (argc == 4, "nmea callback num field error");
-    chDbgAssert (argv[0].fieldDesc->fieldType == NMEA_FLOAT, "nmea callback type of field error");
-    chDbgAssert (argv[1].fieldDesc->fieldType == NMEA_FLOAT, "nmea callback type of field error");
-    chDbgAssert (argv[2].fieldDesc->fieldType == NMEA_FLOAT, "nmea callback type of field error");
-    chDbgAssert (argv[3].fieldDesc->fieldType == NMEA_CHAR, "nmea callback type of field error");
-
-    cogSog = {
-	      .cog = argv[0].f_f,
-	      .sog = argv[2].f_f
-    };
-
-
-
-    SdCard::logSyslog(Severity::Info, "DEBUG> cog/sog: "
-		      "cog = %.2f sog = %.2f",
-		      static_cast<double>(cogSog.cog),
-		      static_cast<double>(cogSog.sog));
-  }
-  
+ 
   void pubx00_cb ([[maybe_unused]] const void * const userData,
 		  const uint32_t argc, const NmeaParam  * const argv)
   {
@@ -248,24 +149,21 @@ namespace {
     chDbgAssert (argv[11].fieldDesc->fieldType == NMEA_FLOAT, "nmea callback type of field error");
     chDbgAssert (argv[12].fieldDesc->fieldType == NMEA_INT  , "nmea callback type of field error");
     
-    cogSog = {
-	      .cog = argv[8].f_f,
-	      .sog = argv[7].f_f
-    };
-
+ 
     UtmCoor_f utm{};
     LlaCoor_f latlong = {
 			 .lat = float(nmeaAngleToRad(argv[1].f_d)*sideSign(argv[2].f_c)),
 			 .lon = float(nmeaAngleToRad(argv[3].f_d)*sideSign(argv[4].f_c)),
 			 .alt = argv[6].f_f};
     utm_of_lla_f(&utm, &latlong);
+    dayMonthYear.utc =  argv[0].f_d;
     commonGps = {
 	       .rtcTime = zdaToRTCD(dayMonthYear),
 	       .utm_east = static_cast<int32_t>(utm.east * 100),
 	       .utm_north = static_cast<int32_t>(utm.north * 100),
 	       .alt = static_cast<int32_t>(utm.alt * 1000),
-	       .course =  static_cast<int16_t>(cogSog.cog * 10),
-	       .speed =  static_cast<uint16_t>(cogSog.sog * 1000 / 36),
+	       .course =  static_cast<int16_t>( argv[8].f_f * 10),
+	       .speed =  static_cast<uint16_t>(argv[7].f_f * 1000 / 36),
 	       .climb =  static_cast<int16_t>(argv[3].f_f * -100), 
 	       .utm_zone = utm.zone
     };
