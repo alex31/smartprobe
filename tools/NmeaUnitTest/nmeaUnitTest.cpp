@@ -12,23 +12,61 @@
 //g++ -std=c++17 -Wall -Wextra -I. nmeaFrame.c nmeaUnitTest.cpp
 
 
+typedef void (nmea_cb_t) (const void * const userData,
+			  const uint32_t argc, const NmeaParam  * const argv);
 
 namespace {
   struct DayMonthYear;
 
   double sideSign(const char side);
+  nmea_cb_t gga_cb, zda_cb, vtg_cb, pubx00_cb;
 
-  void gga_cb (const void * const userData,
-		 const uint32_t argc, const NmeaParam  * const argv);
-  void zda_cb (const void * const userData, const uint32_t argc, 
-		 const NmeaParam * const argv);
-  void vtg_cb (const void * const userData, const uint32_t argc, 
-		 const NmeaParam * const argv);
   void error_cb (const NmeaError error, const void * const userData,
 		 const char * const msg);
 
   
   const NmeaBinder nbs[] = {
+   /*
+    Parameter Value	    Unit		Description
+    2 UTC	                    hhmmss.sss		Universal time coordinated
+    3 Lat	                    ddmm.mmmm		Latitude
+    4 Northing Indicator	    N=North, S=South
+    5 Lon	                    dddmm.mmmm		Longitude
+    6 Easting Indicator	    E=East, W=West
+    7 Alt (HAE)	            m			Altitude (above ellipsoid)
+    8 Status		    NF=No Fix,...
+    9 Horizontal Accuracy	    m	                Horizontal accuracy
+    10 Vertical Accuracy	    m	                Vertical accuracy
+    11 SOG	                    km/h	        Speed Over Ground
+    12 COG (true)	            *	                Course Over Ground (true)
+    13 VD	                    m/s	                Velocity Down
+    14 Age of DGPS Corr	    s	                Age of Differentiel Corrections
+    15 HDOP		                        Horizontal Dillution of Precision
+    16 VDOP		                        Vertical Dillution of Precision
+    17 TDOP		                        Time Dillution of Precision
+    18 SVs Used		                        Number of SVs used for Navigation
+    19 DR Status		                        Dead Reckon Status Flags
+   */
+
+  {.fieldClass = "$PUBX,00", .msgCb = &pubx00_cb,
+   .field = {
+	     {.fieldName = "utc time",     .fieldType = NMEA_DOUBLE,  .fieldIndex = 1}, // 0
+	     {.fieldName = "latitude",     .fieldType = NMEA_DOUBLE,  .fieldIndex = 2}, // 1
+	     {.fieldName = "nord/sud",     .fieldType = NMEA_CHAR,    .fieldIndex = 3}, // 2
+	     {.fieldName = "longitude",    .fieldType = NMEA_DOUBLE,  .fieldIndex = 4}, // 3
+	     {.fieldName = "est/ouest",    .fieldType = NMEA_CHAR,    .fieldIndex = 5}, // 4
+	     {.fieldName = "Altitude",     .fieldType = NMEA_FLOAT,   .fieldIndex = 6}, // 5
+	     {.fieldName = "status",       .fieldType = NMEA_INT,     .fieldIndex = 7}, // 6
+	     {.fieldName = "SOG km/h",     .fieldType = NMEA_FLOAT,   .fieldIndex = 10}, // 7
+	     {.fieldName = "COG",          .fieldType = NMEA_FLOAT,   .fieldIndex = 11}, // 8
+	     {.fieldName = "Vel Down",     .fieldType = NMEA_FLOAT,   .fieldIndex = 13}, // 9 
+	     {.fieldName = "hdop",         .fieldType = NMEA_FLOAT,   .fieldIndex = 14}, // 10
+	     {.fieldName = "vdop",         .fieldType = NMEA_FLOAT,   .fieldIndex = 15}, // 11
+	     {.fieldName = "nb sat",       .fieldType = NMEA_INT,     .fieldIndex = 17}, // 12
+	     // *MANDATORY* marker of end of list
+	     {.fieldIndex = 0}
+    }
+  },
   {.fieldClass = "$G?GGA", .msgCb = &gga_cb,
    .field = {
       {.fieldName = "utc time",     .fieldType = NMEA_DOUBLE,  .fieldIndex = 1},
@@ -252,7 +290,56 @@ namespace {
     std::cout << "VTG cog = " << argv[0].f_f << " sog = " <<  argv[2].f_f
 	      << std::endl;
   };
+
+  /*
+    Parameter Value	    Unit		Description
+    UTC	                    hhmmss.sss		Universal time coordinated
+    Lat	                    ddmm.mmmm		Latitude
+    Northing Indicator	    N=North, S=South
+    Lon	                    dddmm.mmmm		Longitude
+    Easting Indicator	    E=East, W=West
+    Alt (HAE)	            m			Altitude (above ellipsoid)
+    Status		    NF=No Fix,...
+    Horizontal Accuracy	    m	                Horizontal accuracy
+    Vertical Accuracy	    m	                Vertical accuracy
+    SOG	                    km/h	        Speed Over Ground
+    COG (true)	            *	                Course Over Ground (true)
+    VD	                    m/s	                Velocity Down
+    Age of DGPS Corr	    s	                Age of Differentiel Corrections
+    HDOP		                        Horizontal Dillution of Precision
+    VDOP		                        Vertical Dillution of Precision
+    TDOP		                        Time Dillution of Precision
+    SVs Used		                        Number of SVs used for Navigation
+    DR Status		                        Dead Reckon Status Flags
+   */
+
+
   
+  void pubx00_cb ([[maybe_unused]] const void * const userData,
+		  const uint32_t argc, const NmeaParam  * const argv)
+  {
+    assert (argc == 13);
+    assert (argv[0].fieldDesc->fieldType == NMEA_DOUBLE);
+    assert (argv[1].fieldDesc->fieldType == NMEA_DOUBLE);
+    assert (argv[2].fieldDesc->fieldType == NMEA_CHAR  );
+    assert (argv[3].fieldDesc->fieldType == NMEA_DOUBLE);
+    assert (argv[4].fieldDesc->fieldType == NMEA_CHAR  );
+    assert (argv[5].fieldDesc->fieldType == NMEA_FLOAT );
+    assert (argv[6].fieldDesc->fieldType == NMEA_INT   );
+    assert (argv[7].fieldDesc->fieldType == NMEA_FLOAT );
+    assert (argv[8].fieldDesc->fieldType == NMEA_FLOAT );
+    assert (argv[9].fieldDesc->fieldType == NMEA_FLOAT );
+    assert (argv[10].fieldDesc->fieldType == NMEA_FLOAT);
+    assert (argv[11].fieldDesc->fieldType == NMEA_FLOAT);
+    assert (argv[12].fieldDesc->fieldType == NMEA_INT  );
+    
+    std::cout << "PUBX utc = " << argv[0].f_d
+	      << " velocity down = " << argv[9].f_f
+	      << " nb sat = " << argv[12].f_i
+	      <<  std::endl;
+
+  };
+
   void error_cb ([[maybe_unused]] const NmeaError error, [[maybe_unused]] const void * const userData,
 		 const char * const msg) 
   {

@@ -9,7 +9,8 @@
 #include "sdcard.hpp"
 #include "pprz_geodetic_float.h"
 
-
+typedef void (nmea_cb_t) (const void * const userData,
+			  const uint32_t argc, const NmeaParam  * const argv);
 
 namespace {
   struct DayMonthYear;
@@ -20,18 +21,32 @@ namespace {
   double sideSign(const char side);
 
   double nmeaAngleToRad(const double nmeaAngle);
-
-  void gga_cb (const void * const userData,
-		 const uint32_t argc, const NmeaParam  * const argv);
-  void zda_cb (const void * const userData, const uint32_t argc, 
-		 const NmeaParam * const argv);
-  void vtg_cb (const void * const userData, const uint32_t argc, 
-		 const NmeaParam * const argv);
+  
+  nmea_cb_t gga_cb, zda_cb, vtg_cb, pubx00_cb;
   void error_cb (const NmeaError error, const void * const userData,
 		 const char * const msg);
 
   
   const NmeaBinder nbs[] = {
+  {.fieldClass = "$PUBX,00", .msgCb = &pubx00_cb,
+   .field = {
+	     {.fieldName = "utc time",     .fieldType = NMEA_DOUBLE,  .fieldIndex = 1}, // 0
+	     {.fieldName = "latitude",     .fieldType = NMEA_DOUBLE,  .fieldIndex = 2}, // 1
+	     {.fieldName = "nord/sud",     .fieldType = NMEA_CHAR,    .fieldIndex = 3}, // 2
+	     {.fieldName = "longitude",    .fieldType = NMEA_DOUBLE,  .fieldIndex = 4}, // 3
+	     {.fieldName = "est/ouest",    .fieldType = NMEA_CHAR,    .fieldIndex = 5}, // 4
+	     {.fieldName = "Altitude",     .fieldType = NMEA_FLOAT,   .fieldIndex = 6}, // 5
+	     {.fieldName = "status",       .fieldType = NMEA_INT,     .fieldIndex = 7}, // 6
+	     {.fieldName = "SOG km/h",     .fieldType = NMEA_FLOAT,   .fieldIndex = 10}, // 7
+	     {.fieldName = "COG",          .fieldType = NMEA_FLOAT,   .fieldIndex = 11}, // 8
+	     {.fieldName = "Vel Down",     .fieldType = NMEA_FLOAT,   .fieldIndex = 13}, // 9 
+	     {.fieldName = "hdop",         .fieldType = NMEA_FLOAT,   .fieldIndex = 14}, // 10
+	     {.fieldName = "vdop",         .fieldType = NMEA_FLOAT,   .fieldIndex = 15}, // 11
+	     {.fieldName = "nb sat",       .fieldType = NMEA_INT,     .fieldIndex = 17}, // 12
+	     // *MANDATORY* marker of end of list
+	     {.fieldIndex = 0}
+    }
+  },
   {.fieldClass = "$GNGGA", .msgCb = &gga_cb,
    .field = {
       {.fieldName = "utc time",     .fieldType = NMEA_DOUBLE,  .fieldIndex = 1},
@@ -122,41 +137,17 @@ namespace {
   {
     // should verify that type of arg is what you use
     // tu be sure not to use bad field in the union
-    assert (argc == 9);
-    assert (argv[0].fieldDesc->fieldType == NMEA_DOUBLE);
-    assert (argv[1].fieldDesc->fieldType == NMEA_DOUBLE);
-    assert (argv[2].fieldDesc->fieldType == NMEA_CHAR  );
-    assert (argv[3].fieldDesc->fieldType == NMEA_DOUBLE);
-    assert (argv[4].fieldDesc->fieldType == NMEA_CHAR  );
-    assert (argv[5].fieldDesc->fieldType == NMEA_INT   );
-    assert (argv[6].fieldDesc->fieldType == NMEA_INT   );
-    assert (argv[7].fieldDesc->fieldType == NMEA_FLOAT );
-    assert (argv[8].fieldDesc->fieldType == NMEA_FLOAT );
+    chDbgAssert (argc == 9, "nmea callback num field error");
+    chDbgAssert (argv[0].fieldDesc->fieldType == NMEA_DOUBLE, "nmea callback type of field error");
+    chDbgAssert (argv[1].fieldDesc->fieldType == NMEA_DOUBLE, "nmea callback type of field error");
+    chDbgAssert (argv[2].fieldDesc->fieldType == NMEA_CHAR  , "nmea callback type of field error");
+    chDbgAssert (argv[3].fieldDesc->fieldType == NMEA_DOUBLE, "nmea callback type of field error");
+    chDbgAssert (argv[4].fieldDesc->fieldType == NMEA_CHAR  , "nmea callback type of field error");
+    chDbgAssert (argv[5].fieldDesc->fieldType == NMEA_INT   , "nmea callback type of field error");
+    chDbgAssert (argv[6].fieldDesc->fieldType == NMEA_INT   , "nmea callback type of field error");
+    chDbgAssert (argv[7].fieldDesc->fieldType == NMEA_FLOAT , "nmea callback type of field error");
+    chDbgAssert (argv[8].fieldDesc->fieldType == NMEA_FLOAT , "nmea callback type of field error");
 
-    // use converted value according to type declared in binding
-    /* DebugTrace ("\nGxGGA %s=%f %s=%f %s=%c\n\r%s=%f %s=%c %s=%d %s=%d\n\r%s=%f %s=%f", */
-    /* 	      argv[0].fieldDesc->fieldName, argv[0].f_d, */
-    /* 	      argv[1].fieldDesc->fieldName, argv[1].f_d, */
-    /* 	      argv[2].fieldDesc->fieldName, argv[2].f_c, */
-    /* 	      argv[3].fieldDesc->fieldName, argv[3].f_d, */
-    /* 	      argv[4].fieldDesc->fieldName, argv[4].f_c, */
-    /* 	      argv[5].fieldDesc->fieldName, argv[5].f_i, */
-    /* 	      argv[6].fieldDesc->fieldName, argv[6].f_i, */
-    /* 	      argv[7].fieldDesc->fieldName, argv[7].f_f, */
-    /* 	      argv[8].fieldDesc->fieldName, argv[8].f_f); */
-
-    /*
-      {.fieldName = "utc time",     .fieldType = NMEA_DOUBLE,  .fieldIndex = 1},
-      {.fieldName = "latitude",     .fieldType = NMEA_DOUBLE,  .fieldIndex = 2},
-      {.fieldName = "nord/sud",     .fieldType = NMEA_CHAR,    .fieldIndex = 3},
-      {.fieldName = "longitude",    .fieldType = NMEA_DOUBLE,  .fieldIndex = 4},
-      {.fieldName = "est/ouest",    .fieldType = NMEA_CHAR,    .fieldIndex = 5},
-      {.fieldName = "status",       .fieldType = NMEA_INT,     .fieldIndex = 6},
-      {.fieldName = "nb sat",       .fieldType = NMEA_INT,     .fieldIndex = 7},
-      {.fieldName = "hdop",         .fieldType = NMEA_FLOAT,   .fieldIndex = 8},
-      {.fieldName = "Altitude",     .fieldType = NMEA_FLOAT,   .fieldIndex = 9},
-    */
-    
     UtmCoor_f utm{};
     LlaCoor_f latlong = {
 			 .lat = float(nmeaAngleToRad(argv[1].f_d)*sideSign(argv[2].f_c)),
@@ -193,11 +184,11 @@ namespace {
   {
     // should verify that type of arg is what you use
     // tu be sure not to use bad field in the union
-    assert (argc == 4);
-    assert (argv[0].fieldDesc->fieldType == NMEA_DOUBLE);
-    assert (argv[1].fieldDesc->fieldType == NMEA_INT);
-    assert (argv[2].fieldDesc->fieldType == NMEA_INT);
-    assert (argv[3].fieldDesc->fieldType == NMEA_INT);
+    chDbgAssert (argc == 4, "nmea callback num field error");
+    chDbgAssert (argv[0].fieldDesc->fieldType == NMEA_DOUBLE, "nmea callback type of field error");
+    chDbgAssert (argv[1].fieldDesc->fieldType == NMEA_INT, "nmea callback type of field error");
+    chDbgAssert (argv[2].fieldDesc->fieldType == NMEA_INT, "nmea callback type of field error");
+    chDbgAssert (argv[3].fieldDesc->fieldType == NMEA_INT, "nmea callback type of field error");
   
     dayMonthYear = {
 		    .utc = argv[0].f_d,
@@ -220,11 +211,11 @@ namespace {
   {
     // should verify that type of arg is what you use
     // tu be sure not to use bad field in the union
-    assert (argc == 4);
-    assert (argv[0].fieldDesc->fieldType == NMEA_FLOAT);
-    assert (argv[1].fieldDesc->fieldType == NMEA_FLOAT);
-    assert (argv[2].fieldDesc->fieldType == NMEA_FLOAT);
-    assert (argv[3].fieldDesc->fieldType == NMEA_CHAR);
+    chDbgAssert (argc == 4, "nmea callback num field error");
+    chDbgAssert (argv[0].fieldDesc->fieldType == NMEA_FLOAT, "nmea callback type of field error");
+    chDbgAssert (argv[1].fieldDesc->fieldType == NMEA_FLOAT, "nmea callback type of field error");
+    chDbgAssert (argv[2].fieldDesc->fieldType == NMEA_FLOAT, "nmea callback type of field error");
+    chDbgAssert (argv[3].fieldDesc->fieldType == NMEA_CHAR, "nmea callback type of field error");
 
     cogSog = {
 	      .cog = argv[0].f_f,
@@ -239,7 +230,58 @@ namespace {
 		      static_cast<double>(cogSog.sog));
   }
   
-  
+  void pubx00_cb ([[maybe_unused]] const void * const userData,
+		  const uint32_t argc, const NmeaParam  * const argv)
+  {
+    chDbgAssert (argc == 13, "nmea callback num field error");
+    chDbgAssert (argv[0].fieldDesc->fieldType == NMEA_DOUBLE, "nmea callback type of field error");
+    chDbgAssert (argv[1].fieldDesc->fieldType == NMEA_DOUBLE, "nmea callback type of field error");
+    chDbgAssert (argv[2].fieldDesc->fieldType == NMEA_CHAR  , "nmea callback type of field error");
+    chDbgAssert (argv[3].fieldDesc->fieldType == NMEA_DOUBLE, "nmea callback type of field error");
+    chDbgAssert (argv[4].fieldDesc->fieldType == NMEA_CHAR  , "nmea callback type of field error");
+    chDbgAssert (argv[5].fieldDesc->fieldType == NMEA_FLOAT , "nmea callback type of field error");
+    chDbgAssert (argv[6].fieldDesc->fieldType == NMEA_INT   , "nmea callback type of field error");
+    chDbgAssert (argv[7].fieldDesc->fieldType == NMEA_FLOAT , "nmea callback type of field error");
+    chDbgAssert (argv[8].fieldDesc->fieldType == NMEA_FLOAT , "nmea callback type of field error");
+    chDbgAssert (argv[9].fieldDesc->fieldType == NMEA_FLOAT , "nmea callback type of field error");
+    chDbgAssert (argv[10].fieldDesc->fieldType == NMEA_FLOAT, "nmea callback type of field error");
+    chDbgAssert (argv[11].fieldDesc->fieldType == NMEA_FLOAT, "nmea callback type of field error");
+    chDbgAssert (argv[12].fieldDesc->fieldType == NMEA_INT  , "nmea callback type of field error");
+    
+    cogSog = {
+	      .cog = argv[8].f_f,
+	      .sog = argv[7].f_f
+    };
+
+    UtmCoor_f utm{};
+    LlaCoor_f latlong = {
+			 .lat = float(nmeaAngleToRad(argv[1].f_d)*sideSign(argv[2].f_c)),
+			 .lon = float(nmeaAngleToRad(argv[3].f_d)*sideSign(argv[4].f_c)),
+			 .alt = argv[6].f_f};
+    utm_of_lla_f(&utm, &latlong);
+    commonGps = {
+	       .rtcTime = zdaToRTCD(dayMonthYear),
+	       .utm_east = static_cast<int32_t>(utm.east * 100),
+	       .utm_north = static_cast<int32_t>(utm.north * 100),
+	       .alt = static_cast<int32_t>(utm.alt * 1000),
+	       .course =  static_cast<int16_t>(cogSog.cog * 10),
+	       .speed =  static_cast<uint16_t>(cogSog.sog * 1000 / 36),
+	       .climb =  static_cast<int16_t>(argv[3].f_f * -100), 
+	       .utm_zone = utm.zone
+    };
+    rnl->blackBoard.write(commonGps);
+    SdCard::logSyslog(Severity::Info, "DEBUG> PUBX UTM: east = %ld north = %ld zone=%u "
+		      "LATLONG(rad) lat=%.6f long=%.6f alt=%.1f vd=%d",
+		      commonGps.utm_east, commonGps.utm_north, commonGps.utm_zone,
+		      static_cast<double>(latlong.lat),
+		      static_cast<double>(latlong.lon),
+		      static_cast<double>(latlong.alt),
+		      commonGps.climb
+		      );
+ 
+
+  };
+
   void error_cb (const NmeaError error, const void * const userData,
 		 const char * const msg) 
   {

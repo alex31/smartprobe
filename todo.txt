@@ -26,6 +26,7 @@ A AMELIORER :
   ° fix
 
 	* module nmea : autoriser des caractères wildcard
+	                remplacer assert par chDbgAssert
 
 	* (LOW PRIO) recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
 	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour les I/O sur la liaison série ?

@@ -102,7 +102,13 @@ static int32_t parseNMEA (const NmeaBinder *nbs, const void * const  userData,
   NmeaParam nmeaParam[MAX_NUM_OF_FIELD];
   uint32_t i=0;
 
-  while ((field = strsep (&nmeaFrame, ",")) != NULL)  {  
+  while ((field = strsep (&nmeaFrame, ",")) != NULL)  {
+    // case of PUBX where the first comma sepatared field is not a parameter
+    // but the PUBX sub message index
+    if (strcmp(field, "$PUBX") == 0) {
+      strsep (&nmeaFrame, ","); // go to real first parameter
+      field[5] = ','; // revert the \0 that have been placed by a comma
+    }
     fieldsPtr[sep++] = field;
     if (sep >= MAX_NUM_OF_FIELD) {
       (error_cb) ( NMEA_OVERFIELD_ERR, userData, nmeaFrame);
