@@ -6,8 +6,7 @@
 #include "printf.h"
 #include "threadAndEventDecl.hpp"
 #include "ttyConsole.hpp"
-
-#define PERIOD(k) (CH_CFG_ST_FREQUENCY / CONF(k))
+#include "util.hpp"
 
 
 namespace {

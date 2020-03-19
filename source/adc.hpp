@@ -1,9 +1,9 @@
 #pragma once
 #include "workerClass.hpp"
 #include "hardwareConf.hpp"
+#include "util.hpp"
 
 
-constexpr float rad2deg(const float rad) {return rad * 180.0f / static_cast<float>(M_PI);}
 
 class Adc : public WorkerThread<TH_ADC::threadStackSize, Adc> {
 public:

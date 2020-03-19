@@ -21,14 +21,13 @@ public:
   
 protected:
   static void threadFunc(void *o);
-private:
-
   // this is called in origin thread context
   virtual bool init(void) = 0;
   // this is called in newly created thread context
   virtual bool initInThreadContext(void) {return true;};
   virtual bool loop(void) = 0;
 
+private:
   const char *name;
   const tprio_t prio;
   sysinterval_t timeInLoop;

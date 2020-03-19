@@ -14,7 +14,10 @@ A TESTER :
 
   
 A CODER :
-
+ * coder le log charge cpu et occupation des piles
+ * remettre (après test) le code nmea avec fnmatch et wildcard
+ * verif latlong to utm ?
+ * voir pquoi on ne reçoit pas les evenements GPS
 
   
 
@@ -22,7 +25,8 @@ A AMELIORER :
 
   ° fix
 
-	* module nmea : autoriser des caractères wildcard
+	* fix du latlongToUtm
+	  
 
 	* (LOW PRIO) recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
 	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour les I/O sur la liaison série ?
@@ -39,7 +43,7 @@ GRANDES LIGNES :
 	  + modes :
 	    	  ° SHELL (avec stream ascii togglable par la commande shell 't') : OK
 		  ° PPRZ_IN_OUT : OK
-		  ° NMEA_IN : NYI
+		  ° NMEA_IN : OK
 	  + recup de données gps -> calcul de vecteur vitesse 3D en reference terrestre
 	  
 	* syslog periodique de la charge de calcul
@@ -98,6 +102,8 @@ EVOLUTION SMARTPROBE V2 (et au delà)
 
 
 #define STM32_ADC_ADC1_DMA_STREAM           STM32_DMA_STREAM_ID(2, 4)
+#define STM32_TIM1_UP_DMA_STREAM	    STM32_DMA_STREAM_ID(2, 5)
+#define STM32_TIM1_UP_DMA_CHANNEL	    6
 #define STM32_SDC_SDMMC1_DMA_STREAM         STM32_DMA_STREAM_ID(2, 6)
 #define STM32_SPI_SPI1_RX_DMA_STREAM        STM32_DMA_STREAM_ID(2, 0)
 #define STM32_SPI_SPI1_TX_DMA_STREAM        STM32_DMA_STREAM_ID(2, 3)

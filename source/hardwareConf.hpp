@@ -161,8 +161,8 @@ static constexpr size_t threadStackSize = 1536U;
 namespace TH_TRANSMITPPRZLINK {
 static constexpr size_t threadStackSize = 1536U;
 }
-namespace TH_RECEIVEPPRZLINK {
-static constexpr size_t threadStackSize = 1536U;
+namespace TH_RECEIVEBASELINK {
+static constexpr size_t threadStackSize = 3072U;
 }
 namespace TH_ADC {
 static constexpr size_t threadStackSize = 512U;
@@ -189,5 +189,5 @@ namespace TH_DYNSWDIO {
 static constexpr size_t threadStackSize = 512U;
 }
 namespace TH_RTCSYNC {
-static constexpr size_t threadStackSize = 512U;
+static constexpr size_t threadStackSize = 1024U;
 }
