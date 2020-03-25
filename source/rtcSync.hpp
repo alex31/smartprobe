@@ -17,5 +17,5 @@ private:
   bool init(void) final;
   bool initInThreadContext(void) final;
   bool loop(void) final;
-  event_listener_t pprzGpsEvent, nmeaGpsEvent;
+  event_listener_t pprzGpsEvent, nmeaGpsEvent, ubxGpsEvent;
 };

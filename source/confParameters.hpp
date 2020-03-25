@@ -6,7 +6,7 @@ using namespace std::literals;
 
 enum AhrsType {RAW_IMU=0, HEADLESS_AHRS, COMPLETE_AHRS};
 enum DPressureFetchedParameter {PRESSURE_ONLY=0, PRESSURE_TEMPERATURE};
-enum SerialMode {SHELL, PPRZ_IN_OUT, NMEA_IN, UBLOX_IN};
+enum SerialMode {SHELL, PPRZ_IN_OUT, NMEA_IN, UBX_IN};
 constexpr double ESTIMATE_ROW = 0.0;
 
 #ifdef OLD_EXAMPLE
@@ -33,7 +33,7 @@ constexpr double ESTIMATE_ROW = 0.0;
   {"uart.mode", {1, NAMESET({SHELL, "shell"},			  \
 			    {PPRZ_IN_OUT, "pprz_in_out"}, \
 			    {NMEA_IN, "nmea_in"}, \
-			    {UBLOX_IN, "ublox_in"}) }}, \
+			    {UBX_IN, "ubx_in"}) }}, \
   {"uart.baud", {115200, RANGEINT(9600, 460800) }},	\
   {"sensor.barometer.temperatureBias", {-5.0, RANGEDOUBLE(-15.0, 0.0) }}, \
   {"sensor.barometer.odr", {4, NAMESET({LPS33HW_POWER_DOWN, "powerdown"}, {LPS33HW_ODR_1_Hz, "1hz"}, \

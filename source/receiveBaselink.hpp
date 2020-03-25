@@ -19,6 +19,13 @@ struct CommonGpsData {
   uint8_t     utm_zone;
 };
 
+struct DayMonthYear {
+  double   utc;
+  uint16_t year;
+  uint8_t  day;
+  uint8_t  month;
+};
+
 class ReceiveBaselink : public WorkerThread<TH_RECEIVEBASELINK::threadStackSize,
 					      ReceiveBaselink> {
 public:
@@ -26,6 +33,9 @@ public:
     WorkerThread<TH_RECEIVEBASELINK::threadStackSize,
 		 ReceiveBaselink>("receiveBaselink", m_prio) {};
   BlackBoard<CommonGpsData, UpdateBehavior::Always> blackBoard;
+  static  uint8_t weekday(uint8_t month,  uint8_t day, uint16_t year);
+  static  double gpsAngleToRad(const double gpsAngle);
+  static  RTCDateTime dmyToRTCD(const DayMonthYear& dmy);
 protected:
   virtual bool init(void);
   virtual bool initInThreadContext(void) {return true;};

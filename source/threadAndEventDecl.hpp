@@ -10,6 +10,7 @@
 #include "relativeWind.hpp"
 #include "receivePprzlink.hpp"
 #include "receiveNmealink.hpp"
+#include "receiveUbxlink.hpp"
 
 #define CONF(k)  (ConfigurationFile_AT(confFile, k))
 
@@ -24,3 +25,4 @@ extern  Ahrs			ahrs;
 extern  Relwind			relwind;
 extern  ReceivePprzlink		receivePPL;
 extern  ReceiveNmealink		receiveNMEA;
+extern  ReceiveUbxlink		receiveUBX;

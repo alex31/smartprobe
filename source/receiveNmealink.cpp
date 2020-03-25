@@ -13,15 +13,8 @@ typedef void (nmea_cb_t) (const void * const userData,
 			  const uint32_t argc, const NmeaParam  * const argv);
 
 namespace {
-  struct DayMonthYear;
-  uint8_t weekday(uint8_t month,  uint8_t day, uint16_t year);
-
-  RTCDateTime zdaToRTCD(const DayMonthYear& dmy);
-
   double sideSign(const char side);
 
-  double nmeaAngleToRad(const double nmeaAngle);
-  
   nmea_cb_t zda_cb, pubx00_cb;
   void error_cb (const NmeaError error, const void * const userData,
 		 const char * const msg);
@@ -64,14 +57,7 @@ namespace {
 
   NmeaStateMachine sm{};
   CommonGpsData commonGps{};
-
-  struct DayMonthYear {
-    double   utc;
-    uint16_t year;
-    uint8_t  day;
-    uint8_t  month;
-  } dayMonthYear{};
-
+  DayMonthYear   dayMonthYear{};
 
   static ReceiveNmealink *rnl = nullptr; 
 };
@@ -92,9 +78,9 @@ bool ReceiveNmealink::init()
 
 bool ReceiveNmealink::loop()
 {
-  const int16_t  recb = sdGetTimeout(&ExtSD, TIME_MS2I(1000));
+  const int16_t  recb = sdGetTimeout(&ExtSD, TIME_S2I(2));
   if (recb < 0) {
-    SdCard::logSyslog(Severity::Warning, "nmea link : 1 second without data from gps");
+    SdCard::logSyslog(Severity::Warning, "nmea link : 2 seconds without data from gps");
   } else {
     feedNmea(nbs, &sm, nullptr, (char) recb, error_cb);
   }
@@ -152,13 +138,13 @@ namespace {
  
     UtmCoor_f utm{};
     LlaCoor_f latlong = {
-			 .lat = float(nmeaAngleToRad(argv[1].f_d)*sideSign(argv[2].f_c)),
-			 .lon = float(nmeaAngleToRad(argv[3].f_d)*sideSign(argv[4].f_c)),
+			 .lat = float(ReceiveBaselink::gpsAngleToRad(argv[1].f_d)*sideSign(argv[2].f_c)),
+			 .lon = float(ReceiveBaselink::gpsAngleToRad(argv[3].f_d)*sideSign(argv[4].f_c)),
 			 .alt = argv[6].f_f};
     utm_of_lla_f(&utm, &latlong);
     dayMonthYear.utc =  argv[0].f_d;
     commonGps = {
-	       .rtcTime = zdaToRTCD(dayMonthYear),
+	       .rtcTime = ReceiveBaselink::dmyToRTCD(dayMonthYear),
 	       .utm_east = static_cast<int32_t>(utm.east * 100),
 	       .utm_north = static_cast<int32_t>(utm.north * 100),
 	       .alt = static_cast<int32_t>(utm.alt * 1000),
@@ -194,31 +180,6 @@ namespace {
   }
   
   
-  uint8_t weekday(uint8_t month,  uint8_t day, uint16_t year)
-  {	
-    uint16_t ix, tx, vx=0;
-
-    switch (month) {
-    case 2 :
-    case 6 : vx = 0; break;
-    case 8 : vx = 4; break;
-    case 10 : vx = 8; break;
-    case 9 :
-    case 12 : vx = 12; break;
-    case 3 :
-    case 11 : vx = 16; break;
-    case 1 :
-    case 5 : vx = 20; break;
-    case 4 :
-    case 7 : vx = 24; break;
-    }
-    if (year > 1900) // 1900 was not a leap year
-      year -= 1900;
-    ix = ((year - 21) % 28) + vx + (month > 2); // take care of February
-    tx = (ix + (ix / 4)) % 7 + day; // take care of leap year
-    return ((tx+1) % 7);
-  }
-
 
   double sideSign(const char side)
   {
@@ -234,35 +195,10 @@ namespace {
     };
   }
 
-  double nmeaAngleToRad(const double nmeaAngle)
-  {
-    const double deg = floor(nmeaAngle/100.0);
-    const double min = nmeaAngle-(deg*100.0);
-    const double fracDeg = deg+(min/60.0);
-    return deg2rad(fracDeg);
-  }
-
-  
-
   // uint32_t      year: 8;            /**< @brief Years since 1980.           */
   // uint32_t      month: 4;           /**< @brief Months 1..12.               */
   // uint32_t      dstflag: 1;         /**< @brief DST correction flag.        */
   // uint32_t      dayofweek: 3;       /**< @brief Day of week 1..7.           */
   // uint32_t      day: 5;             /**< @brief Day of the month 1..31.     */
   // uint32_t      millisecond: 27;    /**< @brief Milliseconds since midnight.*/
-
-  RTCDateTime zdaToRTCD(const DayMonthYear& dmy)
-  {
-    const uint32_t h = static_cast<uint32_t>(dmy.utc/10000);
-    const uint32_t m = static_cast<uint32_t>(dmy.utc/100) % 100;
-    const double s = fmod(dmy.utc, 100.0) + (h*3600) + (m*60);
-    return RTCDateTime {
-	    .year = dmy.year - 1980U,
-	    .month = dmy.month,
-	    .dstflag = 0,
-	    .dayofweek = weekday(dmy.month, dmy.day,  dmy.year) + 1U,
-	    .day = dmy.day,
-	    .millisecond = static_cast<uint32_t>(s*1000.0)};
-  }
-  
 }

@@ -27,6 +27,7 @@ bool RtcSync::initInThreadContext()
   // so cannot be done in init method which is call by the parent thread
   receivePPL.blackBoard.registerEvt(&pprzGpsEvent, PPRZ_GPS_EVT);
   receiveNMEA.blackBoard.registerEvt(&nmeaGpsEvent, NMEA_GPS_EVT);
+  receiveUBX.blackBoard.registerEvt(&nmeaGpsEvent, UBX_GPS_EVT);
 
   return true;
 }
@@ -35,13 +36,16 @@ bool RtcSync::initInThreadContext()
 
 bool RtcSync::loop()
 {
-  const eventmask_t event = chEvtWaitAny(PPRZ_GPS_EVT | NMEA_GPS_EVT);
+  const eventmask_t event = chEvtWaitAny(PPRZ_GPS_EVT | NMEA_GPS_EVT | UBX_GPS_EVT);
   switch (event) {
   case PPRZ_GPS_EVT:
     receivePPL.blackBoard.read(gpsData);
     break;
   case NMEA_GPS_EVT:
     receiveNMEA.blackBoard.read(gpsData);
+    break;
+  case UBX_GPS_EVT:
+    receiveUBX.blackBoard.read(gpsData);
     break;
   default:
     break;

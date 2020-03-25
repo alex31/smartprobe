@@ -17,3 +17,4 @@ Ahrs		  ahrs(NORMALPRIO);
 Relwind		  relwind(NORMALPRIO);
 ReceivePprzlink   receivePPL(NORMALPRIO);
 ReceiveNmealink	  receiveNMEA(NORMALPRIO);
+ReceiveUbxlink	  receiveUBX(NORMALPRIO);

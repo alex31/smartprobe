@@ -103,11 +103,12 @@ int main (void)
 #endif
       receiveNMEA.run(TIME_IMMEDIATE);
       break;
-    case UBLOX_IN:
+    case UBX_IN:
 #ifdef TRACE
-      SdCard::logSyslog(Severity::Fatal, "-DTRACE non compatible with mode UBLOX_IN");
+      SdCard::logSyslog(Severity::Fatal, "-DTRACE non compatible with mode UBX_IN");
       goto error;
 #endif
+      receiveUBX.run(TIME_IMMEDIATE);
       break;
     }
     // if all went ok, main thead now can rest
