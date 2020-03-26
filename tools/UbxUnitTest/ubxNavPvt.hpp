@@ -57,7 +57,7 @@ private:
   const MsgCB_t msgCb;
   const ReadChannelCB_t readCb;
   UbxError  isValidTopic(const TopicLen_t tl);
-  static uint16_t checksum(std::byte const *data, size_t bytes);
+  static uint16_t checksum(std::byte const *data, const size_t bytes);
   void swallowBytes(const size_t n);
   char lastError[80];
 };
@@ -146,7 +146,7 @@ UbxError UbxNavPvtSerialDecoder<BS, ACS>::step(void)
 
 template <size_t BS, size_t ACS>
 uint16_t UbxNavPvtSerialDecoder<BS, ACS>::checksum(std::byte const *data,
-						   size_t bytes)
+						   const size_t bytes)
 {
   uint8_t sum1 = 0, sum2 = 0;
 
@@ -180,7 +180,7 @@ template <size_t BS, size_t ACS>
 void UbxNavPvtSerialDecoder<BS, ACS>::swallowBytes(size_t n)
 {
   totalSyncCount += n;
-  while (true) {
+  while (n != 0) {
     if (n > BS) {
       readCb(&buffer[0], BS);
       n -= BS;
