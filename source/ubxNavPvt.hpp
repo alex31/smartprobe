@@ -14,6 +14,7 @@ enum class UbxError {
 		     TOPIC_LEN,
 		     SIZE_TOO_BIG,
 		     CHKSUM,
+		     NON_UBX,
 		     READ
 };
 
@@ -50,11 +51,14 @@ public:
 private:
   UbxState state = UbxState::WAIT_FOR_STX;
   Buffer_t buffer{};
+  size_t totalSyncCount{};
+  size_t lastSyncKbCount {};
   const UbxTopics_t topics;
   const MsgCB_t msgCb;
   const ReadChannelCB_t readCb;
   UbxError  isValidTopic(const TopicLen_t tl);
   static uint16_t checksum(std::byte const *data, size_t bytes);
+  void swallowBytes(const size_t n);
   char lastError[80];
 };
 
@@ -72,8 +76,17 @@ UbxError UbxNavPvtSerialDecoder<BS, ACS>::step(void)
       return UbxError::READ;
     }
     std::memcpy(&stx, &buffer, sizeof(stx));
-    if (stx == syncBytes) 
+    if (stx == syncBytes) {
       state =  UbxState::WAIT_FOR_PREAMBLE;
+    } else {
+      totalSyncCount += (buffer[1] != static_cast<std::byte>(syncBytes & 0xff)) ? 1U : 0U;
+      if (auto kb = totalSyncCount / 10240U; kb != lastSyncKbCount) {
+	lastSyncKbCount = kb;
+	snprintf(lastError, sizeof(lastError)-1,
+		 "Ubx : discard %u kilobyte of non UBX  or non topic frame", kb * 10U);
+	return UbxError::NON_UBX;
+      }
+    }
     break;
     
   case UbxState::WAIT_FOR_PREAMBLE :
@@ -97,11 +110,13 @@ UbxError UbxNavPvtSerialDecoder<BS, ACS>::step(void)
     case UbxError::TOPIC_NOT_BIND :
       snprintf(lastError, sizeof(lastError)-1,
 	       "Ubx : topic %x not bind", toplen.t);
+      swallowBytes(toplen.l);
       return UbxError::TOPIC_NOT_BIND;
     case UbxError::TOPIC_LEN :
       snprintf(lastError, sizeof(lastError)-1,
 	       "Ubx : topic %x size incorrect received length  %u",
 	       toplen.t, toplen.l);
+      swallowBytes(toplen.l);
       return UbxError::TOPIC_LEN;
     default : break;
     }
@@ -109,6 +124,7 @@ UbxError UbxNavPvtSerialDecoder<BS, ACS>::step(void)
       snprintf(lastError, sizeof(lastError)-1,
 	       "Ubx : topic %x need %u bytes, capacity is %u bytes",
 	       toplen.t, toplen.l+6, BS);
+      swallowBytes(toplen.l);
       return UbxError::SIZE_TOO_BIG;
     }
     if (const auto cnt = readCb(&buffer[4], toplen.l+2); cnt != toplen.l+2) {
@@ -157,4 +173,20 @@ UbxError UbxNavPvtSerialDecoder<BS, ACS>::isValidTopic(const TopicLen_t tlToTest
     return UbxError::TOPIC_LEN;
   else
     return UbxError::OK;
+}
+
+
+template <size_t BS, size_t ACS>
+void UbxNavPvtSerialDecoder<BS, ACS>::swallowBytes(size_t n)
+{
+  totalSyncCount += n;
+  while (true) {
+    if (n > BS) {
+      readCb(&buffer[0], BS);
+      n -= BS;
+    } else {
+      readCb(&buffer[0], n);
+      break;
+    }
+  }
 }
