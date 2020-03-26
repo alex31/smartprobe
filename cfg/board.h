@@ -100,8 +100,8 @@
 #define	PC14_OSC32_IN                  14U
 #define	PC15_OSC32_OUT                 15U
 
-#define	PD00_CAN1_RX                   0U
-#define	PD01_CAN1_TX                   1U
+#define	PD00                           0U
+#define	PD01                           1U
 #define	PD02_SDMMC1_CMD                2U
 #define	PD03                           3U
 #define	PD04                           4U
@@ -126,7 +126,7 @@
 #define	PE06                           6U
 #define	PE07                           7U
 #define	PE08                           8U
-#define	PE09_LED_WS2812                9U
+#define	PE09                           9U
 #define	PE10                           10U
 #define	PE11                           11U
 #define	PE12                           12U
@@ -265,14 +265,11 @@
 #define	LINE_OSC32_IN                  PAL_LINE(GPIOC, 14U)
 #define	LINE_OSC32_OUT                 PAL_LINE(GPIOC, 15U)
 
-#define	LINE_CAN1_RX                   PAL_LINE(GPIOD, 0U)
-#define	LINE_CAN1_TX                   PAL_LINE(GPIOD, 1U)
 #define	LINE_SDMMC1_CMD                PAL_LINE(GPIOD, 2U)
 #define	LINE_LED_GREEN                 PAL_LINE(GPIOD, 8U)
 #define	LINE_LED_RED                   PAL_LINE(GPIOD, 12U)
 
 #define	LINE_BARO_DRDY                 PAL_LINE(GPIOE, 1U)
-#define	LINE_LED_WS2812                PAL_LINE(GPIOE, 9U)
 
 #define	LINE_OSC_IN                    PAL_LINE(GPIOH, 0U)
 #define	LINE_OSC_OUT                   PAL_LINE(GPIOH, 1U)
@@ -609,8 +606,8 @@
 					 PIN_AFIO_AF(PC14_OSC32_IN, 0) | \
 					 PIN_AFIO_AF(PC15_OSC32_OUT, 0))
 
-#define VAL_GPIOD_MODER                 (PIN_MODE_ALTERNATE(PD00_CAN1_RX) | \
-					 PIN_MODE_ALTERNATE(PD01_CAN1_TX) | \
+#define VAL_GPIOD_MODER                 (PIN_MODE_INPUT(PD00) | \
+					 PIN_MODE_INPUT(PD01) | \
 					 PIN_MODE_ALTERNATE(PD02_SDMMC1_CMD) | \
 					 PIN_MODE_INPUT(PD03) | \
 					 PIN_MODE_INPUT(PD04) | \
@@ -626,8 +623,8 @@
 					 PIN_MODE_INPUT(PD14) | \
 					 PIN_MODE_INPUT(PD15))
 
-#define VAL_GPIOD_OTYPER                (PIN_OTYPE_PUSHPULL(PD00_CAN1_RX) | \
-					 PIN_OTYPE_PUSHPULL(PD01_CAN1_TX) | \
+#define VAL_GPIOD_OTYPER                (PIN_OTYPE_PUSHPULL(PD00) | \
+					 PIN_OTYPE_PUSHPULL(PD01) | \
 					 PIN_OTYPE_PUSHPULL(PD02_SDMMC1_CMD) | \
 					 PIN_OTYPE_PUSHPULL(PD03) | \
 					 PIN_OTYPE_PUSHPULL(PD04) | \
@@ -643,8 +640,8 @@
 					 PIN_OTYPE_PUSHPULL(PD14) | \
 					 PIN_OTYPE_PUSHPULL(PD15))
 
-#define VAL_GPIOD_OSPEEDR               (PIN_OSPEED_SPEED_HIGH(PD00_CAN1_RX) | \
-					 PIN_OSPEED_SPEED_HIGH(PD01_CAN1_TX) | \
+#define VAL_GPIOD_OSPEEDR               (PIN_OSPEED_SPEED_VERYLOW(PD00) | \
+					 PIN_OSPEED_SPEED_VERYLOW(PD01) | \
 					 PIN_OSPEED_SPEED_HIGH(PD02_SDMMC1_CMD) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD03) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD04) | \
@@ -660,8 +657,8 @@
 					 PIN_OSPEED_SPEED_VERYLOW(PD14) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD15))
 
-#define VAL_GPIOD_PUPDR                 (PIN_PUPDR_FLOATING(PD00_CAN1_RX) | \
-					 PIN_PUPDR_FLOATING(PD01_CAN1_TX) | \
+#define VAL_GPIOD_PUPDR                 (PIN_PUPDR_PULLDOWN(PD00) | \
+					 PIN_PUPDR_PULLDOWN(PD01) | \
 					 PIN_PUPDR_PULLUP(PD02_SDMMC1_CMD) | \
 					 PIN_PUPDR_PULLDOWN(PD03) | \
 					 PIN_PUPDR_PULLDOWN(PD04) | \
@@ -677,8 +674,8 @@
 					 PIN_PUPDR_PULLDOWN(PD14) | \
 					 PIN_PUPDR_PULLDOWN(PD15))
 
-#define VAL_GPIOD_ODR                   (PIN_ODR_LEVEL_HIGH(PD00_CAN1_RX) | \
-					 PIN_ODR_LEVEL_HIGH(PD01_CAN1_TX) | \
+#define VAL_GPIOD_ODR                   (PIN_ODR_LEVEL_LOW(PD00) | \
+					 PIN_ODR_LEVEL_LOW(PD01) | \
 					 PIN_ODR_LEVEL_HIGH(PD02_SDMMC1_CMD) | \
 					 PIN_ODR_LEVEL_LOW(PD03) | \
 					 PIN_ODR_LEVEL_LOW(PD04) | \
@@ -694,8 +691,8 @@
 					 PIN_ODR_LEVEL_LOW(PD14) | \
 					 PIN_ODR_LEVEL_LOW(PD15))
 
-#define VAL_GPIOD_AFRL			(PIN_AFIO_AF(PD00_CAN1_RX, 9) | \
-					 PIN_AFIO_AF(PD01_CAN1_TX, 9) | \
+#define VAL_GPIOD_AFRL			(PIN_AFIO_AF(PD00, 0) | \
+					 PIN_AFIO_AF(PD01, 0) | \
 					 PIN_AFIO_AF(PD02_SDMMC1_CMD, 12) | \
 					 PIN_AFIO_AF(PD03, 0) | \
 					 PIN_AFIO_AF(PD04, 0) | \
@@ -721,7 +718,7 @@
 					 PIN_MODE_INPUT(PE06) | \
 					 PIN_MODE_INPUT(PE07) | \
 					 PIN_MODE_INPUT(PE08) | \
-					 PIN_MODE_ALTERNATE(PE09_LED_WS2812) | \
+					 PIN_MODE_INPUT(PE09) | \
 					 PIN_MODE_INPUT(PE10) | \
 					 PIN_MODE_INPUT(PE11) | \
 					 PIN_MODE_INPUT(PE12) | \
@@ -738,7 +735,7 @@
 					 PIN_OTYPE_PUSHPULL(PE06) | \
 					 PIN_OTYPE_PUSHPULL(PE07) | \
 					 PIN_OTYPE_PUSHPULL(PE08) | \
-					 PIN_OTYPE_PUSHPULL(PE09_LED_WS2812) | \
+					 PIN_OTYPE_PUSHPULL(PE09) | \
 					 PIN_OTYPE_PUSHPULL(PE10) | \
 					 PIN_OTYPE_PUSHPULL(PE11) | \
 					 PIN_OTYPE_PUSHPULL(PE12) | \
@@ -755,7 +752,7 @@
 					 PIN_OSPEED_SPEED_VERYLOW(PE06) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PE07) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PE08) | \
-					 PIN_OSPEED_SPEED_HIGH(PE09_LED_WS2812) | \
+					 PIN_OSPEED_SPEED_VERYLOW(PE09) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PE10) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PE11) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PE12) | \
@@ -772,7 +769,7 @@
 					 PIN_PUPDR_PULLDOWN(PE06) | \
 					 PIN_PUPDR_PULLDOWN(PE07) | \
 					 PIN_PUPDR_PULLDOWN(PE08) | \
-					 PIN_PUPDR_FLOATING(PE09_LED_WS2812) | \
+					 PIN_PUPDR_PULLDOWN(PE09) | \
 					 PIN_PUPDR_PULLDOWN(PE10) | \
 					 PIN_PUPDR_PULLDOWN(PE11) | \
 					 PIN_PUPDR_PULLDOWN(PE12) | \
@@ -789,7 +786,7 @@
 					 PIN_ODR_LEVEL_LOW(PE06) | \
 					 PIN_ODR_LEVEL_LOW(PE07) | \
 					 PIN_ODR_LEVEL_LOW(PE08) | \
-					 PIN_ODR_LEVEL_LOW(PE09_LED_WS2812) | \
+					 PIN_ODR_LEVEL_LOW(PE09) | \
 					 PIN_ODR_LEVEL_LOW(PE10) | \
 					 PIN_ODR_LEVEL_LOW(PE11) | \
 					 PIN_ODR_LEVEL_LOW(PE12) | \
@@ -807,7 +804,7 @@
 					 PIN_AFIO_AF(PE07, 0))
 
 #define VAL_GPIOE_AFRH			(PIN_AFIO_AF(PE08, 0) | \
-					 PIN_AFIO_AF(PE09_LED_WS2812, 1) | \
+					 PIN_AFIO_AF(PE09, 0) | \
 					 PIN_AFIO_AF(PE10, 0) | \
 					 PIN_AFIO_AF(PE11, 0) | \
 					 PIN_AFIO_AF(PE12, 0) | \
@@ -1469,14 +1466,8 @@
 #define AF_LINE_SDMMC1_D3                12U
 #define AF_PC12_SDMMC1_CK                12U
 #define AF_LINE_SDMMC1_CK                12U
-#define AF_PD00_CAN1_RX                  9U
-#define AF_LINE_CAN1_RX                  9U
-#define AF_PD01_CAN1_TX                  9U
-#define AF_LINE_CAN1_TX                  9U
 #define AF_PD02_SDMMC1_CMD               12U
 #define AF_LINE_SDMMC1_CMD               12U
-#define AF_PE09_LED_WS2812               1U
-#define AF_LINE_LED_WS2812               1U
 
 
 #if !defined(_FROM_ASM_)

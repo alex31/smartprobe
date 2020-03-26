@@ -1,4 +1,4 @@
-³
+
 
              _______           _____                   
             |__   __|         |  __ \                  
@@ -9,11 +9,7 @@
 
 A CODER:
 
-° raspberry pi
-
-° tester code de gautier
-
-° logguer si le decodeur UBX detecte des messages qu'il ne sait pas décoder
+° tester code pprzlink avec userdata de gautier
 
 ° en fonction du paramètre   "uart.mode"  SERIAL_NOT_USED, SHELL, PPRZ_IN_OUT, NMEA_IN, UBX_IN, :
 logger les infos gps
