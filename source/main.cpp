@@ -77,6 +77,10 @@ int main (void)
   } else {
     const SerialMode smode = static_cast<SerialMode>(CONF("uart.mode"));
     switch (smode) {
+    case SERIAL_NOT_USED :
+      SdCard::logSyslog(Severity::Warning, "mode serial line NOT USED");
+      break;
+      
     case SHELL:
 #ifndef TRACE
       consoleInit();    // initialisation des objets liés au shell

@@ -6,7 +6,8 @@ using namespace std::literals;
 
 enum AhrsType {RAW_IMU=0, HEADLESS_AHRS, COMPLETE_AHRS};
 enum DPressureFetchedParameter {PRESSURE_ONLY=0, PRESSURE_TEMPERATURE};
-enum SerialMode {SHELL, PPRZ_IN_OUT, NMEA_IN, UBX_IN};
+enum SerialMode {SERIAL_NOT_USED, SHELL, PPRZ_IN_OUT, NMEA_IN, UBX_IN};
+enum CanbusMode {CAN_NOT_USED, CAN_MASTER, CAN_SLAVE};
 constexpr double ESTIMATE_ROW = 0.0;
 
 #ifdef OLD_EXAMPLE
@@ -30,10 +31,15 @@ constexpr double ESTIMATE_ROW = 0.0;
   {"ahrs.type", {1, NAMESET({RAW_IMU, "raw_imu"}, \
 			    {HEADLESS_AHRS, "headless_ahrs"}, \
 			    {COMPLETE_AHRS, "complete_ahrs"}) }}, \
-  {"uart.mode", {1, NAMESET({SHELL, "shell"},			  \
+  {"uart.mode", {1, NAMESET({SERIAL_NOT_USED, "not_used"},			  \
+			    {SHELL, "shell"},			  \
 			    {PPRZ_IN_OUT, "pprz_in_out"}, \
 			    {NMEA_IN, "nmea_in"}, \
 			    {UBX_IN, "ubx_in"}) }}, \
+  {"canbus.mode", {0, NAMESET({CAN_NOT_USED, "not_used"}, \
+			    {CAN_MASTER, "shell"},	  \
+			    {CAN_SLAVE, "pprz_in_out"}) }}, \
+  {"canbus.id", {1, RANGEINT(1, 8) }},	\
   {"uart.baud", {115200, RANGEINT(9600, 460800) }},	\
   {"sensor.barometer.temperatureBias", {-5.0, RANGEDOUBLE(-15.0, 0.0) }}, \
   {"sensor.barometer.odr", {4, NAMESET({LPS33HW_POWER_DOWN, "powerdown"}, {LPS33HW_ODR_1_Hz, "1hz"}, \

@@ -1,4 +1,4 @@
-
+³
 
              _______           _____                   
             |__   __|         |  __ \                  
@@ -7,26 +7,32 @@
                | |    | (_) | | |__| |  | (_) |        
                |_|     \___/  |_____/    \___/         
 
+A CODER:
+
+° raspberry pi
+
+° tester code de gautier
+
+° logguer si le decodeur UBX detecte des messages qu'il ne sait pas décoder
+
+° en fonction du paramètre   "uart.mode"  SERIAL_NOT_USED, SHELL, PPRZ_IN_OUT, NMEA_IN, UBX_IN, :
+logger les infos gps
+
+° en fonction du nom du fichier de log : logguer en TSV ou en binaire
+
+       + log binaire, format, header
+
+       + ecrire un decodeur universel qui transforme un log binaire en log TSV
 
 A TESTER :
     
   ° verifier les tailles des piles des threads
 
   
-A CODER :
- * coder le log charge cpu et occupation des piles
- * remettre (après test) le code nmea avec fnmatch et wildcard
- * verif latlong to utm ?
- * voir pquoi on ne reçoit pas les evenements GPS
-
-  
-
 A AMELIORER :
 
   ° fix
 
-	* fix du latlongToUtm
-	  
 
 	* (LOW PRIO) recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
 	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour les I/O sur la liaison série ?
@@ -44,7 +50,10 @@ GRANDES LIGNES :
 	    	  ° SHELL (avec stream ascii togglable par la commande shell 't') : OK
 		  ° PPRZ_IN_OUT : OK
 		  ° NMEA_IN : OK
-	  + recup de données gps -> calcul de vecteur vitesse 3D en reference terrestre
+		  ° UBX_IN : OK
+
+	  + recup de données gps -> log ascii et binaire
+				 -> calcul de vecteur vitesse 3D en reference terrestre
 	  
 	* syslog periodique de la charge de calcul
 	
