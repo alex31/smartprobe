@@ -9,10 +9,10 @@
 
 A CODER:
 
-° tester code pprzlink avec userdata de gautier
-
 ° en fonction du paramètre   "uart.mode"  SERIAL_NOT_USED, SHELL, PPRZ_IN_OUT, NMEA_IN, UBX_IN, :
 logger les infos gps
+
+° tester code pprzlink avec userdata de gautier
 
 ° en fonction du nom du fichier de log : logguer en TSV ou en binaire
 
