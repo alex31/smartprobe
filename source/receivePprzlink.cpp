@@ -28,10 +28,9 @@ struct PprzGpsData {
 namespace {
   struct pprzlink_device_rx dev_rx;
   uint8_t rx_buffer[255];
-  static ReceivePprzlink *rpl = nullptr; // hack waiting for user_data field in callback
 
   void new_message_cb(uint8_t sender_id, uint8_t receiver_id, uint8_t class_id,
-		      uint8_t message_id, uint8_t *buf);
+		      uint8_t message_id, uint8_t *buf, void *user_data);
   static RTCDateTime weekItowToRTC(uint16_t week, uint32_t itow);
 };
 
@@ -41,13 +40,13 @@ namespace {
 bool ReceivePprzlink::init()
 {
   ReceiveBaselink::init();
-  rpl = this;
   dev_rx = pprzlink_device_rx_init(
 				   [] (void) -> int { // char_available
 				     return true; // always true, sdGet will block
 				   },
 				   [] (void) -> uint8_t  {return sdGet(&ExtSD);}, // get_char
-				   rx_buffer
+				   rx_buffer,
+				   this
 				   );
 
   return true;
@@ -67,7 +66,9 @@ namespace {
   void new_message_cb([[maybe_unused]] uint8_t sender_id,
 		      [[maybe_unused]] uint8_t receiver_id,
 		      [[maybe_unused]] uint8_t class_id,
-		      uint8_t message_id, uint8_t *buf) {
+		      uint8_t message_id, uint8_t *buf,
+		      void *user_data) {
+    ReceivePprzlink * const rpl = static_cast<ReceivePprzlink *>(user_data);
     // check message/class IDs to before extracting data from the messages
     if (message_id == PPRZ_MSG_ID_GPS) {
       // get data from GPS
@@ -105,21 +106,6 @@ namespace {
       }
     } 
   }
-  
-  // static void rtcSetTime(uint16_t week, uint32_t itow)
-  // {
-  //   if (itow != 0) {
-  //     // Unix timestamp of the GPS epoch 1980-01-06 00:00:00 UTC
-  //     constexpr uint32_t unixToGpsEpoch = 315964800;
-  //     struct tm time_tm;
-  //     time_t univTime = ((week * 7 * 24 * 3600) + (itow / 1000)) + unixToGpsEpoch;
-  //     gmtime_r(&univTime, &time_tm);
-  //     // Chibios date struct
-  //     RTCDateTime date;
-  //     rtcConvertStructTmToDateTime(&time_tm, 0, &date);
-  //     rtcSetTime(&RTCD1, &date);
-  //   }
-  // }
 
   static RTCDateTime weekItowToRTC(uint16_t week, uint32_t itow)
   {
