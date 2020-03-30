@@ -9,16 +9,15 @@
 
 A CODER:
 
-° en fonction du paramètre   "uart.mode"  SERIAL_NOT_USED, SHELL, PPRZ_IN_OUT, NMEA_IN, UBX_IN, :
-logger les infos gps
-
-° tester code pprzlink avec userdata de gautier
+° en fonction du paramètre   "uart.mode"  SERIAL_NOT_USED, SHELL,
+                                          PPRZ_IN_OUT, NMEA_IN, UBX_IN :
+                                          -> logger les infos gps
 
 ° en fonction du nom du fichier de log : logguer en TSV ou en binaire
 
-       + log binaire, format, header
+       + log binaire, format ?, header
 
-       + ecrire un decodeur universel qui transforme un log binaire en log TSV
+       + ecrire un decodeur qui transforme un log binaire en log TSV en se basant sur le header
 
 A TESTER :
     
