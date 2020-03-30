@@ -153,7 +153,7 @@ namespace TH_BLINKER {
 static constexpr size_t threadStackSize = 512U;
 }
 namespace TH_SDCARD {
-static constexpr size_t threadStackSize = 2048U;
+static constexpr size_t threadStackSize = 3072U;
 }
 namespace TH_SHOWBLACKBOARD {
 static constexpr size_t threadStackSize = 1536U;

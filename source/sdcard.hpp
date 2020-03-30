@@ -36,7 +36,9 @@ private:
   uint32_t freeSpaceInKo = 0;
   FileDes syslogFd = -1;
   FileDes sensorsFd = -1;
-  AhrsType ahrsType;
+  AhrsType ahrsType{};
+  SerialMode serialMode{};
+  bool     logGps = false;
 
   event_listener_t baroEvent, diffPressEvent, imuEvent;
 };

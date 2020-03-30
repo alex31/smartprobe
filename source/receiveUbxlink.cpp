@@ -74,13 +74,6 @@ void ReceiveUbxlink::propagateNavPvt(const UbxNavPvt& navPvt)
     .day = navPvt.day,
     .millisecond = navPvt.iTOW % (24 * 60 * 60 * 1000)};
 
-  SdCard::logSyslog(Severity::Info, "DEBUG> dayMonthYear: "
-		    "millisec = %ld Y=%d M=%ld D=%ld",
-		    rtcd.millisecond,
-		    navPvt.year,
-		    rtcd.month,
-		    rtcd.day);
-  
   UtmCoor_f utm{};
   LlaCoor_f latlong = {
 		       .lat = deg2rad(navPvt.lat / 1e7f),
@@ -100,12 +93,4 @@ void ReceiveUbxlink::propagateNavPvt(const UbxNavPvt& navPvt)
     };
   
   blackBoard.write(commonGps);
-  SdCard::logSyslog(Severity::Info, "DEBUG> PUBX UTM: east = %ld north = %ld zone=%u "
-		    "LATLONG(rad) lat=%.6f long=%.6f alt=%.1f vd=%d",
-		    commonGps.utm_east, commonGps.utm_north, commonGps.utm_zone,
-		    static_cast<double>(latlong.lat),
-		    static_cast<double>(latlong.lon),
-		    static_cast<double>(latlong.alt),
-		    commonGps.climb
-		    );
 }

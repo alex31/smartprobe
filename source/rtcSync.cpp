@@ -5,7 +5,7 @@
 #include "stdutil.h"
 #include "sdcard.hpp"
 #include "threadAndEventDecl.hpp"
-#include "receivePprzlink.hpp"
+#include "receiveBaselink.hpp"
 #include "rtcAccess.h"
 
 namespace {

@@ -105,15 +105,6 @@ namespace {
 		    .year = static_cast<uint16_t>(argv[3].f_i),
 		    .day = static_cast<uint8_t>(argv[1].f_i),
 		    .month =  static_cast<uint8_t>(argv[2].f_i)};
-
-
-     SdCard::logSyslog(Severity::Info, "DEBUG> dayMonthYear: "
-		       "utc = %.2f Y=%d M=%d D=%d",
-		       dayMonthYear.utc,
-		       dayMonthYear.year,
-		       dayMonthYear.month,
-		       dayMonthYear.day);
-
      }
   
  
@@ -154,16 +145,6 @@ namespace {
 	       .utm_zone = utm.zone
     };
     rnl->blackBoard.write(commonGps);
-    SdCard::logSyslog(Severity::Info, "DEBUG> PUBX UTM: east = %ld north = %ld zone=%u "
-		      "LATLONG(rad) lat=%.6f long=%.6f alt=%.1f vd=%d",
-		      commonGps.utm_east, commonGps.utm_north, commonGps.utm_zone,
-		      static_cast<double>(latlong.lat),
-		      static_cast<double>(latlong.lon),
-		      static_cast<double>(latlong.alt),
-		      commonGps.climb
-		      );
- 
-
   };
 
   void error_cb (const NmeaError error, const void * const userData,

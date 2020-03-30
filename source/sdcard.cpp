@@ -8,6 +8,8 @@
 #include "hardwareConf.hpp"
 #include "confFile.hpp"
 #include "threadAndEventDecl.hpp"
+#include "receiveBaselink.hpp"
+#include "etl/cstring.h"
 
 #define xstr(s) str(s)
 #define str(s) #s
@@ -19,6 +21,7 @@ namespace {
   ImuData imuData{};
   Vec3f   attitude{};
   AirSpeed relAirSpeed{};
+  CommonGpsData gpsData{};
   
   constexpr auto severityName = frozen::make_map<Severity, frozen::string> ({
 	{Severity::Debug, "DEBUG"},
@@ -69,6 +72,8 @@ bool SdCard::initInThreadContext()
   // the first event to write the header and launch the worker logger thread
   chEvtWaitAny(ALL_EVENTS);
   ahrsType = static_cast<AhrsType>(CONF("ahrs.type"));
+  serialMode = static_cast<SerialMode>(CONF("uart.mode"));
+  logGps =  (serialMode != SERIAL_NOT_USED) and (serialMode != SHELL) ;
   highTimeStampPrecision = CONF("thread.frequency.d_press") >= 100;
   writeSensorlogHeader();
   return true;
@@ -88,18 +93,102 @@ bool SdCard::loop()
     baro.blackBoard.read(baroData);
     dp.blackBoard.read(diffPressData);
     relwind.blackBoard.read(relAirSpeed);
+    switch (serialMode) {
+    case PPRZ_IN_OUT:
+      receivePPL.blackBoard.read(gpsData);
+      break;
+    case NMEA_IN:
+      receiveNMEA.blackBoard.read(gpsData);
+      break;
+    case UBX_IN:
+      receiveUBX.blackBoard.read(gpsData);
+      break;
+    default:
+      break;
+    }
+      
     
     if (ahrsType == RAW_IMU) {
       imu.blackBoard.read(imuData);
+      if (logGps == true) {
+	se = logSensors("%4.2f\t%3.2f\t"
+			"%.4f\t%.4f\t%.4f\t"
+			"%.2f\t%.2f\t%.2f\t"
+			"%.2f\t%.2f\t%.2f\t"
+			"%.4f\t%.4f\t%.4f\t"
+			"%.4f\t%.4f\t%.4f\t"
+			"%lu\t%lu\t%lu\t%u\t"
+			"%ld\t%d\t%u\t%d\t"
+			"%.2f\t%.1f\t",
+			baroData.pressure,
+			baroData.temp,
+			diffPressData[0].pressure,
+			diffPressData[1].pressure,
+			diffPressData[2].pressure,
+			diffPressData[0].temp,
+			diffPressData[1].temp,
+			diffPressData[2].temp,
+			relAirSpeed.velocity,
+			relAirSpeed.alpha,
+			relAirSpeed.beta,
+			imuData.acc.v[0],
+			imuData.acc.v[1],
+			imuData.acc.v[2],
+			imuData.gyro.v[0],
+			imuData.gyro.v[1],
+			imuData.gyro.v[2],
+			gpsData.rtcTime.millisecond,
+			gpsData.utm_east,
+			gpsData.utm_north,
+			gpsData.utm_zone,
+			gpsData.alt,
+			gpsData.course,
+			gpsData.speed,
+			gpsData.climb,
+			adc.getPowerSupplyVoltage(),
+			adc.getCoreTemp());
+      } else /* logGps == false */ {
+	se = logSensors("%4.2f\t%3.2f\t"
+			"%.4f\t%.4f\t%.4f\t"
+			"%.2f\t%.2f\t%.2f\t"
+			"%.2f\t%.2f\t%.2f\t"
+			"%.4f\t%.4f\t%.4f\t"
+			"%.4f\t%.4f\t%.4f\t"
+			"%.2f\t%.1f\t",
+			baroData.pressure,
+			baroData.temp,
+			diffPressData[0].pressure,
+			diffPressData[1].pressure,
+			diffPressData[2].pressure,
+			diffPressData[0].temp,
+			diffPressData[1].temp,
+			diffPressData[2].temp,
+			relAirSpeed.velocity,
+			relAirSpeed.alpha,
+			relAirSpeed.beta,
+			imuData.acc.v[0],
+			imuData.acc.v[1],
+			imuData.acc.v[2],
+			imuData.gyro.v[0],
+			imuData.gyro.v[1],
+			imuData.gyro.v[2],
+				
+			adc.getPowerSupplyVoltage(),
+			adc.getCoreTemp());
+
+      }
+    } else /* (ahrsType == HEADLESS_AHRS */ {
+      ahrs.blackBoard.read(attitude);
+      if (logGps == true) {
       se = logSensors("%4.2f\t%3.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
 		      "%.2f\t%.2f\t%.2f\t"
 		      "%.2f\t%.2f\t%.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
-		      "%.4f\t%.4f\t%.4f\t"
+		      "%lu\t%lu\t%lu\t%u\t"
+		      "%ld\t%d\t%u\t%d\t"
 		      "%.2f\t%.1f\t",
-		      baroData.pressure,
-		      baroData.temp,
+		      baroData.pressure, baroData.temp,
 		      diffPressData[0].pressure,
 		      diffPressData[1].pressure,
 		      diffPressData[2].pressure,
@@ -109,36 +198,40 @@ bool SdCard::loop()
 		      relAirSpeed.velocity,
 		      relAirSpeed.alpha,
 		      relAirSpeed.beta,
-		      imuData.acc.v[0],
-		      imuData.acc.v[1],
-		      imuData.acc.v[2],
-		      imuData.gyro.v[0],
-		      imuData.gyro.v[1],
-		      imuData.gyro.v[2],
+		      rad2deg(attitude.v[0]), rad2deg(attitude.v[1]), rad2deg(attitude.v[2]),
+		      gpsData.rtcTime.millisecond,
+		      gpsData.utm_east,
+		      gpsData.utm_north,
+		      gpsData.utm_zone,
+		      gpsData.alt,
+		      gpsData.course,
+		      gpsData.speed,
+		      gpsData.climb,
 		      adc.getPowerSupplyVoltage(),
 		      adc.getCoreTemp());
-    } else  {
-          ahrs.blackBoard.read(attitude);
-	  se = logSensors("%4.2f\t%3.2f\t"
-			  "%.4f\t%.4f\t%.4f\t"
-			  "%.2f\t%.2f\t%.2f\t"
-			  "%.2f\t%.2f\t%.2f\t"
-			  "%.4f\t%.4f\t%.4f\t"
-			  "%.2f\t%.1f\t",
-			  baroData.pressure, baroData.temp,
-			  diffPressData[0].pressure,
-			  diffPressData[1].pressure,
-			  diffPressData[2].pressure,
-			  diffPressData[0].temp,
-			  diffPressData[1].temp,
-			  diffPressData[2].temp,
-			  relAirSpeed.velocity,
-			  relAirSpeed.alpha,
-			  relAirSpeed.beta,
-			  rad2deg(attitude.v[0]), rad2deg(attitude.v[1]), rad2deg(attitude.v[2]),
-			  adc.getPowerSupplyVoltage(),
-			  adc.getCoreTemp());
+      } else /* logGps == false */ {
+	se = logSensors("%4.2f\t%3.2f\t"
+			"%.4f\t%.4f\t%.4f\t"
+			"%.2f\t%.2f\t%.2f\t"
+			"%.2f\t%.2f\t%.2f\t"
+			"%.4f\t%.4f\t%.4f\t"
+			"%.2f\t%.1f\t",
+		      baroData.pressure, baroData.temp,
+		      diffPressData[0].pressure,
+		      diffPressData[1].pressure,
+		      diffPressData[2].pressure,
+		      diffPressData[0].temp,
+		      diffPressData[1].temp,
+		      diffPressData[2].temp,
+		      relAirSpeed.velocity,
+		      relAirSpeed.alpha,
+		      relAirSpeed.beta,
+		      rad2deg(attitude.v[0]), rad2deg(attitude.v[1]), rad2deg(attitude.v[2]),
+		      adc.getPowerSupplyVoltage(),
+		      adc.getCoreTemp());
+      }
     }
+    
     
     switch (se) {
     case SDLOG_FATFS_ERROR : DebugTrace("sdWrite sensors: Fatfs error");
@@ -267,46 +360,56 @@ void  SdCard::writeSyslogHeader(void)
 
 void  SdCard::writeSensorlogHeader(void)
 {
+  etl::string<255> header;
+  //std::string header(' ', 160);
+  
+  header = "baro.p\t"
+    "baro.t\t"
+    "dp[0].p\t"
+    "dp[1].p\t"
+    "dp[2].p\t"
+    "dp[0].t\t"
+    "dp[1].t\t"
+    "dp[2].t\t"
+    "velocity\t";
+
   if (ahrsType == RAW_IMU) {
-  logSensors("baro.p baro.t "
-	     "dp[0].p "
-	     "dp[1].p "
-	     "dp[2].p "
-	     "dp[0].t "
-	     "dp[1].t "
-	     "dp[2].t "
-	     "velocity "
-	     "alpha "
-	     "beta "
-	     "acc.x "
-	     "acc.y "
-	     "acc.z "
-	     "gyro.x "
-	     "gyro.y "
-	     "gyro.z "
-	     "vcc "
-	     "CoreTemp "
-	     );
+    header += "alpha\t"
+      "beta\t"
+      "acc.x\t"
+      "acc.y\t"
+      "acc.z\t"
+      "gyro.x\t"
+      "gyro.y\t"
+      "gyro.z\t";
   } else  if (ahrsType == HEADLESS_AHRS) {
-  logSensors("baro.p baro.t "
-	     "dp[0].p "
-	     "dp[1].p "
-	     "dp[2].p "
-	     "dp[0].t "
-	     "dp[1].t "
-	     "dp[2].t "
-	     "velocity "
-	     "alpha "
-	     "beta "
-	     "pitch   "
-	     "roll   "
-	     "yaw   "
-	     "vcc "
-	     "CoreTemp "
-	     );
+    header += 
+      "alpha\t"
+      "beta\t"
+      "pitch  \t"
+      "roll  \t"
+      "yaw  \t"
+      "vcc\t"
+      "CoreTemp\t";
   } else {
     SdCard::logSyslog(Severity::Fatal, "ahrsType HEADLESS_COMPLETE not yet implemented");
   }
+  
+  if (logGps == true) {
+    header += "ms_in_day\t"
+      "utm_east\t"
+      "utm_north\t"
+      "utm_zone\t"
+      "alt\t"
+      "course\t"
+      "speed\t"
+      "climb\t";
+  }
+  
+  header +=  "vcc\t"
+    "CoreTemp\n" ;
+  
+  logSensors(header.c_str());
 }
 
 

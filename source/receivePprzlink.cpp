@@ -99,8 +99,6 @@ namespace {
 
       if (pprzGps.itow and pprzGps.week) {
 	rpl->blackBoard.write(commonGps); // hack waiting for user_data field in callback
-	SdCard::logSyslog(Severity::Info, "DEBUG> gps east = %ld north = %ld",
-			  commonGps.utm_east, commonGps.utm_north);
       } else {
 	SdCard::logSyslog(Severity::Warning, "DEBUG> gps message with ITOW and WEEK = 0");
       }

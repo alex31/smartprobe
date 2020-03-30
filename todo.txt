@@ -9,9 +9,6 @@
 
 A CODER:
 
-° en fonction du paramètre   "uart.mode"  SERIAL_NOT_USED, SHELL,
-                                          PPRZ_IN_OUT, NMEA_IN, UBX_IN :
-                                          -> logger les infos gps
 
 ° en fonction du nom du fichier de log : logguer en TSV ou en binaire
 
@@ -28,6 +25,9 @@ A AMELIORER :
 
   ° fix
 
+
+	* valgring de confFile après portage linux
+        * utiliser des etl::string dans confFile si possible
 
 	* (LOW PRIO) recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
 	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour les I/O sur la liaison série ?

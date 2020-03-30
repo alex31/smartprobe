@@ -201,6 +201,7 @@ USBD_LIB = $(VARIOUS)/Chibios-USB-Devices
 FROZEN_LIB = ../../../../frozen/include
 CTRE_LIB = ../../../.././compile-time-regular-expressions/single-header
 EIGEN_LIB = ../../../.././eigen
+ETL_LIB = ../../../../etl/include
 EXTLIB = ext
 PPRZ_MATH = $(VARIOUS)/paparazzi/math
 
@@ -282,7 +283,7 @@ ASMXSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 INCDIR = $(CONFDIR) $(ALLINC) $(TLSFINC) \
          $(CHIBIOS)/os/various $(VARIOUS) $(VARIOUS_INCL) \
          $(STMEMSLPS33HWDIR) \
-         $(CTRE_LIB) $(FROZEN_LIB) $(EIGEN_LIB) \
+         $(CTRE_LIB) $(FROZEN_LIB) $(EIGEN_LIB) $(ETL_LIB)\
 	 $(USBD_LIB)/mass_storage $(PPRZ_MATH)  $(EXTLIB)
 
 #
