@@ -27,7 +27,7 @@ bool RtcSync::initInThreadContext()
   // so cannot be done in init method which is call by the parent thread
   receivePPL.blackBoard.registerEvt(&pprzGpsEvent, PPRZ_GPS_EVT);
   receiveNMEA.blackBoard.registerEvt(&nmeaGpsEvent, NMEA_GPS_EVT);
-  receiveUBX.blackBoard.registerEvt(&nmeaGpsEvent, UBX_GPS_EVT);
+  receiveUBX.blackBoard.registerEvt(&ubxGpsEvent, UBX_GPS_EVT);
 
   return true;
 }
