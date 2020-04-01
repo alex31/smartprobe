@@ -25,8 +25,9 @@ namespace {
   AirSpeed relAirSpeed{};
   CommonGpsData gpsData{};
   KindOfLog kindOfLog{};
-  std::string_view syslogName, sensorlogName;
-  
+  std::string_view syslogName = "syslogD";
+  std::string_view sensorlogName = "sensorsD";
+
   constexpr auto severityName = frozen::make_map<Severity, frozen::string> ({
 	{Severity::Debug, "DEBUG"},
 	{Severity::Info, "INFO"},
@@ -49,23 +50,26 @@ static constexpr uint32_t operator"" _megabyte (unsigned long long int size)
 }
 
 
+bool SdCard::initHardware()
+{
+  return hardareInitialised = sdLogInit();
+}
+
 bool SdCard::init()
 {
-  bool retVal = sdLogInit();
-  if (retVal) {
+  if (hardareInitialised) {
     self = this;
   }
   else
     self = nullptr;
 
-  return retVal;
+  return hardareInitialised;
 }
 
 bool SdCard::initInThreadContext()
 {
   // registerEvt must be done in the thread that will wait on event,
   // so cannot be done in init method which is call by the parent thread
-
   writeSyslogHeader();
   baro.blackBoard.registerEvt(&baroEvent, BARO_EVT);
   dp.blackBoard.registerEvt(&diffPressEvent, PDIF_EVT);
@@ -79,8 +83,8 @@ bool SdCard::initInThreadContext()
   serialMode = static_cast<SerialMode>(CONF("uart.mode"));
   logGps =  (serialMode != SERIAL_NOT_USED) and (serialMode != SHELL) ;
   highTimeStampPrecision = CONF("thread.frequency.d_press") >= 100;
-  //  syslogName = CONF("filename.syslog");
-  //  sensorlogName = CONF("filename.sensorslog");
+  VCONF(syslogName, "filename.syslog");
+  VCONF(sensorlogName, "filename.sensorslog");
   writeSensorlogHeader();
   return true;
 }
@@ -283,8 +287,8 @@ SdioError SdCard::writeTSVSensorlog_HEADLESS_NO_GPS(void)
 bool  SdCard::sdLogInit(void)
 {
   SdioError se;
-  //  etl::string<32> syslogN(syslogName.data(), syslogName.size());
-  //  etl::string<32> sensorN(sensorlogName.data(), sensorlogName.size());
+  etl::string<32> syslogN(syslogName.data(), syslogName.size());
+  etl::string<32> sensorN(sensorlogName.data(), sensorlogName.size());
 
   if (not sdioIsCardResponding()) {
     DebugTrace("µSD card not present, or not reponding\r\n");
@@ -300,8 +304,8 @@ bool  SdCard::sdLogInit(void)
   }
 
   se = sdLogOpenLog(&syslogFd, ROOTDIR,
-		    //		    syslogN.c_str(),
-		    "syslog",
+		    syslogN.c_str(),
+		    // "syslog",
 		    1_seconde,
 		    LOG_APPEND_TAG_AT_CLOSE_ENABLED, 0,
 		    LOG_PREALLOCATION_DISABLED);
@@ -315,8 +319,8 @@ bool  SdCard::sdLogInit(void)
   }
 
   se = sdLogOpenLog(&sensorsFd, ROOTDIR,
-		    //		    sensorN.c_str(),
-		    "sensors",
+		    sensorN.c_str(),
+		    // "sensors",
 		    10_seconde,
 		    LOG_APPEND_TAG_AT_CLOSE_DISABLED, 0,
 		    LOG_PREALLOCATION_DISABLED);

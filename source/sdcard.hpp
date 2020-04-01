@@ -22,7 +22,7 @@ public:
     __attribute__ ((format (printf, 2, 3)));
   static SdioError logSyslogRaw (const char* fmt, ...)
     __attribute__ ((format (printf, 1, 2)));
-
+  bool initHardware(void);
 private:
   friend WorkerThread<TH_SDCARD::threadStackSize, SdCard>;
   bool init(void) final;
@@ -40,12 +40,13 @@ private:
 
 
   static SdCard *self;
-  uint32_t freeSpaceInKo = 0;
-  FileDes syslogFd = -1;
-  FileDes sensorsFd = -1;
-  AhrsType ahrsType{};
-  SerialMode serialMode{};
-  bool     logGps = false;
+  uint32_t 	freeSpaceInKo = 0;
+  FileDes	syslogFd = -1;
+  FileDes 	sensorsFd = -1;
+  AhrsType 	ahrsType{};
+  SerialMode 	serialMode{};
+  bool     	logGps = false;
+  bool		hardareInitialised{false};
 
   event_listener_t baroEvent, diffPressEvent, imuEvent;
 };
