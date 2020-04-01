@@ -46,18 +46,30 @@ int main (void)
   RtcSync	rtcSync(NORMALPRIO);
   
   bl.run(TIME_MS2I(1000));
-
+  
 #ifdef TRACE
   consoleInit();    // initialisation des objets liés au shell
   consoleLaunch();  // lancement du shell
 #endif
 
+  // first time without loggin error to get early parameters
   if (not sdcard.initHardware()) {
-    chprintf(chp, "SDCARD Hardware fail");
-  } else if (not confFile.populate()) {
-    chprintf(chp, "read CONFIGURATION file fail");
-  } else if (not sdcard.run(TIME_IMMEDIATE)) {
+    DebugTrace("sdcard.initHardware() has failed");
+  } else if (not confFile.readConfFile()) {
+    DebugTrace("early confFile.readConfFile() has failed");
+    goto error;
+  } else {
+    std::string_view syslogName; 
+    VCONF(syslogName, "filename.syslog");
+    DebugTrace("syslogName = %.*s", syslogName.size(), syslogName.data());
+  } 
+
+  
+
+  if (not sdcard.run(TIME_IMMEDIATE)) {
     chprintf(chp, "SDCARD launch fail");
+  } else if (not confFile.populate()) { // second time to log errors
+    chprintf(chp, "read CONFIGURATION file fail");
   } else if (not baro.run(TIME_IMMEDIATE)) {
     SdCard::logSyslog(Severity::Fatal, "BARO fail");
   } else  if (not dp.run(PERIOD("thread.frequency.d_press"))) {
@@ -129,10 +141,11 @@ int main (void)
   // if something goes wrong, control finish here
   // still offer usb storage facility, so in case of configuration file
   // error, one can still mount the device to read syslog and fix conf file
-#ifdef TRACE
- error:
-#endif
-  
+
+ #ifdef TRACE
+error:
+ #endif
+ 
   palSetLine(LINE_LED_RED);
   usbStorage.setModeEmergency();
   usbStorage.run(TIME_IMMEDIATE);
