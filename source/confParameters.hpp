@@ -22,6 +22,8 @@ constexpr double ESTIMATE_ROW = 0.0;
 #endif
 
 #define PARAMETERS_MAP                                          \
+  {"filename.syslog", {"syslog"sv, NONAMESET }},		\
+  {"filename.sensorslog", {"sensors"sv, NONAMESET }},	\
   {"thread.frequency.d_press", {100, RANGEINT(10, 2000) }},	\
   {"thread.frequency.imu", {100, RANGEINT(10, 4000) }},		\
   {"thread.frequency.stream_console", {10, RANGEINT(1, 100) }},		\

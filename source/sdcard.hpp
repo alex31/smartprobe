@@ -31,6 +31,13 @@ private:
   bool sdLogInit(void);
   void writeSyslogHeader(void);
   void writeSensorlogHeader(void);
+  bool writeTSVSensorlog(void);
+  bool writeBinarySensorlog(void);
+  SdioError writeTSVSensorlog_RAW_AND_GPS(void);
+  SdioError writeTSVSensorlog_RAW_NO_GPS(void);
+  SdioError writeTSVSensorlog_HEADLESS_AND_GPS(void);
+  SdioError writeTSVSensorlog_HEADLESS_NO_GPS(void);
+
 
   static SdCard *self;
   uint32_t freeSpaceInKo = 0;

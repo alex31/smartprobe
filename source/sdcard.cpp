@@ -16,12 +16,16 @@
   
 
 namespace {
+  enum class KindOfLog {TSV, BINARY};
+  
   BarometerData baroData{};
   DiffPressureData diffPressData{};
   ImuData imuData{};
   Vec3f   attitude{};
   AirSpeed relAirSpeed{};
   CommonGpsData gpsData{};
+  KindOfLog kindOfLog{};
+  std::string_view syslogName, sensorlogName;
   
   constexpr auto severityName = frozen::make_map<Severity, frozen::string> ({
 	{Severity::Debug, "DEBUG"},
@@ -75,6 +79,8 @@ bool SdCard::initInThreadContext()
   serialMode = static_cast<SerialMode>(CONF("uart.mode"));
   logGps =  (serialMode != SERIAL_NOT_USED) and (serialMode != SHELL) ;
   highTimeStampPrecision = CONF("thread.frequency.d_press") >= 100;
+  //  syslogName = CONF("filename.syslog");
+  //  sensorlogName = CONF("filename.sensorslog");
   writeSensorlogHeader();
   return true;
 }
@@ -85,9 +91,8 @@ bool SdCard::initInThreadContext()
 
 bool SdCard::loop()
 {
-  //  chEvtWaitAll(IMU_EVT | BARO_EVT | PDIF_EVT);
-  SdioError se;
-  const eventmask_t event = chEvtWaitOneTimeout(PDIF_EVT, TIME_MS2I(1000)); // log each new differential sample
+  // log each new differential sample
+  const eventmask_t event = chEvtWaitOneTimeout(PDIF_EVT, TIME_MS2I(1000)); 
 
   if (event) {
     baro.blackBoard.read(baroData);
@@ -106,81 +111,117 @@ bool SdCard::loop()
     default:
       break;
     }
-      
-    
-    if (ahrsType == RAW_IMU) {
-      imu.blackBoard.read(imuData);
-      if (logGps == true) {
-	se = logSensors("%4.2f\t%3.2f\t"
-			"%.4f\t%.4f\t%.4f\t"
-			"%.2f\t%.2f\t%.2f\t"
-			"%.2f\t%.2f\t%.2f\t"
-			"%.4f\t%.4f\t%.4f\t"
-			"%.4f\t%.4f\t%.4f\t"
-			"%lu\t%lu\t%lu\t%u\t"
-			"%ld\t%d\t%u\t%d\t"
-			"%.2f\t%.1f\t",
-			baroData.pressure,
-			baroData.temp,
-			diffPressData[0].pressure,
-			diffPressData[1].pressure,
-			diffPressData[2].pressure,
-			diffPressData[0].temp,
-			diffPressData[1].temp,
-			diffPressData[2].temp,
-			relAirSpeed.velocity,
-			relAirSpeed.alpha,
-			relAirSpeed.beta,
-			imuData.acc.v[0],
-			imuData.acc.v[1],
-			imuData.acc.v[2],
-			imuData.gyro.v[0],
-			imuData.gyro.v[1],
-			imuData.gyro.v[2],
-			gpsData.rtcTime.millisecond,
-			gpsData.utm_east,
-			gpsData.utm_north,
-			gpsData.utm_zone,
-			gpsData.alt,
-			gpsData.course,
-			gpsData.speed,
-			gpsData.climb,
-			adc.getPowerSupplyVoltage(),
-			adc.getCoreTemp());
-      } else /* logGps == false */ {
-	se = logSensors("%4.2f\t%3.2f\t"
-			"%.4f\t%.4f\t%.4f\t"
-			"%.2f\t%.2f\t%.2f\t"
-			"%.2f\t%.2f\t%.2f\t"
-			"%.4f\t%.4f\t%.4f\t"
-			"%.4f\t%.4f\t%.4f\t"
-			"%.2f\t%.1f\t",
-			baroData.pressure,
-			baroData.temp,
-			diffPressData[0].pressure,
-			diffPressData[1].pressure,
-			diffPressData[2].pressure,
-			diffPressData[0].temp,
-			diffPressData[1].temp,
-			diffPressData[2].temp,
-			relAirSpeed.velocity,
-			relAirSpeed.alpha,
-			relAirSpeed.beta,
-			imuData.acc.v[0],
-			imuData.acc.v[1],
-			imuData.acc.v[2],
-			imuData.gyro.v[0],
-			imuData.gyro.v[1],
-			imuData.gyro.v[2],
-				
-			adc.getPowerSupplyVoltage(),
-			adc.getCoreTemp());
+    return writeTSVSensorlog();
+  }
 
-      }
-    } else /* (ahrsType == HEADLESS_AHRS */ {
-      ahrs.blackBoard.read(attitude);
-      if (logGps == true) {
-      se = logSensors("%4.2f\t%3.2f\t"
+  // timout is not considered as an error
+  return true;
+}
+
+
+bool SdCard::writeTSVSensorlog(void)
+{
+  SdioError se;
+  
+  if (ahrsType == RAW_IMU) {
+    imu.blackBoard.read(imuData);
+    if (logGps == true) {
+      se = writeTSVSensorlog_RAW_AND_GPS();
+    } else {
+      se = writeTSVSensorlog_RAW_NO_GPS();
+    }
+  } else /* (ahrsType == HEADLESS_AHRS */ {
+    ahrs.blackBoard.read(attitude);
+    if (logGps == true) {
+      se =  writeTSVSensorlog_HEADLESS_AND_GPS();
+    } else {
+      se = writeTSVSensorlog_HEADLESS_NO_GPS();
+    }
+  }
+  
+  switch (se) {
+  case SDLOG_FATFS_ERROR : DebugTrace("sdWrite sensors: Fatfs error");
+    return false;
+  case SDLOG_INTERNAL_ERROR : DebugTrace("sdWrite sensors: Internal error");
+    return false;
+  default: break;
+  }
+  return true;
+}
+
+SdioError SdCard::writeTSVSensorlog_RAW_AND_GPS(void)
+{
+  return  logSensors("%4.2f\t%3.2f\t"
+		      "%.4f\t%.4f\t%.4f\t"
+		      "%.2f\t%.2f\t%.2f\t"
+		      "%.2f\t%.2f\t%.2f\t"
+		      "%.4f\t%.4f\t%.4f\t"
+		      "%.4f\t%.4f\t%.4f\t"
+		      "%lu\t%lu\t%lu\t%u\t"
+		      "%ld\t%d\t%u\t%d\t"
+		      "%.2f\t%.1f\t",
+		      baroData.pressure,
+		      baroData.temp,
+		      diffPressData[0].pressure,
+		      diffPressData[1].pressure,
+		      diffPressData[2].pressure,
+		      diffPressData[0].temp,
+		      diffPressData[1].temp,
+		      diffPressData[2].temp,
+		      relAirSpeed.velocity,
+		      relAirSpeed.alpha,
+		      relAirSpeed.beta,
+		      imuData.acc.v[0],
+		      imuData.acc.v[1],
+		      imuData.acc.v[2],
+		      imuData.gyro.v[0],
+		      imuData.gyro.v[1],
+		      imuData.gyro.v[2],
+		      gpsData.rtcTime.millisecond,
+		      gpsData.utm_east,
+		      gpsData.utm_north,
+		      gpsData.utm_zone,
+		      gpsData.alt,
+		      gpsData.course,
+		      gpsData.speed,
+		      gpsData.climb,
+		      adc.getPowerSupplyVoltage(),
+		      adc.getCoreTemp());
+}
+
+SdioError SdCard::writeTSVSensorlog_RAW_NO_GPS(void)
+{
+  return logSensors("%4.2f\t%3.2f\t"
+		      "%.4f\t%.4f\t%.4f\t"
+		      "%.2f\t%.2f\t%.2f\t"
+		      "%.2f\t%.2f\t%.2f\t"
+		      "%.4f\t%.4f\t%.4f\t"
+		      "%.4f\t%.4f\t%.4f\t"
+		      "%.2f\t%.1f\t",
+		      baroData.pressure,
+		      baroData.temp,
+		      diffPressData[0].pressure,
+		      diffPressData[1].pressure,
+		      diffPressData[2].pressure,
+		      diffPressData[0].temp,
+		      diffPressData[1].temp,
+		      diffPressData[2].temp,
+		      relAirSpeed.velocity,
+		      relAirSpeed.alpha,
+		      relAirSpeed.beta,
+		      imuData.acc.v[0],
+		      imuData.acc.v[1],
+		      imuData.acc.v[2],
+		      imuData.gyro.v[0],
+		      imuData.gyro.v[1],
+		      imuData.gyro.v[2],
+		      adc.getPowerSupplyVoltage(),
+		      adc.getCoreTemp());
+}
+
+SdioError SdCard::writeTSVSensorlog_HEADLESS_AND_GPS(void)
+{
+  return logSensors("%4.2f\t%3.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
 		      "%.2f\t%.2f\t%.2f\t"
 		      "%.2f\t%.2f\t%.2f\t"
@@ -209,13 +250,16 @@ bool SdCard::loop()
 		      gpsData.climb,
 		      adc.getPowerSupplyVoltage(),
 		      adc.getCoreTemp());
-      } else /* logGps == false */ {
-	se = logSensors("%4.2f\t%3.2f\t"
-			"%.4f\t%.4f\t%.4f\t"
-			"%.2f\t%.2f\t%.2f\t"
-			"%.2f\t%.2f\t%.2f\t"
-			"%.4f\t%.4f\t%.4f\t"
-			"%.2f\t%.1f\t",
+}
+
+SdioError SdCard::writeTSVSensorlog_HEADLESS_NO_GPS(void)
+{
+  return logSensors("%4.2f\t%3.2f\t"
+		      "%.4f\t%.4f\t%.4f\t"
+		      "%.2f\t%.2f\t%.2f\t"
+		      "%.2f\t%.2f\t%.2f\t"
+		      "%.4f\t%.4f\t%.4f\t"
+		      "%.2f\t%.1f\t",
 		      baroData.pressure, baroData.temp,
 		      diffPressData[0].pressure,
 		      diffPressData[1].pressure,
@@ -229,22 +273,9 @@ bool SdCard::loop()
 		      rad2deg(attitude.v[0]), rad2deg(attitude.v[1]), rad2deg(attitude.v[2]),
 		      adc.getPowerSupplyVoltage(),
 		      adc.getCoreTemp());
-      }
-    }
-    
-    
-    switch (se) {
-    case SDLOG_FATFS_ERROR : DebugTrace("sdWrite sensors: Fatfs error");
-      return false;
-    case SDLOG_INTERNAL_ERROR : DebugTrace("sdWrite sensors: Internal error");
-      return false;
-    default: break;
-    }
-  }
-
-  // timout is not considered as an error
-  return true;
 }
+
+
 
 #pragma GCC diagnostic pop 
 
@@ -252,6 +283,8 @@ bool SdCard::loop()
 bool  SdCard::sdLogInit(void)
 {
   SdioError se;
+  //  etl::string<32> syslogN(syslogName.data(), syslogName.size());
+  //  etl::string<32> sensorN(sensorlogName.data(), sensorlogName.size());
 
   if (not sdioIsCardResponding()) {
     DebugTrace("µSD card not present, or not reponding\r\n");
@@ -266,7 +299,10 @@ bool  SdCard::sdLogInit(void)
   default: break;
   }
 
-  se = sdLogOpenLog(&syslogFd, ROOTDIR, SYSLOG_FILENAME, 1_seconde,
+  se = sdLogOpenLog(&syslogFd, ROOTDIR,
+		    //		    syslogN.c_str(),
+		    "syslog",
+		    1_seconde,
 		    LOG_APPEND_TAG_AT_CLOSE_ENABLED, 0,
 		    LOG_PREALLOCATION_DISABLED);
   switch (se) {
@@ -279,6 +315,7 @@ bool  SdCard::sdLogInit(void)
   }
 
   se = sdLogOpenLog(&sensorsFd, ROOTDIR,
+		    //		    sensorN.c_str(),
 		    "sensors",
 		    10_seconde,
 		    LOG_APPEND_TAG_AT_CLOSE_DISABLED, 0,
@@ -361,7 +398,6 @@ void  SdCard::writeSyslogHeader(void)
 void  SdCard::writeSensorlogHeader(void)
 {
   etl::string<255> header;
-  //std::string header(' ', 160);
   
   header = "baro.p\t"
     "baro.t\t"

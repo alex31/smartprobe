@@ -12,8 +12,8 @@ A CODER:
 
 ° en fonction du nom du fichier de log : logguer en TSV ou en binaire
 
+       + determiner le type de log en fonction du nom de fichier
        + log binaire, format ?, header
-
        + ecrire un decodeur qui transforme un log binaire en log TSV en se basant sur le header
 
 A TESTER :
