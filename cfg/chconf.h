@@ -723,6 +723,7 @@
 /*===========================================================================*/
 
 #define CHPRINTF_USE_FLOAT 1
+#define PORT_ENABLE_GUARD_PAGES TRUE
 
 #endif  /* _CHCONF_H_ */
 

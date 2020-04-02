@@ -77,6 +77,7 @@ static constexpr uint32_t SAMPLE_MAX = (1<<ADC_RESOLUTION_IN_BITS) - 1;
 static constexpr I2CDriver& BaroI2CD      = I2CD2;
 static constexpr I2CDriver& DiffPressI2CD = I2CD4;
 static constexpr SPIDriver& ImuSPID	  = SPID1;
+static constexpr SerialDriver& ExtSD	  = SD1;
 
 static constexpr uint32_t I2C_FAST_400KHZ_DNF3_R200NS_F50NS_PCLK54MHZ_TIMINGR = 0x10800C27;
 static constexpr uint32_t I2C_FAST_1MHZ_DNF3_R100NS_F50NS_PCLK54MHZ_TIMINGR  = 0x00800617;
@@ -95,6 +96,14 @@ static constexpr I2CConfig i2ccfg_1000 = {
   .cr1 = stm32_cr1_dnf(3U), // Digital noise filter activated (timingr should be aware of that)
   .cr2 = 0 // Only the ADD10 bit can eventually be specified here (10-bit addressing mode)
 } ;
+
+static constexpr SerialConfig serialDebugConsoleCfg =  {
+							115200,
+							0,
+							USART_CR2_STOP1_BITS | USART_CR2_LINEN,
+							0
+};
+
 
 
 static constexpr uint32_t PowerLossAwakeTimeBeforeDeepSleep = 8U;
@@ -144,7 +153,6 @@ static inline void stopAllPeripherals (void) {
 static constexpr float PS_VOLTAGE_THRESHOLD_PERCENT = 6.0f;
 static constexpr float PS_VOLTAGE_ABSOLUTE_MINIMUM = 4.4f;
 static constexpr char ROOTDIR[] = "SMARTPROBE";
-static constexpr char SYSLOG_FILENAME[] = "syslog";
 static constexpr char CONFIGURATION_FILENAME[] = "smartprobe.conf";
 
 
@@ -152,10 +160,16 @@ namespace TH_BLINKER {
 static constexpr size_t threadStackSize = 512U;
 }
 namespace TH_SDCARD {
-static constexpr size_t threadStackSize = 2048U;
+static constexpr size_t threadStackSize = 5120U;
 }
 namespace TH_SHOWBLACKBOARD {
 static constexpr size_t threadStackSize = 1536U;
+}
+namespace TH_TRANSMITPPRZLINK {
+static constexpr size_t threadStackSize = 1536U;
+}
+namespace TH_RECEIVEBASELINK {
+static constexpr size_t threadStackSize = 3072U;
 }
 namespace TH_ADC {
 static constexpr size_t threadStackSize = 512U;
@@ -180,4 +194,7 @@ static constexpr size_t threadStackSize = 1536U;
 }
 namespace TH_DYNSWDIO {
 static constexpr size_t threadStackSize = 512U;
+}
+namespace TH_RTCSYNC {
+static constexpr size_t threadStackSize = 1024U;
 }

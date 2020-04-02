@@ -7,39 +7,30 @@
                | |    | (_) | | |__| |  | (_) |        
                |_|     \___/  |_____/    \___/         
 
+A CODER:
+
+
+° en fonction d'un paramètre dans le fichier de log : logguer en TSV ou en binaire
+
+       + indiquer dans le nom du fichier si c'est un log binaire
+       + log binaire, format ?, header
+       + ecrire un decodeur qui transforme un log binaire en log TSV en se basant sur le header
 
 A TESTER :
     
-<<<<<<< HEAD
-  ° affichage du vecteur vent relatif dans l'outil perl
-=======
   ° verifier les tailles des piles des threads
->>>>>>> master
+  ° investiguer le problème lié à l'allocation dans sdcard.cpp so on utilise des
+    std::string ou la macro CONF
 
   
-A CODER :
-
-<<<<<<< HEAD
-  ° verifier les tailles des piles des threads
-  ° integrer FatFS 0.14
-=======
-  ° afficher le vecteur vent relatif dans l'outil perl avec un canvas et des segments
-  
->>>>>>> master
-
 A AMELIORER :
 
   ° fix
 
-	* module nmea : autoriser des caractères wildcard
-	* (LOW PRIO) utiliser le fork chibios d'ardupilot pour voir si le fix I²C evite des pb (en cas de crash inexpliqués)
+	* valgring de confFile après portage linux
 
-	* (LOW PRIO)recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
-	* (LOW PRIO) tester presence du dirty bit : indiquer par led et syslog
-	* (LOW PRIO) porter fsck.vfat de linux à MCU pour permettre un fsck automatique si dirty bit au demarrage
-	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour les I/O sur la liaison série ? a
-
-
+	* (LOW PRIO) recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
+	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour les I/O sur la liaison série ?
 
 
 
@@ -48,26 +39,25 @@ GRANDES LIGNES :
 	  
    ° écrire des modules
 
-	* choix pour la liaison série out :
-	  choix de la vitesse
-	  choix du format : shell avec out des données togglable en mode ascii
-	  ou sorties binaires (format pprz + ?)
+	* choix pour la liaison série :
+	  + choix de la vitesse
+	  + modes :
+	    	  ° SHELL (avec stream ascii togglable par la commande shell 't') : OK
+		  ° PPRZ_IN_OUT : OK
+		  ° NMEA_IN : OK
+		  ° UBX_IN : OK
 
-	* recup de données gps -> ref horaire, calcul du cap, choix du format
-	  dans le fichier de conf :
-	  ø nmea ou trame pprz (ou autre ?)
+	  + recup de données gps -> log ascii et binaire
+				 -> calcul de vecteur vitesse 3D en reference terrestre
 	  
 	* syslog periodique de la charge de calcul
 	
-	* ahrs
-	  ° qui donne 3 angles si la donnée heading est disponible :
+	* ahrs complet qui donne 3 angles si la donnée cap est disponible 
 
 	* calcul d'un vecteur vent dans le repaire terrestre si l'ahrs est
 	  en mode 3 angles et que l'autopilote fournit un vecteur vitesse en 3D
    
-
 	* watchdog IWDG -> test au boot, si il y a eu hardfault -> log
-	
 	  
 	* code pour les leds :
 	  ° utiliser un module WS2812 et integrer le code existant led2812
@@ -75,17 +65,29 @@ GRANDES LIGNES :
         * quand on teste le 5V, tester aussi le 3.3V en utilisant la reference interne
 
 	* si le fichier de log fini en .txt : log texte, sinon : log binaire
+
+	* passage en USB2
+
+	* utilisation d'une autre liaison série dédiée au debug pour smartprobe de dev
 	    
-	* access en USB2 pour accelerer l'acces USB Storage
 
 
    ° integration de librairies externes
-	* module SerialMessage
-	* micro python pour coder du comportement via le fichier de conf
-	  sans avoir à reflasher ?
+	* module pprz_link
+	* coder du comportement via le fichier de conf sans avoir à reflasher :
+	  +  micro python ?
+	     OU
+	  + langage adhoc en utilisant un parser et un lexer ?
+	  
 	* quand le projet devra être distribué : mettre toutes les
 	  dépendences externes en sous modules git
 	
+
+
+
+EVOLUTION SMARTPROBE V2 (et au delà)
+
+	* access en USB2 pour accelerer l'acces USB Storage
 
 
              _____     __  __    ___          
@@ -104,6 +106,8 @@ GRANDES LIGNES :
 
 
 #define STM32_ADC_ADC1_DMA_STREAM           STM32_DMA_STREAM_ID(2, 4)
+#define STM32_TIM1_UP_DMA_STREAM	    STM32_DMA_STREAM_ID(2, 5)
+#define STM32_TIM1_UP_DMA_CHANNEL	    6
 #define STM32_SDC_SDMMC1_DMA_STREAM         STM32_DMA_STREAM_ID(2, 6)
 #define STM32_SPI_SPI1_RX_DMA_STREAM        STM32_DMA_STREAM_ID(2, 0)
 #define STM32_SPI_SPI1_TX_DMA_STREAM        STM32_DMA_STREAM_ID(2, 3)

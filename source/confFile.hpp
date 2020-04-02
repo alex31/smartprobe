@@ -47,6 +47,12 @@
       constexpr auto index = conf_dict.at(k).defaut.index();	\
       std::get<index>((c)[k]); })
 
+#define ConfigurationFile_ATV(v,c,k)  (		\
+    { \
+      static_assert(conf_dict.find(k) != conf_dict.end());	\
+      constexpr auto index = conf_dict.at(k).defaut.index();	\
+      v = std::get<index>((c)[k]); })
+
 
 using value_variant_t = std::variant<int, double, bool, std::string, std::monostate>;
 
@@ -55,12 +61,12 @@ public:
   ConfigurationFile(const char* m_fileName) : fileName(m_fileName) {};
   bool populate(void);
   const value_variant_t& operator[] (const std::string_view key);
+  bool readConfFile(void);
 private:
   using dictionary_t = std::map<std::string, value_variant_t>;
   dictionary_t dictionary;
   const char *fileName;
   mutable MUTEX_DECL(mu);
-  bool readConfFile(void);
   bool writeConfFile(void);
   bool verifyNotFilledParameters(void);
   void syslogInfoParameters(void);

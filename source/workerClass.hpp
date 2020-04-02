@@ -10,7 +10,8 @@ class WorkerThread
 public:
   enum ExitCode {ERROR_IN_INIT=-10, ERROR_IN_LOOP=-11};
   enum  EventMask {BARO_EVT=1U<<0, PDIF_EVT=1U<<1, ADC_EVT=1U<<2, IMU_EVT=1U<<3,
-		   AHRS_EVT=1U<<4, RELATIVE_WIND_EVT=1U<<5, ABSOLUTE_WIND_EVT=1U<<6}; 
+		   AHRS_EVT=1U<<4, RELATIVE_WIND_EVT=1U<<5, ABSOLUTE_WIND_EVT=1U<<6,
+		   PPRZ_GPS_EVT=1U<<7, NMEA_GPS_EVT=1U<<8, UBX_GPS_EVT=1U<<9}; 
 
   WorkerThread(const char *m_name, const tprio_t m_prio) : name(m_name), prio(m_prio) {};
   bool run(sysinterval_t time);
@@ -20,14 +21,13 @@ public:
   
 protected:
   static void threadFunc(void *o);
-private:
-
   // this is called in origin thread context
   virtual bool init(void) = 0;
   // this is called in newly created thread context
   virtual bool initInThreadContext(void) {return true;};
   virtual bool loop(void) = 0;
 
+private:
   const char *name;
   const tprio_t prio;
   sysinterval_t timeInLoop;

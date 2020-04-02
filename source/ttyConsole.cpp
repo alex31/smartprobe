@@ -11,10 +11,10 @@
 #include "printf.h"
 #include "rtcAccess.h"
 #include "ttyConsole.hpp"
-#include "sdcard.hpp"
 #include "hardwareConf.hpp"
 #include "cpp_heap_alloc.hpp"
 #include "tlsf_malloc.h"
+#include "threadAndEventDecl.hpp"
 
 
 
@@ -29,7 +29,7 @@
 // ces declarations sont necessaires pour remplir le tableau commands[] ci-dessous
 using cmd_func_t =  void  (BaseSequentialStream *lchp, int argc,const char * const argv[]);
 static cmd_func_t cmd_mem, cmd_uid, cmd_restart, cmd_param, cmd_close, 
-  cmd_rtc, cmd_toggleSendSerialMessages, cmd_eigen, cmd_chk;
+  cmd_rtc, cmd_toggleSendSerialMessages, cmd_eigen, cmd_conf;
 #if CH_DBG_THREADS_PROFILING
 static cmd_func_t cmd_threads;
 #endif
@@ -54,7 +54,7 @@ static const ShellCommand commands[] = {
   {"restart", cmd_restart},	// reboot MCU
   {"close", cmd_close},	// reboot MCU
   {"eigen", cmd_eigen},	// test eigen
-  {"chk", cmd_chk},	// check tlsh heap consistancy
+  {"conf", cmd_conf},	// show conf file parameters
   {"t", cmd_toggleSendSerialMessages},	// reboot MCU
   {NULL, NULL}			// marqueur de fin de tableau
 };
@@ -153,13 +153,18 @@ static void cmd_eigen(BaseSequentialStream *lchp, int argc,const char* const arg
   chprintf(lchp, "r[%d*%d] = [%f, %f, %f]\r\n", r.rows(), r.cols(), r(0), r(1), r(2));
 }
 
-static void cmd_chk(BaseSequentialStream *lchp, int argc,const char* const argv[])
+
+
+static void cmd_conf(BaseSequentialStream *lchp, int argc,const char* const argv[])
 {
   (void) argc;
   (void) argv;
-  chprintf(lchp, "tlsf check = %d (0 is ok)\r\n",
-	   tlsf_check_r(&HEAP_DEFAULT));
+
+  std::string_view syslogName = CONF("filename.syslog");
+  
+  chprintf(lchp, "%.*s", syslogName.size(), syslogName.data());
 }
+
 /*
   conf :
 
@@ -217,14 +222,6 @@ static void cmd_restart(BaseSequentialStream *lchp, int argc,const char* const a
 #define  CONSOLE_DEV_USB 0
 #endif
 
-#if CONSOLE_DEV_USB == 0
-static const SerialConfig ftdiConfig =  {
-  115200,
-  0,
-  USART_CR2_STOP1_BITS | USART_CR2_LINEN,
-  0
-};
-#endif
 
 
 #define MAX_CPU_INFO_ENTRIES 20
@@ -268,6 +265,9 @@ static void cmd_mem(BaseSequentialStream *lchp, int argc,const char* const argv[
     return;
   }
 
+  chprintf(lchp, "ENTRY tlsf check = %d (0 is ok)\r\n",
+	   tlsf_check_r(&HEAP_DEFAULT));
+
   chprintf(lchp, "core free memory : %u bytes\r\n", chCoreStatus());
   chprintf(lchp, "heap free memory : %u bytes\r\n", getHeapFree());
 
@@ -279,6 +279,10 @@ static void cmd_mem(BaseSequentialStream *lchp, int argc,const char* const argv[
 
   free_m (ptr1);
   free_m (ptr2);
+
+  chprintf(lchp, "EXIT tlsf check = %d (0 is ok)\r\n",
+	   tlsf_check_r(&HEAP_DEFAULT));
+
 }
 
 static void cmd_rtc(BaseSequentialStream *lchp, int argc,const char* const argv[])
@@ -422,7 +426,7 @@ void consoleInit (void)
   usbSerialInit(&SDU1, &USBDRIVER); 
   chp = (BaseSequentialStream *) &SDU1;
 #else
-  sdStart(&CONSOLE_DEV_SD, &ftdiConfig);
+  sdStart(&CONSOLE_DEV_SD, &serialDebugConsoleCfg);
   chp = (BaseSequentialStream *) &CONSOLE_DEV_SD;
 #endif
   /*
