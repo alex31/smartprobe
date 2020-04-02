@@ -10,24 +10,24 @@
 A CODER:
 
 
-° en fonction du nom du fichier de log : logguer en TSV ou en binaire
+° en fonction d'un paramètre dans le fichier de log : logguer en TSV ou en binaire
 
-       + determiner le type de log en fonction du nom de fichier
+       + indiquer dans le nom du fichier si c'est un log binaire
        + log binaire, format ?, header
        + ecrire un decodeur qui transforme un log binaire en log TSV en se basant sur le header
 
 A TESTER :
     
   ° verifier les tailles des piles des threads
+  ° investiguer le problème lié à l'allocation dans sdcard.cpp so on utilise des
+    std::string ou la macro CONF
 
   
 A AMELIORER :
 
   ° fix
 
-
 	* valgring de confFile après portage linux
-        * utiliser des etl::string dans confFile si possible
 
 	* (LOW PRIO) recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
 	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour les I/O sur la liaison série ?

@@ -57,16 +57,7 @@ int main (void)
     DebugTrace("sdcard.initHardware() has failed");
   } else if (not confFile.readConfFile()) {
     DebugTrace("early confFile.readConfFile() has failed");
-    goto error;
-  } else {
-    std::string_view syslogName; 
-    VCONF(syslogName, "filename.syslog");
-    DebugTrace("syslogName = %.*s", syslogName.size(), syslogName.data());
-  } 
-
-  
-
-  if (not sdcard.run(TIME_IMMEDIATE)) {
+  } else if (not sdcard.run(TIME_IMMEDIATE)) {
     chprintf(chp, "SDCARD launch fail");
   } else if (chThdSleepMilliseconds(300); not confFile.populate()) { // second time to log errors
     chprintf(chp, "read CONFIGURATION file fail");
@@ -112,25 +103,13 @@ int main (void)
 
       break;
     case PPRZ_IN_OUT:
-#ifdef TRACE
-      SdCard::logSyslog(Severity::Fatal, "-DTRACE non compatible with mode PPRZ_IN_OUT");
-      goto error;
-#endif
       transmitPPL.run(TIME_IMMEDIATE);
       receivePPL.run(TIME_IMMEDIATE);
       break;
     case NMEA_IN:
-#ifdef TRACE
-      SdCard::logSyslog(Severity::Fatal, "-DTRACE non compatible with mode NMEA_IN");
-      goto error;
-#endif
-      receiveNMEA.run(TIME_IMMEDIATE);
+     receiveNMEA.run(TIME_IMMEDIATE);
       break;
     case UBX_IN:
-#ifdef TRACE
-      SdCard::logSyslog(Severity::Fatal, "-DTRACE non compatible with mode UBX_IN");
-      goto error;
-#endif
       receiveUBX.run(TIME_IMMEDIATE);
       break;
     }
@@ -142,10 +121,6 @@ int main (void)
   // still offer usb storage facility, so in case of configuration file
   // error, one can still mount the device to read syslog and fix conf file
 
- #ifdef TRACE
-error:
- #endif
- 
   palSetLine(LINE_LED_RED);
   usbStorage.setModeEmergency();
   usbStorage.run(TIME_IMMEDIATE);
