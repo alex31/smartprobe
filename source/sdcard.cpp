@@ -9,7 +9,6 @@
 #include "confFile.hpp"
 #include "threadAndEventDecl.hpp"
 #include "receiveBaselink.hpp"
-#include "etl/cstring.h"
 
 #define xstr(s) str(s)
 #define str(s) #s
@@ -84,10 +83,8 @@ bool SdCard::initInThreadContext()
 {
   // registerEvt must be done in the thread that will wait on event,
   // so cannot be done in init method which is called by the parent thread
-  VCONF(syslogName, "filename.syslog");
-  VCONF(sensorlogName, "filename.sensorslog");
-  //   syslogName = CONF("filename.syslog");
-  //   sensorlogName = CONF("filename.sensorslog");
+  syslogName = CONF("filename.syslog");
+  sensorlogName = CONF("filename.sensorslog");
   
   if (sdLogInit() != true)
     return false;
@@ -303,8 +300,8 @@ SdioError SdCard::writeTSVSensorlog_HEADLESS_NO_GPS(void)
 bool  SdCard::sdLogInit(void)
 {
   SdioError se;
-  etl::string<32> syslogN(syslogName.data(), syslogName.size());
-  etl::string<32> sensorN(sensorlogName.data(), sensorlogName.size());
+  std::string syslogN(syslogName.data(), syslogName.size());
+  std::string sensorN(sensorlogName.data(), sensorlogName.size());
 
 
   se = sdLogOpenLog(&syslogFd, ROOTDIR,
@@ -403,8 +400,7 @@ void  SdCard::writeSyslogHeader(void)
 
 void  SdCard::writeSensorlogHeader(void)
 {
-  etl::string<255> header;
-  //std::string header;
+  std::string header;
   
   header = "baro.p\t"
     "baro.t\t"

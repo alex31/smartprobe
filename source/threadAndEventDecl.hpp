@@ -13,7 +13,6 @@
 #include "receiveUbxlink.hpp"
 
 #define CONF(k)  (ConfigurationFile_AT(confFile, k))
-#define VCONF(v,k)  (ConfigurationFile_ATV(v, confFile, k))
 
 extern  DifferentialPressure	dp;
 extern  Barometer 		baro;

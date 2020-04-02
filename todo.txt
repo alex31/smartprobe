@@ -19,8 +19,6 @@ A CODER:
 A TESTER :
     
   ° verifier les tailles des piles des threads
-  ° investiguer le problème lié à l'allocation dans sdcard.cpp so on utilise des
-    std::string ou la macro CONF
 
   
 A AMELIORER :
