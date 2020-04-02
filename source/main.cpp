@@ -68,7 +68,7 @@ int main (void)
 
   if (not sdcard.run(TIME_IMMEDIATE)) {
     chprintf(chp, "SDCARD launch fail");
-  } else if (not confFile.populate()) { // second time to log errors
+  } else if (chThdSleepMilliseconds(300); not confFile.populate()) { // second time to log errors
     chprintf(chp, "read CONFIGURATION file fail");
   } else if (not baro.run(TIME_IMMEDIATE)) {
     SdCard::logSyslog(Severity::Fatal, "BARO fail");

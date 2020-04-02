@@ -83,7 +83,7 @@ bool SdCard::init()
 bool SdCard::initInThreadContext()
 {
   // registerEvt must be done in the thread that will wait on event,
-  // so cannot be done in init method which is call by the parent thread
+  // so cannot be done in init method which is called by the parent thread
   VCONF(syslogName, "filename.syslog");
   VCONF(sensorlogName, "filename.sensorslog");
 
@@ -95,10 +95,10 @@ bool SdCard::initInThreadContext()
   dp.blackBoard.registerEvt(&diffPressEvent, PDIF_EVT);
   imu.blackBoard.registerEvt(&imuEvent, IMU_EVT);
 
-  // wait for the conf file to be read and dictionary initialised.
-  // any event are sent after this inititialisation, so we wait for
-  // the first event to write the header and launch the worker logger thread
-  chEvtWaitAny(ALL_EVENTS);
+  // // wait for the conf file to be read and dictionary initialised.
+  // // any event are sent after this inititialisation, so we wait for
+  // // the first event to write the header and launch the worker logger thread
+  // chEvtWaitAny(ALL_EVENTS);
   ahrsType = static_cast<AhrsType>(CONF("ahrs.type"));
   serialMode = static_cast<SerialMode>(CONF("uart.mode"));
   logGps =  (serialMode != SERIAL_NOT_USED) and (serialMode != SHELL) ;

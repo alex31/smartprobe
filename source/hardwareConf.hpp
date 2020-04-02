@@ -97,6 +97,14 @@ static constexpr I2CConfig i2ccfg_1000 = {
   .cr2 = 0 // Only the ADD10 bit can eventually be specified here (10-bit addressing mode)
 } ;
 
+static constexpr SerialConfig serialDebugConsoleCfg =  {
+							115200,
+							0,
+							USART_CR2_STOP1_BITS | USART_CR2_LINEN,
+							0
+};
+
+
 
 static constexpr uint32_t PowerLossAwakeTimeBeforeDeepSleep = 8U;
 

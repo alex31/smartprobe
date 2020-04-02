@@ -426,13 +426,7 @@ void consoleInit (void)
   usbSerialInit(&SDU1, &USBDRIVER); 
   chp = (BaseSequentialStream *) &SDU1;
 #else
-  static const SerialConfig ftdiConfig =  {
-					   115200,
-					   0,
-					   USART_CR2_STOP1_BITS | USART_CR2_LINEN,
-					   0
-  };
-  sdStart(&CONSOLE_DEV_SD, &ftdiConfig);
+  sdStart(&CONSOLE_DEV_SD, &serialDebugConsoleCfg);
   chp = (BaseSequentialStream *) &CONSOLE_DEV_SD;
 #endif
   /*
