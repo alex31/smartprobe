@@ -8,7 +8,8 @@
 #include "relativeWind.hpp"
 #include "confParameters.hpp"
 #include "hardwareConf.hpp"
-
+#include "sdLog.h"
+#include "binaryLogFrame.hpp"
 
 enum class Severity {Debug, Info, Warning, Fatal, Internal};
 
@@ -16,13 +17,20 @@ class SdCard : public WorkerThread<TH_SDCARD::threadStackSize, SdCard> {
 public:
   SdCard(const tprio_t m_prio) :
     WorkerThread<TH_SDCARD::threadStackSize, SdCard>("sdcard", m_prio) {};
+
+  bool initHardware(void);
+  
   static SdioError logSensors (const char* fmt, ...)
     __attribute__ ((format (printf, 1, 2)));
+  template<typename T>
+  static SdioError logSensors (const T& t);
+  
   static SdioError logSyslog (const Severity severity, const char* fmt, ...)
     __attribute__ ((format (printf, 2, 3)));
   static SdioError logSyslogRaw (const char* fmt, ...)
     __attribute__ ((format (printf, 1, 2)));
-  bool initHardware(void);
+  
+
 private:
   friend WorkerThread<TH_SDCARD::threadStackSize, SdCard>;
   bool init(void) final;
@@ -30,7 +38,8 @@ private:
   bool loop(void) final;
   bool sdLogInit(void);
   void writeSyslogHeader(void);
-  void writeSensorlogHeader(void);
+  void writeTSVSensorlogHeader(void);
+  void writeBinarySensorlogHeader(void);
   bool writeTSVSensorlog(void);
   bool writeBinarySensorlog(void);
   SdioError writeTSVSensorlog_RAW_AND_GPS(void);
@@ -53,4 +62,14 @@ private:
 
 
 
+template<typename T>
+SdioError SdCard::logSensors (const T& t)
+{
+  if (self != nullptr) {
+    auto retVal = sdLogWriteRaw(self->syslogFd, static_cast<uint8_t*>(&t), sizeof(T));
+    return retVal;
+  } else {
+    return SDLOG_NOT_READY;
+  }
+}
 

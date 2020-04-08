@@ -160,7 +160,7 @@ static void cmd_conf(BaseSequentialStream *lchp, int argc,const char* const argv
   (void) argc;
   (void) argv;
 
-  std::string_view syslogName = CONF("filename.syslog");
+  std::string_view syslogName = CONF("syslog.filename");
   
   chprintf(lchp, "%.*s", syslogName.size(), syslogName.data());
 }

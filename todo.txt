@@ -10,11 +10,6 @@
 A CODER:
 
 
-° en fonction d'un paramètre dans le fichier de log : logguer en TSV ou en binaire
-
-       + indiquer dans le nom du fichier si c'est un log binaire
-       + log binaire, format ?, header
-       + ecrire un decodeur qui transforme un log binaire en log TSV en se basant sur le header
 
 A TESTER :
     
@@ -25,30 +20,18 @@ A AMELIORER :
 
   ° fix
 
-	* valgring de confFile après portage linux
-
+	* rationaliser utilisation d'allocateur dynamique  :
+	  celui de newlib ou tlsf, eliminuer celui de chibios
 	* (LOW PRIO) recoder la partie  FCNTL_WRITE de sdLog.c pour factoriser le code
-	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour les I/O sur la liaison série ?
+	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour
+	             les I/O sur la liaison série ?
 
 
 
 GRANDES LIGNES : 
 
 	  
-   ° écrire des modules
-
-	* choix pour la liaison série :
-	  + choix de la vitesse
-	  + modes :
-	    	  ° SHELL (avec stream ascii togglable par la commande shell 't') : OK
-		  ° PPRZ_IN_OUT : OK
-		  ° NMEA_IN : OK
-		  ° UBX_IN : OK
-
-	  + recup de données gps -> log ascii et binaire
-				 -> calcul de vecteur vitesse 3D en reference terrestre
-	  
-	* syslog periodique de la charge de calcul
+ 	* syslog periodique de la charge de calcul et occupation mémoire (piles)
 	
 	* ahrs complet qui donne 3 angles si la donnée cap est disponible 
 
@@ -57,16 +40,20 @@ GRANDES LIGNES :
    
 	* watchdog IWDG -> test au boot, si il y a eu hardfault -> log
 	  
+        * quand on teste le 5V, tester aussi le 3.3V en utilisant la reference interne
+
+
+	// SMARTPROBE V0.3
+
+	* test du 3.3V capteurs
+
+	* utilisation d'une autre liaison série dédiée au debug pour smartprobe de dev
+
+	* utilisation du buscan pour chainer les smartprobes
+
 	* code pour les leds :
 	  ° utiliser un module WS2812 et integrer le code existant led2812
 	  
-        * quand on teste le 5V, tester aussi le 3.3V en utilisant la reference interne
-
-	* si le fichier de log fini en .txt : log texte, sinon : log binaire
-
-	* passage en USB2
-
-	* utilisation d'une autre liaison série dédiée au debug pour smartprobe de dev
 	    
 
 
@@ -81,11 +68,6 @@ GRANDES LIGNES :
 	  dépendences externes en sous modules git
 	
 
-
-
-EVOLUTION SMARTPROBE V2 (et au delà)
-
-	* access en USB2 pour accelerer l'acces USB Storage
 
 
              _____     __  __    ___          

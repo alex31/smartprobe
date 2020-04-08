@@ -8,6 +8,7 @@ enum AhrsType {RAW_IMU=0, HEADLESS_AHRS, COMPLETE_AHRS};
 enum DPressureFetchedParameter {PRESSURE_ONLY=0, PRESSURE_TEMPERATURE};
 enum SerialMode {SERIAL_NOT_USED, SHELL, PPRZ_IN_OUT, NMEA_IN, UBX_IN};
 enum CanbusMode {CAN_NOT_USED, CAN_MASTER, CAN_SLAVE};
+enum SensorslogFormat {SENSORS_TSV, SENSORS_BINARY};
 constexpr double ESTIMATE_ROW = 0.0;
 
 #ifdef OLD_EXAMPLE
@@ -22,8 +23,9 @@ constexpr double ESTIMATE_ROW = 0.0;
 #endif
 
 #define PARAMETERS_MAP                                          \
-  {"filename.syslog", {"syslog"sv, NONAMESET }},		\
-  {"filename.sensorslog", {"sensors"sv, NONAMESET }},	\
+  {"syslog.filename", {"syslog"sv, NONAMESET }},		\
+  {"sensorslog.filename", {"sensors"sv, NONAMESET }},	\
+  {"sensorslog.format", {0, NAMESET({SENSORS_TSV, "text"}, {SENSORS_BINARY, "binary"} ) }}, \
   {"thread.frequency.d_press", {100, RANGEINT(10, 2000) }},	\
   {"thread.frequency.imu", {100, RANGEINT(10, 4000) }},		\
   {"thread.frequency.stream_console", {10, RANGEINT(1, 100) }},		\
