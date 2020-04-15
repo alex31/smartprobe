@@ -3,23 +3,16 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cctype>
-#include <cstring>
 #include "ch.h"
 #include "hal.h"
 #include "microrl/microrlShell.h"
 #include "stdutil.h"
+#include "globalVar.h"
 #include "printf.h"
-#include "rtcAccess.h"
 #include "ttyConsole.hpp"
-#include "hardwareConf.hpp"
-#include "cpp_heap_alloc.hpp"
-#include "tlsf_malloc.h"
-#include "threadAndEventDecl.hpp"
+#include "etl/cstring.h"
+#include <etl/vector.h>
 
-
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdouble-promotion"
 
 /*===========================================================================*/
 /* START OF EDITABLE SECTION                                           */
@@ -28,34 +21,23 @@
 // declaration des prototypes de fonction
 // ces declarations sont necessaires pour remplir le tableau commands[] ci-dessous
 using cmd_func_t =  void  (BaseSequentialStream *lchp, int argc,const char * const argv[]);
-static cmd_func_t cmd_mem, cmd_uid, cmd_restart, cmd_param, cmd_close, 
-  cmd_rtc, cmd_toggleSendSerialMessages, cmd_eigen, cmd_conf;
+static cmd_func_t cmd_mem, cmd_uid, cmd_restart, cmd_param;
 #if CH_DBG_THREADS_PROFILING
 static cmd_func_t cmd_threads;
 #endif
 
-static bool sendSerialMessages = true;
 
-bool shouldSendSerialMessages(void)
-{
-  return sendSerialMessages;
-}
 
 static const ShellCommand commands[] = {
   {"mem", cmd_mem},		// affiche la mémoire libre/occupée
 #if  CH_DBG_THREADS_PROFILING
   {"threads", cmd_threads},	// affiche pour chaque thread le taux d'utilisation de la pile et du CPU
 #endif
-  {"rtc", cmd_rtc},		// affiche l'heure contenue par la RTC
   {"uid", cmd_uid},		// affiche le numéro d'identification unique du MCU
   {"param", cmd_param},		// fonction à but pedagogique qui affiche les
 				//   paramètres qui lui sont passés
 
   {"restart", cmd_restart},	// reboot MCU
-  {"close", cmd_close},	// reboot MCU
-  {"eigen", cmd_eigen},	// test eigen
-  {"conf", cmd_conf},	// show conf file parameters
-  {"t", cmd_toggleSendSerialMessages},	// reboot MCU
   {NULL, NULL}			// marqueur de fin de tableau
 };
 
@@ -88,82 +70,6 @@ static void cmd_param(BaseSequentialStream *lchp, int argc,const char* const arg
   }
 }
 
-static void cmd_toggleSendSerialMessages(BaseSequentialStream *lchp,
-					 int argc,const char* const argv[])
-{
-  (void) lchp;
-  (void) argc;
-  (void) argv;
-
-  sendSerialMessages = not sendSerialMessages;
-}
-
-static void cmd_close(BaseSequentialStream *lchp, int argc,const char* const argv[])
-{
-  (void) lchp;
-  (void) argc;
-  (void) argv;
-  DebugTrace("close all (FLUSH) wait 200 milliseconds");
-  stopAllPeripherals();
-  sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
-  chThdSleepMilliseconds(300);
-  sdLogFinish();
-}
-
-/*
- a = np.array([[ 5, 1 ,3], 
-                  [ 1, 1 ,1], 
-                  [ 1, 2 ,1]])
- b = np.array([1, 2, 3])
-
- print a.dot(b)
-       array([16, 6, 8])
- */
-static void cmd_eigen(BaseSequentialStream *lchp, int argc,const char* const argv[])
-{
-  using namespace Eigen;
-  (void) lchp;
-  Vector2f v2f[3];
-
-  if (argc != 0) {
-    if (argc < 4) {
-      chprintf(lchp, "not enough argument (need 4)\r\n");
-      return;
-    }
-    
-    v2f[0] << atof(argv[0]), atof(argv[1]);
-    v2f[1] << atof(argv[2]), atof(argv[3]);
-    v2f[2] = v2f[0] + v2f[1];
-    chprintf(lchp, "[%f, %f] + [%f, %f] = [%f, %f]\r\n",
-	     v2f[0](0), v2f[0](1), 
-	     v2f[1](0), v2f[1](1), 
-	     v2f[2](0), v2f[2](1));
-  }
-
-  Eigen::Matrix<float, 3, 3>  mat;
-  mat << 5, 1, 3,
-         1, 1, 1,
-         1, 2, 1;
-  
-  Eigen::Matrix<float, 3, 1> u(1, 2, 3);
-
-  auto r = mat * u;
-
-  chprintf(lchp, "u[%d*%d] = [%f, %f, %f]\r\n", u.rows(), u.cols(), u(0), u(1), u(2));
-  chprintf(lchp, "r[%d*%d] = [%f, %f, %f]\r\n", r.rows(), r.cols(), r(0), r(1), r(2));
-}
-
-
-
-static void cmd_conf(BaseSequentialStream *lchp, int argc,const char* const argv[])
-{
-  (void) argc;
-  (void) argv;
-
-  std::string_view syslogName = CONF("syslog.filename");
-  
-  chprintf(lchp, "%.*s", syslogName.size(), syslogName.data());
-}
 
 /*
   conf :
@@ -188,6 +94,8 @@ static void cmd_conf(BaseSequentialStream *lchp, int argc,const char* const argv
 
 using pGetFunc_t = uint32_t (*) (void);
 using pSetFunc_t  = void (*) (uint32_t);
+using commandStr_t = etl::string<6>;
+
 
 static void cmd_restart(BaseSequentialStream *lchp, int argc,const char* const argv[])
 {
@@ -222,6 +130,14 @@ static void cmd_restart(BaseSequentialStream *lchp, int argc,const char* const a
 #define  CONSOLE_DEV_USB 0
 #endif
 
+#if CONSOLE_DEV_USB == 0
+static const SerialConfig ftdiConfig =  {
+  115200,
+  0,
+  USART_CR2_STOP1_BITS | USART_CR2_LINEN,
+  0
+};
+#endif
 
 
 #define MAX_CPU_INFO_ENTRIES 20
@@ -265,9 +181,6 @@ static void cmd_mem(BaseSequentialStream *lchp, int argc,const char* const argv[
     return;
   }
 
-  chprintf(lchp, "ENTRY tlsf check = %d (0 is ok)\r\n",
-	   tlsf_check_r(&HEAP_DEFAULT));
-
   chprintf(lchp, "core free memory : %u bytes\r\n", chCoreStatus());
   chprintf(lchp, "heap free memory : %u bytes\r\n", getHeapFree());
 
@@ -279,91 +192,6 @@ static void cmd_mem(BaseSequentialStream *lchp, int argc,const char* const argv[
 
   free_m (ptr1);
   free_m (ptr2);
-
-  chprintf(lchp, "EXIT tlsf check = %d (0 is ok)\r\n",
-	   tlsf_check_r(&HEAP_DEFAULT));
-
-}
-
-static void cmd_rtc(BaseSequentialStream *lchp, int argc,const char* const argv[])
-{
-  if ((argc != 0) && (argc != 2) && (argc != 6)) {
-     DebugTrace ("Usage: rtc [Hour Minute Second Year monTh Day day_of_Week Adjust] value or");
-     DebugTrace ("Usage: rtc  Hour Minute Second Year monTh Day");
-     return;
-  }
- 
-  if (argc == 2) {
-    const char timeVar = (char) tolower ((int) *(argv[0]));
-    const int32_t varVal = strtol (argv[1], NULL, 10);
-    
-    switch (timeVar) {
-    case 'h':
-      setHour ((uint32_t)(varVal));
-      break;
-      
-    case 'm':
-       setMinute ((uint32_t)(varVal));
-      break;
-      
-    case 's':
-      setSecond ((uint32_t)(varVal));
-      break;
-      
-    case 'y':
-       setYear ((uint32_t)(varVal));
-      break;
-      
-    case 't':
-       setMonth ((uint32_t)(varVal));
-      break;
-      
-    case 'd':
-       setMonthDay ((uint32_t)(varVal));
-      break;
-
-    case 'w':
-       setWeekDay ((uint32_t)(varVal));
-      break;
-
-    case 'a':
-      {
-	int32_t newSec =(int)(getSecond()) + varVal;
-	if (newSec > 59) {
-	  int32_t newMin =(int)(getMinute()) + (newSec/60);
-	  if (newMin > 59) {
-	    setHour ((getHour()+((uint32_t)(newMin/60))) % 24);
-	    newMin %= 60;
-	  }
-	  setMinute ((uint32_t)newMin);
-	}
-	if (newSec < 0) {
-	  int32_t newMin =(int)getMinute() + (newSec/60)-1;
-	  if (newMin < 0) {
-	    setHour ((getHour()-((uint32_t)newMin/60)-1) % 24);
-	    newMin %= 60;
-	  }
-	  setMinute ((uint32_t)newMin);
-	}
-	setSecond ((uint32_t)newSec % 60);
-      }
-      break;
-      
-    default:
-      DebugTrace ("Usage: rtc [Hour Minute Second Year monTh Day Weekday Adjust] value");
-    }
-  } else if (argc == 6) {
-    setYear ((uint32_t) atoi(argv[3]));
-    setMonth ((uint32_t) atoi(argv[4]));
-    setMonthDay ((uint32_t) atoi(argv[5]));
-    setHour ((uint32_t) atoi(argv[0]));
-    setMinute ((uint32_t) atoi(argv[1]));
-    setSecond ((uint32_t) atoi(argv[2]));
-  }
-
-  chprintf (lchp, "RTC : %s %.02lu/%.02lu/%.04lu  %.02lu:%.02lu:%.02lu\r\n",
-	    getWeekDayAscii(), getMonthDay(), getMonth(), getYear(),
-	    getHour(), getMinute(), getSecond());
 }
 
 
@@ -426,7 +254,7 @@ void consoleInit (void)
   usbSerialInit(&SDU1, &USBDRIVER); 
   chp = (BaseSequentialStream *) &SDU1;
 #else
-  sdStart(&CONSOLE_DEV_SD, &serialDebugConsoleCfg);
+  sdStart(&CONSOLE_DEV_SD, &ftdiConfig);
   chp = (BaseSequentialStream *) &CONSOLE_DEV_SD;
 #endif
   /*
@@ -509,5 +337,3 @@ static float stampThreadGetCpuPercent (const ThreadCpuInfo *ti, const uint32_t i
   return ti->cpu[idx];
 }
 #endif
-
-#pragma GCC diagnostic pop

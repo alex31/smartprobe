@@ -6,110 +6,49 @@
 # Compiler options here.
 # -Wdouble-promotion -fno-omit-frame-pointer
 
-GIT_VERSION := git branch 
-GIT_VERSION += $(shell git rev-parse --abbrev-ref HEAD) : sha 
-GIT_VERSION += $(shell git describe --abbrev=4 --dirty --always --tags)
+DEBUG := 1
+OPT_SPEED := 2
+OPT_SIZE := 3
 
-#$(info $$GIT_VERSION is [${GIT_VERSION}])
-OPT_DMAX := DMAX
-OPT_DSPEED := DSPEED
-OPT_DNT := DNT
-OPT_DEBUG := DEBUG
-OPT_SPEED := SPEED
-OPT_SIZE := SIZE
+EXECMODE := $(DEBUG)
+#EXECMODE := $(OPT_SPEED)
+#EXECMODE := $(OPT_SIZE)
 
-ifeq 	($(BUILD),)
-	BUILD := $(OPT_DEBUG)
-endif
 
-SWDIO_DETECTION := 0
-
+GCCVERSIONGTEQ7 := $(shell expr `arm-none-eabi-gcc -dumpversion | cut -f1 -d.` \>= 7)
 GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
-	    -Wno-error=cpp \
+            -Wno-error=cpp \
             -Wno-error=unused-function \
             -Wunused -Wpointer-arith \
             -Werror=sign-compare \
             -Wshadow -Wparentheses -fmax-errors=5 \
-            -ftrack-macro-expansion=2 -Wno-error=strict-overflow -Wstrict-overflow=2 \
-            -Wvla-larger-than=128 -Wduplicated-branches -Wdangling-else \
-	    -Wmisleading-indentation -Wduplicated-cond -Wduplicated-branches \
-            -Wlogical-op -Wdouble-promotion \
-            -Wformat-overflow=2
+            -ftrack-macro-expansion=2 -Wno-error=strict-overflow -Wstrict-overflow=2
 
-G++_DIAG =   -Wnon-virtual-dtor -Woverloaded-virtual   \
-	     -Wnull-dereference
-
-UNUSED_DIAGS = -Wcast-align -Wsign-conversion -Wconversion
-
-ifeq ($(BUILD),$(OPT_DEBUG)) 
-  USE_OPT =  -Og -ggdb3  -Wall -Wextra \
-	    -falign-functions=16 -fomit-frame-pointer \
-	    $(GCC_DIAG)
-  PROJECT = smartprobe_debug
-  USE_PROCESS_STACKSIZE = 0x2800
-# add -DTRACE to UDEFS for shell mode
-  UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
-          -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1 
-
-endif
-
-ifeq ($(BUILD),$(OPT_DMAX)) 
-  USE_OPT =  -O0 -g -ggdb3  -Wall -Wextra \
-	    -falign-functions=16 -fomit-frame-pointer \
-	    $(GCC_DIAG)
-  PROJECT = smartprobe_debug
-  USE_PROCESS_STACKSIZE = 0x4F00
-  UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
-          -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1 
-
+ifeq "$(GCCVERSIONGTEQ7)" "1"
+    GCC_DIAG += -Wvla-larger-than=128 -Wduplicated-branches -Wdangling-else \
+                -Wformat-overflow=2 -Wformat-truncation=2
 endif
 
 
-ifeq ($(BUILD),$(OPT_DSPEED)) 
-  USE_OPT =  -Ofast -flto=4 -fno-fast-math -g -ggdb3  -Wall -Wextra \
+
+ifeq ($(EXECMODE),$(DEBUG)) 
+  USE_OPT =  -O0  -ggdb3  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	    $(GCC_DIAG)
-  PROJECT = smartprobe_debug
-  USE_PROCESS_STACKSIZE = 0x3800
-  UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
-          -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1 
-
 endif
 
-
-ifeq ($(BUILD),$(OPT_DNT)) 
-  USE_OPT =  -Og -ggdb3  -Wall -Wextra \
-	    -falign-functions=16 -fomit-frame-pointer \
-	    $(GCC_DIAG)
-  PROJECT = smartprobe_debug
-  USE_PROCESS_STACKSIZE = 0x2F00
-  UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
-          -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1
-
-endif
-
-
-ifeq ($(BUILD),$(OPT_SPEED)) 
-  USE_OPT =  -Ofast -fno-fast-math -flto=4  -Wall -Wextra \
+ifeq ($(EXECMODE),$(OPT_SPEED)) 
+    USE_OPT =  -Ofast -flto  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	     $(GCC_DIAG)
-  PROJECT = smartprobe_speed
-  USE_PROCESS_STACKSIZE = 0x3800
-  UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
-        -DCH_DBG_ENABLE_ASSERTS=0
 endif
 
-ifeq ($(BUILD),$(OPT_SIZE)) 
-  USE_OPT =  -Os  -flto=4  -Wall -Wextra \
+ifeq ($(EXECMODE),$(OPT_SIZE)) 
+    USE_OPT =  -Os  -flto  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
             --specs=nano.specs \
 	     $(GCC_DIAG)
-  PROJECT = smartprobe_size
-  USE_PROCESS_STACKSIZE = 0x2000
-  UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
-        -DCH_DBG_ENABLE_ASSERTS=0
 endif
-
 
 
 # C specific options here (added to USE_OPT).
@@ -119,7 +58,7 @@ endif
 
 # C++ specific options here (added to USE_OPT).
 ifeq ($(USE_CPPOPT),)
-  USE_CPPOPT = -std=gnu++2a -fno-rtti -fno-exceptions -fno-threadsafe-statics $(G++_DIAG)
+  USE_CPPOPT = -std=gnu++17 -fno-rtti -fno-exceptions -fno-threadsafe-statics
 endif
 
 # Enable this if you want the linker to remove unused code and data
@@ -149,19 +88,22 @@ endif
 
 ##############################################################################
 # Architecture or project specific options
-# 0x2F00
+#
 # Stack size to be allocated to the Cortex-M process stack. This stack is
 # the stack used by the main() thread.
+ifeq ($(USE_PROCESS_STACKSIZE),)
+  USE_PROCESS_STACKSIZE = 0x400
+endif
 
 # Stack size to the allocated to the Cortex-M main/exceptions stack. This
 # stack is used for processing interrupts and exceptions.
 ifeq ($(USE_EXCEPTIONS_STACKSIZE),)
-  USE_EXCEPTIONS_STACKSIZE = 0x600
+  USE_EXCEPTIONS_STACKSIZE = 0x400
 endif
 
 # Enables the use of FPU (no, softfp, hard).
 ifeq ($(USE_FPU),)
-  USE_FPU = hard
+  USE_FPU = no
 endif
 
 # FPU-related options.
@@ -178,6 +120,7 @@ endif
 #
 
 # Define project name here
+PROJECT = ch
 
 # Target settings.
 MCU  = cortex-m7
@@ -198,12 +141,9 @@ DEPDIR   := ./.dep
 STMSRC = $(RELATIVE)/COMMON/stm
 VARIOUS = $(RELATIVE)/COMMON/various
 USBD_LIB = $(VARIOUS)/Chibios-USB-Devices
-FROZEN_LIB = ../../../../frozen/include
-CTRE_LIB = ../../../.././compile-time-regular-expressions/single-header
-EIGEN_LIB = ../../../.././eigen
 ETL_LIB = ../../../../etl/include
-EXTLIB = ext
-PPRZ_MATH = $(VARIOUS)/paparazzi/math
+
+
 
 
 # Licensing files.
@@ -221,9 +161,6 @@ include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
 # Auto-build files in ./source recursively.
 include $(CHIBIOS)/tools/mk/autobuild.mk
 # Other files (optional).
-include $(CHIBIOS)/os/various/fatfs_bindings/fatfs.mk
-include $(VARIOUS)/tlsf_bku/tlsf.mk
-include $(STMSRC)/STMems.mk
 
 
 # Define linker script file here
@@ -233,23 +170,12 @@ LDSCRIPT= ${STARTUPLD}/STM32F76xxI.ld
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
 CSRC = $(ALLCSRC) \
-       $(TLSFSRC) \
-       $(STMEMSLPS33HWSRC) \
        $(CHIBIOS)/os/various/syscalls.c \
        $(VARIOUS)/stdutil.c \
-       $(VARIOUS)/msg_queue.c \
-       $(VARIOUS)/sdio.c \
        $(VARIOUS)/printf.c \
        $(VARIOUS)/microrl/microrlShell.c \
        $(VARIOUS)/microrl/microrl.c \
-       $(VARIOUS)/sdLog.c \
-       $(VARIOUS)/i2cMaster.c \
-       $(VARIOUS)/spiPeriphICM20600.c \
-       $(VARIOUS)/rtcAccess.c \
-       $(VARIOUS)/nmeaFrame.c \
-       $(EXTLIB)/fnmatch.c \
-       $(PPRZ_MATH)/pprz_geodetic_float.c \
-       $(USBD_LIB)/mass_storage/usb_msd.c
+       $(VARIOUS)/rtcAccess.c 
 
 
 
@@ -280,11 +206,9 @@ TCPPSRC =
 # List ASM source files here
 ASMXSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 
-INCDIR = $(CONFDIR) $(ALLINC) $(TLSFINC) \
+INCDIR = $(CONFDIR) $(ALLINC) \
          $(CHIBIOS)/os/various $(VARIOUS) $(VARIOUS_INCL) \
-         $(STMEMSLPS33HWDIR) \
-         $(CTRE_LIB) $(FROZEN_LIB) $(EIGEN_LIB) $(ETL_LIB)\
-	 $(USBD_LIB)/mass_storage $(PPRZ_MATH)  $(EXTLIB)
+         $(ETL_LIB) 
 
 #
 # Project, sources and paths
@@ -304,7 +228,7 @@ CPPC = $(TRGT)g++
 # NOTE: You can use C++ even without C++ support if you are careful. C++
 #       runtime support makes code size explode.
 #LD   = $(TRGT)gcc
-LD   = $(TRGT)g++ 
+LD   = $(TRGT)g++
 CP   = $(TRGT)objcopy
 AS   = $(TRGT)gcc -x assembler-with-cpp
 AR   = $(TRGT)ar
@@ -334,13 +258,18 @@ CPPWARN = -Wall -Wextra -Wundef
 #
 
 # List all user C define here, like -D_DEBUG=1
-UDEFS += -DCTRE_STRING_IS_UTF8=1 -DFROZEN_NO_EXCEPTIONS=1 -DGIT_VERSION="$(GIT_VERSION)"
-
-UDEFS += -DSWDIO_DETECTION=$(SWDIO_DETECTION)
+ifeq ($(EXECMODE),$(DEBUG))
+UDEFS = -DTRACE -DCHDEBUG_ENABLE=1
+else
+UDEFS = -DCHDEBUG_ENABLE=0
+endif
 
 # Define ASM defines here
-UADEFS = $(UDEFS)
-
+ifeq ($(EXECMODE),$(DEBUG))
+UADEFS =-DCHDEBUG_ENABLE=1
+else
+UADEFS =-DCHDEBUG_ENABLE=0
+endif
 
 
 # List all user directories here
@@ -350,7 +279,7 @@ UINCDIR =
 ULIBDIR =
 
 # List all user libraries here
-ULIBS = -lstdc++ -lm
+ULIBS =
 
 #
 # End of user defines
@@ -360,7 +289,7 @@ ULIBS = -lstdc++ -lm
 RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk
 include $(RULESPATH)/arm-none-eabi.mk
 include $(RULESPATH)/rules.mk
-$(OBJS): cfg/board.h compiler_flags
+$(OBJS): cfg/board.h
 
 cfg/board.h: cfg/board.cfg Makefile
 	boardGen.pl --no-pp-line --no-adcp-in	$<  $@
@@ -374,8 +303,3 @@ flash: all
 	@echo write $(BUILDDIR)/$(PROJECT).bin to flash memory
 	bmpflash  $(BUILDDIR)/$(PROJECT).elf
 	@echo Done
-
-
-.PHONY: force
-compiler_flags: force
-	echo '$(GIT_VERSION)' | cmp -s - $@ || echo '$(GIT_VERSION)' > $@

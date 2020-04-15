@@ -134,15 +134,6 @@
 #define CH_CFG_NO_IDLE_THREAD               FALSE
 #endif
 
-/**
- * @brief   Idle thread call WFI instruction for power saving
- * @details When this option is activated when the scheduler switch to idle, 
- *          it enters stop mode via WFI instruction instead of 
- *          looping in the idle thread. This save power consomption
- *            
- */
-#define CORTEX_ENABLE_WFI_IDLE              TRUE
-
 /** @} */
 
 /*===========================================================================*/
@@ -723,7 +714,6 @@
 /*===========================================================================*/
 
 #define CHPRINTF_USE_FLOAT 1
-//#define PORT_ENABLE_GUARD_PAGES TRUE
 
 #endif  /* _CHCONF_H_ */
 
