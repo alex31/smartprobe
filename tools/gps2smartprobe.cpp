@@ -145,9 +145,11 @@ int main(int argc, char* argv[])
       write(smartprobeFd, buf.data(), buf.size());
       write(STDOUT_FILENO, ".", 1);
       fsync(STDOUT_FILENO);
+    } else {
+      break;
     }
   }
-  
+  return 0;
 }
 
 

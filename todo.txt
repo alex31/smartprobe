@@ -9,6 +9,16 @@
 
 A CODER:
 
+  ° amélioration des perfos :
+    + le scale doit être un entier (avec le bon signe) pour faire une multiplication :
+      * virer la fonction template et faire la multiplication en direct
+    + utiliser sdlog uniquement pour le syslog.
+      * Pour sensorsLog : ecriture directe dans le fichier, utilisation d'un
+        mécanisme avec le moins de copies possible pour bufferiser l'écriture des logs :
+	 double buffer avec deux tableaux de Serialized : quand un est plein on lance f_write
+    + remettre STM32_SDC_SDMMC_UNALIGNED_SUPPORT à TRUE
+    + plusieurs type de messages binaires en fonction de leur fréquence ?
+    + valeurs calculées (et qui peuvent être recalculées offline) : on les loggue ?
 
 
 A TESTER :
@@ -53,6 +63,9 @@ GRANDES LIGNES :
 
 	* code pour les leds :
 	  ° utiliser un module WS2812 et integrer le code existant led2812
+
+	* récupération des données IMU sous interruption (broche INT1)
+
 	  
 	    
 

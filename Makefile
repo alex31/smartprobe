@@ -94,7 +94,7 @@ ifeq ($(BUILD),$(OPT_SPEED))
 	    -falign-functions=16 -fomit-frame-pointer \
 	     $(GCC_DIAG)
   PROJECT = smartprobe_speed
-  USE_PROCESS_STACKSIZE = 0x2000
+  USE_PROCESS_STACKSIZE = 0x3800
   UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
         -DCH_DBG_ENABLE_ASSERTS=0
 endif

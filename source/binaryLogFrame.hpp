@@ -64,6 +64,9 @@ struct __attribute__((packed)) SerializerDescriptionItem {
 // pragma padded and PackedSerializer are there to trigger compilation error if
 // field are not in the "right order" : sorted in size from bigger to smaller
 // to avoid padding and unaligned access
+// there will be padding between two messages, and we need to know the size of padding
+// which is dependant on the bigger scalar in the structre, this explains the need to have
+// normal and packed version of the structure.
 #pragma GCC diagnostic push
 #pragma GCC diagnostic error "-Wpadded"
 
@@ -76,7 +79,7 @@ struct Serializer {
   char _padding[8-sizeof(PackedSerializer)%8] = {0};
 }; 
 
-constexpr auto serializerDescription = std::experimental::make_array(DESCS);
+constexpr static inline auto serializerDescription = std::experimental::make_array(DESCS);
 #pragma GCC diagnostic pop
 
 
