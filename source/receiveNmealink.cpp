@@ -37,7 +37,7 @@ namespace {
 	     {.fieldName = "vdop",         .fieldType = NMEA_FLOAT,   .fieldIndex = 15}, // 11
 	     {.fieldName = "nb sat",       .fieldType = NMEA_INT,     .fieldIndex = 17}, // 12
 	     // *MANDATORY* marker of end of list
-	     {.fieldIndex = 0}
+	     {}
     }
   },
   {.fieldClass = "$GNZDA", .msgCb = &zda_cb,
@@ -47,12 +47,13 @@ namespace {
       {.fieldName = "month", .fieldType = NMEA_INT,   .fieldIndex = 3},
       {.fieldName = "year",  .fieldType = NMEA_INT,   .fieldIndex = 4},
       // *MANDATORY* marker of end of list
-      {.fieldIndex = 0}
+      {}
     }
   },
 
   // *MANDATORY* marker of end of list
-  {.fieldClass = nullptr, .msgCb = nullptr, .field={}}
+  {}
+  //  {.fieldClass = nullptr, .msgCb = nullptr, .field={}}
 };
 
   NmeaStateMachine sm{};
