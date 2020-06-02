@@ -188,7 +188,7 @@ SdioError SdCard::writeTSVSensorlog_RAW_AND_GPS(void)
 		      "%.2f\t%.2f\t%.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
 		      "%.4f\t%.4f\t%.4f\t"
-		      "%lu\t%lu\t%lu\t%u\t"
+		      "%u\t%lu\t%lu\t%u\t"
 		      "%ld\t%d\t%u\t%d\t"
 		      "%.2f\t%.1f\t",
 		      baroData.pressure,
@@ -257,7 +257,7 @@ SdioError SdCard::writeTSVSensorlog_HEADLESS_AND_GPS(void)
 		      "%.2f\t%.2f\t%.2f\t"
 		      "%.2f\t%.2f\t%.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
-		      "%lu\t%lu\t%lu\t%u\t"
+		      "%u\t%lu\t%lu\t%u\t"
 		      "%ld\t%d\t%u\t%d\t"
 		      "%.2f\t%.1f\t",
 		      baroData.pressure, baroData.temp,
