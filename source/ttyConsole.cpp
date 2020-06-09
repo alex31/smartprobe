@@ -105,9 +105,10 @@ static void cmd_close(BaseSequentialStream *lchp, int argc,const char* const arg
   (void) argv;
   DebugTrace("close all (FLUSH) wait 200 milliseconds");
   stopAllPeripherals();
-  sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
+  
+  SdLiteLogBase::terminate(TerminateBehavior::WAIT);
   chThdSleepMilliseconds(300);
-  sdLogFinish();
+  f_mount(NULL, "", 0); // umount
 }
 
 /*

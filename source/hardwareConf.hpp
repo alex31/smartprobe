@@ -154,6 +154,8 @@ static constexpr float PS_VOLTAGE_THRESHOLD_PERCENT = 6.0f;
 static constexpr float PS_VOLTAGE_ABSOLUTE_MINIMUM = 4.4f;
 static constexpr char ROOTDIR[] = "SMARTPROBE";
 static constexpr char CONFIGURATION_FILENAME[] = "smartprobe.conf";
+static constexpr time_secs_t SYSLOG_SYNC_PERIOD = 0U;
+static constexpr time_secs_t SENSORS_SYNC_PERIOD = 60U;
 
 
 namespace TH_BLINKER {

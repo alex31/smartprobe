@@ -55,11 +55,11 @@ bool SdCard::initHardware()
     return false;
   }
   
-  const SdioError se = ::sdLogInit(&freeSpaceInKo);
+  const SdLiteStatus se = SdLiteLogBase::initOnce(&freeSpaceInKo);
   switch (se) {
-  case SDLOG_OK : DebugTrace(" freeSpaceInKo = %lu Mo", freeSpaceInKo/1024); break;
-  case SDLOG_FATFS_ERROR : DebugTrace("sdLogInit: Fatfs error"); return false;
-  case SDLOG_INTERNAL_ERROR : DebugTrace("sdLogInit: Internal error"); return false;
+  case SdLiteStatus::OK : DebugTrace(" freeSpaceInKo = %lu Mo", freeSpaceInKo/1024); break;
+  case SdLiteStatus::FATFS_ERROR : DebugTrace("sdLogInit: Fatfs error"); return false;
+  case SdLiteStatus::INTERNAL_ERROR : DebugTrace("sdLogInit: Internal error"); return false;
   default: break;
   }
 
@@ -152,7 +152,7 @@ bool SdCard::loop()
 
 bool SdCard::writeTSVSensorlog(void)
 {
-  SdioError se;
+  SdLiteStatus se;
   
   if (ahrsType == RAW_IMU) {
     imu.blackBoard.read(imuData);
@@ -171,16 +171,16 @@ bool SdCard::writeTSVSensorlog(void)
   }
   
   switch (se) {
-  case SDLOG_FATFS_ERROR : DebugTrace("sdWrite sensors: Fatfs error");
+  case SdLiteStatus::FATFS_ERROR : DebugTrace("sdWrite sensors: Fatfs error");
     return false;
-  case SDLOG_INTERNAL_ERROR : DebugTrace("sdWrite sensors: Internal error");
+  case SdLiteStatus::INTERNAL_ERROR : DebugTrace("sdWrite sensors: Internal error");
     return false;
   default: break;
   }
   return true;
 }
 
-SdioError SdCard::writeTSVSensorlog_RAW_AND_GPS(void)
+SdLiteStatus SdCard::writeTSVSensorlog_RAW_AND_GPS(void)
 {
   return  logSensors("%4.2f\t%3.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
@@ -220,7 +220,7 @@ SdioError SdCard::writeTSVSensorlog_RAW_AND_GPS(void)
 		      adc.getCoreTemp());
 }
 
-SdioError SdCard::writeTSVSensorlog_RAW_NO_GPS(void)
+SdLiteStatus SdCard::writeTSVSensorlog_RAW_NO_GPS(void)
 {
   return logSensors("%4.2f\t%3.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
@@ -250,7 +250,7 @@ SdioError SdCard::writeTSVSensorlog_RAW_NO_GPS(void)
 		      adc.getCoreTemp());
 }
 
-SdioError SdCard::writeTSVSensorlog_HEADLESS_AND_GPS(void)
+SdLiteStatus SdCard::writeTSVSensorlog_HEADLESS_AND_GPS(void)
 {
   return logSensors("%4.2f\t%3.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
@@ -283,7 +283,7 @@ SdioError SdCard::writeTSVSensorlog_HEADLESS_AND_GPS(void)
 		      adc.getCoreTemp());
 }
 
-SdioError SdCard::writeTSVSensorlog_HEADLESS_NO_GPS(void)
+SdLiteStatus SdCard::writeTSVSensorlog_HEADLESS_NO_GPS(void)
 {
   return logSensors("%4.2f\t%3.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
@@ -313,7 +313,7 @@ SdioError SdCard::writeTSVSensorlog_HEADLESS_NO_GPS(void)
 
 bool  SdCard::sdLogInit(void)
 {
-  SdioError se;
+  SdLiteStatus se;
   std::string syslogN(syslogName.data(), syslogName.size());
   std::string sensorN(sensorlogName.data(), sensorlogName.size());
 
@@ -322,30 +322,22 @@ bool  SdCard::sdLogInit(void)
     sensorN += "_BIN_";
 
   
-  se = sdLogOpenLog(&syslogFd, ROOTDIR,
-		    syslogN.c_str(),
-		    1_seconde,
-		    LOG_APPEND_TAG_AT_CLOSE_ENABLED, 0,
-		    LOG_PREALLOCATION_DISABLED);
+  se = syslog.openLog(ROOTDIR, syslogN.c_str());
   switch (se) {
-  case SDLOG_OK : DebugTrace("sdOpenLog syslog Ok"); break;
-  case SDLOG_FATFS_ERROR : DebugTrace("sdOpenLog syslog: Fatfs error");
+  case SdLiteStatus::OK : DebugTrace("sdOpenLog syslog Ok"); break;
+  case SdLiteStatus::FATFS_ERROR : DebugTrace("sdOpenLog syslog: Fatfs error");
     return false;
-  case SDLOG_INTERNAL_ERROR : DebugTrace("sdOpenLog syslog: Internal error");
+  case SdLiteStatus::INTERNAL_ERROR : DebugTrace("sdOpenLog syslog: Internal error");
     return false;
   default: break;
   }
 
-  se = sdLogOpenLog(&sensorsFd, ROOTDIR,
-		    sensorN.c_str(),
-		    10_seconde,
-		    LOG_APPEND_TAG_AT_CLOSE_DISABLED, 0,
-		    LOG_PREALLOCATION_DISABLED);
+  se = sensors.openLog(ROOTDIR, sensorN.c_str());
   switch (se) {
-  case SDLOG_OK : DebugTrace("sdOpenLog sensors Ok"); break;
-  case SDLOG_FATFS_ERROR : DebugTrace("sdOpenLog sensors: Fatfs error");
+  case SdLiteStatus::OK : DebugTrace("sdOpenLog sensors Ok"); break;
+  case SdLiteStatus::FATFS_ERROR : DebugTrace("sdOpenLog sensors: Fatfs error");
     return false;
-  case SDLOG_INTERNAL_ERROR : DebugTrace("sdOpenLog sensors: Internal error");
+  case SdLiteStatus::INTERNAL_ERROR : DebugTrace("sdOpenLog sensors: Internal error");
     return false;
   default: break;
   }
@@ -481,8 +473,8 @@ void  SdCard::writeBinarySensorlogHeader(void)
   } binaryHeader;
 
   if (self != nullptr)  {
-    sdLogWriteRaw(self->sensorsFd,
-		  reinterpret_cast<const uint8_t*>(&binaryHeader), sizeof(binaryHeader));
+    auto [s, record] = sensors.borrow<uint8_t>(sizeof(binaryHeader));
+    memcpy(record, &binaryHeader, sizeof(binaryHeader));
   }
 }
 
@@ -491,63 +483,59 @@ constexpr float OINV(double quotient) {
 }
 bool SdCard::writeBinarySensorlog(void)
 {
-  SdioError se;
+  SdLiteStatus se;
   struct FramedBinaryRecord {
     Serializer	 data;
     uint32_t magicEnd = magicNumber;
   };
   
   if (self != nullptr) {
-    SdLogBuffer *sdb;
     imu.blackBoard.read(imuData);
     ahrs.blackBoard.read(attitude);
-    
-    se = sdLogAllocSDB(&sdb, sizeof(FramedBinaryRecord));
-    if (se == SDLOG_OK) {
-      FramedBinaryRecord* framedData =
-	reinterpret_cast<FramedBinaryRecord *>(sdLogGetBufferFromSDB(sdb));
-      framedData->data.systime = TIME_I2US(chVTGetSystemTimeX())/100; //1
-      framedData->data.baro_pressure = baroData.pressure; //2
-      framedData->data.diff_pressure_central = diffPressData[0].pressure;//3
-      framedData->data.diff_pressure_horizontal = diffPressData[1].pressure;//4
-      framedData->data.diff_pressure_vertical = diffPressData[2].pressure;//5
-      framedData->data.air_velocity = relAirSpeed.velocity;//6
-      framedData->data.alpha_angle = relAirSpeed.alpha;//7
-      framedData->data.beta_angle = relAirSpeed.beta;//8
-      framedData->data.accel_x = imuData.acc.v[0];//9
-      framedData->data.accel_y = imuData.acc.v[1];//10
-      framedData->data.accel_z = imuData.acc.v[2];//11
-      framedData->data.gyro_x = imuData.gyro.v[0];//12
-      framedData->data.gyro_y = imuData.gyro.v[1];//13
-      framedData->data.gyro_z = imuData.gyro.v[2];//14
-      framedData->data.rtc_time = gpsData.rtcTime.millisecond; // 15
-      framedData->data.utm_east = gpsData.utm_east; // 16
-      framedData->data.utm_north = gpsData.utm_north; // 17
-      framedData->data.altitude = gpsData.alt; // 18
-      framedData->data.baro_temperature = baroData.temp * OINV(SC19); // 19
-      framedData->data.diff_temperature_central = diffPressData[0].temp * OINV(SC20); // 20
-      framedData->data.diff_temperature_horizontal = diffPressData[1].temp * OINV(SC21); // 21
-      framedData->data.diff_temperature_vertical = diffPressData[2].temp * OINV(SC22); // 22
-      framedData->data.attitude_x = rad2deg(attitude.v[0]) * OINV(SC23); // 23
-      framedData->data.attitude_y = rad2deg(attitude.v[1]) * OINV(SC24); // 24
-      framedData->data.attitude_z = rad2deg(attitude.v[2]) * OINV(SC25); // 25
-      framedData->data.course = gpsData.course; // 26
-      framedData->data.speed = gpsData.speed; // 27
-      framedData->data.climb_speed = gpsData.climb; // 28
-      framedData->data.ps_5V = adc.getPowerSupplyVoltage() * OINV(SC29); // 29
-      framedData->data.core_temperature = adc.getCoreTemp() * OINV(SC30); // 30
-      framedData->data.utm_zone = gpsData.utm_zone; // 31
-      framedData->magicEnd = magicNumber;
-      sdLogWriteSDB(self->sensorsFd, sdb);
+
+    auto [s, framedData] = sensors.borrow<FramedBinaryRecord>();
+    if (s == SdLiteStatus::OK) {
+      framedData.data.systime = TIME_I2US(chVTGetSystemTimeX())/100; //1
+      framedData.data.baro_pressure = baroData.pressure; //2
+      framedData.data.diff_pressure_central = diffPressData[0].pressure;//3
+      framedData.data.diff_pressure_horizontal = diffPressData[1].pressure;//4
+      framedData.data.diff_pressure_vertical = diffPressData[2].pressure;//5
+      framedData.data.air_velocity = relAirSpeed.velocity;//6
+      framedData.data.alpha_angle = relAirSpeed.alpha;//7
+      framedData.data.beta_angle = relAirSpeed.beta;//8
+      framedData.data.accel_x = imuData.acc.v[0];//9
+      framedData.data.accel_y = imuData.acc.v[1];//10
+      framedData.data.accel_z = imuData.acc.v[2];//11
+      framedData.data.gyro_x = imuData.gyro.v[0];//12
+      framedData.data.gyro_y = imuData.gyro.v[1];//13
+      framedData.data.gyro_z = imuData.gyro.v[2];//14
+      framedData.data.rtc_time = gpsData.rtcTime.millisecond; // 15
+      framedData.data.utm_east = gpsData.utm_east; // 16
+      framedData.data.utm_north = gpsData.utm_north; // 17
+      framedData.data.altitude = gpsData.alt; // 18
+      framedData.data.baro_temperature = baroData.temp * OINV(SC19); // 19
+      framedData.data.diff_temperature_central = diffPressData[0].temp * OINV(SC20); // 20
+      framedData.data.diff_temperature_horizontal = diffPressData[1].temp * OINV(SC21); // 21
+      framedData.data.diff_temperature_vertical = diffPressData[2].temp * OINV(SC22); // 22
+      framedData.data.attitude_x = rad2deg(attitude.v[0]) * OINV(SC23); // 23
+      framedData.data.attitude_y = rad2deg(attitude.v[1]) * OINV(SC24); // 24
+      framedData.data.attitude_z = rad2deg(attitude.v[2]) * OINV(SC25); // 25
+      framedData.data.course = gpsData.course; // 26
+      framedData.data.speed = gpsData.speed; // 27
+      framedData.data.climb_speed = gpsData.climb; // 28
+      framedData.data.ps_5V = adc.getPowerSupplyVoltage() * OINV(SC29); // 29
+      framedData.data.core_temperature = adc.getCoreTemp() * OINV(SC30); // 30
+      framedData.data.utm_zone = gpsData.utm_zone; // 31
+      framedData.magicEnd = magicNumber;
     }
   }  else {
-    se = SDLOG_NOT_READY;
+    se = SdLiteStatus::NOT_READY;
   }
   
   switch (se) {
-  case SDLOG_FATFS_ERROR : DebugTrace("sdWrite sensors: Fatfs error");
+  case SdLiteStatus::FATFS_ERROR : DebugTrace("sdWrite sensors: Fatfs error");
     return false;
-  case SDLOG_INTERNAL_ERROR : DebugTrace("sdWrite sensors: Internal error");
+  case SdLiteStatus::INTERNAL_ERROR : DebugTrace("sdWrite sensors: Internal error");
     return false;
   default: break;
   }
@@ -555,7 +543,7 @@ bool SdCard::writeBinarySensorlog(void)
 }
 
 
-SdioError SdCard::logSensors (const char* fmt, ...)
+SdLiteStatus SdCard::logSensors (const char* fmt, ...)
 {
   va_list ap;
 
@@ -568,12 +556,12 @@ SdioError SdCard::logSensors (const char* fmt, ...)
     sdLogWriteLog(self->sensorsFd, "\r\n");
     return retVal;
   } else {
-    return SDLOG_NOT_READY;
+    return SdLiteStatus::NOT_READY;
   }
 }
 
 
-SdioError SdCard::logSyslog (const Severity severity, const char* fmt, ...)
+SdLiteStatus SdCard::logSyslog (const Severity severity, const char* fmt, ...)
 {
   va_list ap;
   va_start(ap, fmt);
@@ -599,11 +587,11 @@ SdioError SdCard::logSyslog (const Severity severity, const char* fmt, ...)
     sdLogFlushLog(self->syslogFd);
     return retVal;
   } else {
-    return SDLOG_NOT_READY;
+    return SdLiteStatus::NOT_READY;
   }
 }
 
-SdioError SdCard::logSyslogRaw (const char* fmt, ...)
+SdLiteStatus SdCard::logSyslogRaw (const char* fmt, ...)
 {
   va_list ap;
   
@@ -623,7 +611,7 @@ SdioError SdCard::logSyslogRaw (const char* fmt, ...)
     va_end(ap);
     return retVal;
   } else {
-    return SDLOG_NOT_READY;
+    return SdLiteStatus::NOT_READY;
   }
 }
 

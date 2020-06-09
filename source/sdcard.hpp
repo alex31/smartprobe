@@ -1,6 +1,7 @@
 #pragma once
+#include "sdio.h"
 #include "workerClass.hpp"
-#include "sdLog.h"
+#include "sdLiteLog.hpp"
 #include "barometer.hpp"
 #include "adc.hpp"
 #include "imu.hpp"
@@ -8,7 +9,6 @@
 #include "relativeWind.hpp"
 #include "confParameters.hpp"
 #include "hardwareConf.hpp"
-#include "sdLog.h"
 #include "binaryLogFrame.hpp"
 
 enum class Severity {Debug, Info, Warning, Fatal, Internal};
@@ -16,18 +16,19 @@ enum class Severity {Debug, Info, Warning, Fatal, Internal};
 class SdCard : public WorkerThread<TH_SDCARD::threadStackSize, SdCard> {
 public:
   SdCard(const tprio_t m_prio) :
-    WorkerThread<TH_SDCARD::threadStackSize, SdCard>("sdcard", m_prio) {};
+    WorkerThread<TH_SDCARD::threadStackSize, SdCard>("sdcard", m_prio),
+    sensors(SENSORS_SYNC_PERIOD), syslog(SYSLOG_SYNC_PERIOD)  {};
 
   bool initHardware(void);
   
-  static SdioError logSensors (const char* fmt, ...)
+  static SdLiteStatus logSensors (const char* fmt, ...)
     __attribute__ ((format (printf, 1, 2)));
   template<typename T>
-  static SdioError logSensors (const T& t);
+  static SdLiteStatus logSensors (const T& t);
   
-  static SdioError logSyslog (const Severity severity, const char* fmt, ...)
+  static SdLiteStatus logSyslog (const Severity severity, const char* fmt, ...)
     __attribute__ ((format (printf, 2, 3)));
-  static SdioError logSyslogRaw (const char* fmt, ...)
+  static SdLiteStatus logSyslogRaw (const char* fmt, ...)
     __attribute__ ((format (printf, 1, 2)));
   
 
@@ -42,16 +43,16 @@ private:
   void writeBinarySensorlogHeader(void);
   bool writeTSVSensorlog(void);
   bool writeBinarySensorlog(void);
-  SdioError writeTSVSensorlog_RAW_AND_GPS(void);
-  SdioError writeTSVSensorlog_RAW_NO_GPS(void);
-  SdioError writeTSVSensorlog_HEADLESS_AND_GPS(void);
-  SdioError writeTSVSensorlog_HEADLESS_NO_GPS(void);
+  SdLiteStatus writeTSVSensorlog_RAW_AND_GPS(void);
+  SdLiteStatus writeTSVSensorlog_RAW_NO_GPS(void);
+  SdLiteStatus writeTSVSensorlog_HEADLESS_AND_GPS(void);
+  SdLiteStatus writeTSVSensorlog_HEADLESS_NO_GPS(void);
 
 
   static SdCard *self;
   uint32_t 	freeSpaceInKo = 0;
-  FileDes	syslogFd = -1;
-  FileDes 	sensorsFd = -1;
+  SdLiteLog<38400> sensors;
+  SdLiteLog<384> syslog;
   AhrsType 	ahrsType{};
   SerialMode 	serialMode{};
   bool     	logGps = false;
@@ -63,13 +64,14 @@ private:
 
 
 template<typename T>
-SdioError SdCard::logSensors (const T& t)
+SdLiteStatus SdCard::logSensors (const T& t)
 {
   if (self != nullptr) {
-    auto retVal = sdLogWriteRaw(self->syslogFd, static_cast<uint8_t*>(&t), sizeof(T));
-    return retVal;
+    auto [s, record] = self->sensors.borrow<T>();
+    record = t; // NOT zero copy : API must be changed
+    return s;
   } else {
-    return SDLOG_NOT_READY;
+    return SdLiteStatus::NOT_READY;
   }
 }
 

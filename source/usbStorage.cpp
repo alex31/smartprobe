@@ -5,7 +5,7 @@
 #include "sdcard.hpp"
 #include "usbStorage.hpp"
 #include "threadAndEventDecl.hpp"
-#include "sdLog.h"
+#include "sdLiteLog.hpp"
 #include <stdio.h>
 #include <string.h>
 #include <sdio.h>
@@ -63,9 +63,9 @@ bool UsbStorage::loop()
     showBB.terminate().join();
   }
   
-  sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
+  SdLiteLogBase::terminate(TerminateBehavior::WAIT);
   chThdSleepMilliseconds(300);
-  sdLogFinish();
+  f_mount(NULL, "", 0); // umount
   chThdSleepMilliseconds(300);
   
   DebugTrace("UsbStorage:connected");

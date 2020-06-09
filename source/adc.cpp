@@ -1,9 +1,9 @@
 #include <ch.h>
 #include <hal.h>
+#include "stdutil.h"	
 #include "hardwareConf.hpp"
 #include "adc.hpp"
-#include "stdutil.h"	
-#include "sdLog.h"	
+#include "sdLiteLog.hpp"	
 #include "sdcard.hpp"	
 
 namespace {
@@ -130,7 +130,7 @@ bool Adc::loop()
   chBSemWait(&adcWatchDogSem); // wait for powerLoss event
   
   stopAllPeripherals();
-  sdLogFinish();
+  SdLiteLogBase::terminate(TerminateBehavior::DONT_WAIT);
   chThdSleepMilliseconds(PowerLossAwakeTimeBeforeDeepSleep);
   systemDeepSleep();
   while (true);

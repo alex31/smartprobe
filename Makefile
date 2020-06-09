@@ -247,7 +247,6 @@ CSRC = $(ALLCSRC) \
        $(VARIOUS)/printf.c \
        $(VARIOUS)/microrl/microrlShell.c \
        $(VARIOUS)/microrl/microrl.c \
-       $(VARIOUS)/sdLog.c \
        $(VARIOUS)/i2cMaster.c \
        $(VARIOUS)/spiPeriphICM20600.c \
        $(VARIOUS)/rtcAccess.c \
@@ -260,7 +259,9 @@ CSRC = $(ALLCSRC) \
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
-CPPSRC = $(ALLCPPSRC)
+CPPSRC = $(ALLCPPSRC) \
+         $(VARIOUS)/sdLiteLog.cpp
+
 
 # C sources to be compiled in ARM mode regardless of the global setting.
 # NOTE: Mixing ARM and THUMB mode enables the -mthumb-interwork compiler
