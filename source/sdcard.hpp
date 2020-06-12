@@ -28,7 +28,7 @@ public:
   
   static SdLiteStatus logSyslog (const Severity severity, const char* fmt, ...)
     __attribute__ ((format (printf, 2, 3)));
-  static SdLiteStatus logSyslogRaw (const char* fmt, ...)
+  static SdLiteStatus logSyslog (const char* fmt, ...)
     __attribute__ ((format (printf, 1, 2)));
   
 
@@ -43,6 +43,8 @@ private:
   void writeBinarySensorlogHeader(void);
   bool writeTSVSensorlog(void);
   bool writeBinarySensorlog(void);
+  void lock(void) const {chMtxLock(&mutLog);}
+  void unlock(void) const {chMtxUnlock(&mutLog);}
   SdLiteStatus writeTSVSensorlog_RAW_AND_GPS(void);
   SdLiteStatus writeTSVSensorlog_RAW_NO_GPS(void);
   SdLiteStatus writeTSVSensorlog_HEADLESS_AND_GPS(void);
@@ -52,13 +54,14 @@ private:
   static SdCard *self;
   uint32_t 	freeSpaceInKo = 0;
   SdLiteLog<38400> sensors;
-  SdLiteLog<384> syslog;
+  SdLiteLog<512> syslog;
   AhrsType 	ahrsType{};
   SerialMode 	serialMode{};
   bool     	logGps = false;
   bool		hardareInitialised{false};
 
   event_listener_t baroEvent, diffPressEvent, imuEvent;
+  mutable mutex_t mutLog = _MUTEX_DATA(mutLog);
 };
 
 

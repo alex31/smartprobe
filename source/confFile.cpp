@@ -170,12 +170,12 @@ namespace {
   {
     if (std::holds_alternative<frozen::set<named_val_t, N>>(vtor)) {
       const frozen::set<named_val_t, N> &set = std::get<frozen::set<named_val_t, N>>(vtor);
-      SdCard::logSyslogRaw("set of possible value is : ");
+      SdCard::logSyslog("set of possible value is : ");
       for (const named_val_t &nv : set) {
-	SdCard::logSyslogRaw("\"%.*s\"=%d, ",
+	SdCard::logSyslog("\"%.*s\"=%d, ",
 			      nv.valName.size(), nv.valName.data(), nv.val);
       }
-      SdCard::logSyslogRaw("\r\n");
+      SdCard::logSyslog("\r\n");
     }
     if constexpr (N > 1) { // recurse over set size using template meta programming
 	syslogNamedSet<N-1>(vtor);
@@ -412,6 +412,18 @@ bool ConfigurationFile::populate(void)
   return success;
 }
 
+bool ConfigurationFile::earlyReadConfFile(void)
+{
+  chMtxLock(&mu);
+
+  bool success = readConfFile();
+  if (not success)
+    success = writeConfFile();
+
+  chMtxUnlock(&mu);
+  return success;
+}
+
 bool ConfigurationFile::readConfFile(void)
 {
   FIL fil;
@@ -546,35 +558,35 @@ void ConfigurationFile::syslogInfoParameters(void)
    for (auto const& [key, param] : conf_dict) {
      const validator_variant_t& vtor = param.validator;
      SdCard::logSyslog(Severity::Info, ".................\n");
-     SdCard::logSyslogRaw("key = %s : ", key.data());
+     SdCard::logSyslog("key = %s : ", key.data());
      const default_variant_t& d = param.defaut;
      if (std::holds_alternative<int>(d)) {
-       SdCard::logSyslogRaw("default<integer> = %s; ", variant2str(d, vtor).c_str());
+       SdCard::logSyslog("default<integer> = %s; ", variant2str(d, vtor).c_str());
     } else  if (std::holds_alternative<double>(d)) {
-      SdCard::logSyslogRaw("default<double> = %s; ", variant2str(d, vtor).c_str());
+      SdCard::logSyslog("default<double> = %s; ", variant2str(d, vtor).c_str());
     } else  if (std::holds_alternative<bool>(d)) {
-      SdCard::logSyslogRaw("default<boolean> = %s; ", variant2str(d, vtor).c_str());
+      SdCard::logSyslog("default<boolean> = %s; ", variant2str(d, vtor).c_str());
     } else  if (std::holds_alternative<std::string_view>(d)) {
-      SdCard::logSyslogRaw("default<string> = %s; ", variant2str(d, vtor).c_str());
+      SdCard::logSyslog("default<string> = %s; ", variant2str(d, vtor).c_str());
     } else {
-      SdCard::logSyslogRaw("no default; ");
+      SdCard::logSyslog("no default; ");
     }
 
      if (std::holds_alternative<std::monostate>(vtor)) {
-      SdCard::logSyslogRaw("no validation");
+      SdCard::logSyslog("no validation");
     } else if (std::holds_alternative<range_int_t>(vtor)) {
-      SdCard::logSyslogRaw("RANGE is [%d .. %d]",
+      SdCard::logSyslog("RANGE is [%d .. %d]",
 	      std::get<range_int_t>(vtor).min,
 	      std::get<range_int_t>(vtor).max);
     } else if (std::holds_alternative<range_double_t>(vtor)) {
-      SdCard::logSyslogRaw("RANGE is [%f .. %f]",
+      SdCard::logSyslog("RANGE is [%f .. %f]",
 	      std::get<range_double_t>(vtor).min,
 	      std::get<range_double_t>(vtor).max);
     } else {
       syslogNamedSet<numberOfSets>(vtor);
     }
 
-    SdCard::logSyslogRaw("\r\n"); 
+    SdCard::logSyslog("\r\n"); 
    }
 }
 

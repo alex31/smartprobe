@@ -548,12 +548,15 @@ SdLiteStatus SdCard::logSensors (const char* fmt, ...)
   va_list ap;
 
   if (self != nullptr) {
-    sdLogWriteLog(self->sensorsFd, highTimeStampPrecision ? "[%.4f] : " :  "[%.3f] : ",
-		  TIME_I2US(chVTGetSystemTimeX())/1e6);
     va_start(ap, fmt);
-    auto retVal = sdLogvWriteLog(self->sensorsFd, fmt, &ap);
+    self->lock();
+    self->sensors.writeFmt(16, highTimeStampPrecision ?
+			    "[%.4f] : " :  "[%.3f] : ",
+			    TIME_I2US(chVTGetSystemTimeX())/1e6);
+    auto retVal = self->sensors.writeFmt(240, fmt, &ap);
     va_end(ap);
-    sdLogWriteLog(self->sensorsFd, "\r\n");
+    self->sensors.writeFmt(3, "\r\n");
+    self->unlock();
     return retVal;
   } else {
     return SdLiteStatus::NOT_READY;
@@ -578,20 +581,22 @@ SdLiteStatus SdCard::logSyslog (const Severity severity, const char* fmt, ...)
 #endif
   
   if (self != nullptr) {
-    sdLogWriteLog(self->syslogFd, "[%.3f] %s : ",
-		  TIME_I2MS(chVTGetSystemTimeX())/1000.0,
-		  severityName.at(severity).data());
-    auto retVal = sdLogvWriteLog(self->syslogFd, fmt, &ap);
-    sdLogWriteLog(self->syslogFd, "\r\n");
+    self->lock();
+    self->syslog.writeFmt(32, "[%.3f] %s : ",
+			  TIME_I2MS(chVTGetSystemTimeX())/1000.0,
+			  severityName.at(severity).data());
+    auto retVal = self->syslog.writeFmt(160, fmt, &ap);
     va_end(ap);
-    sdLogFlushLog(self->syslogFd);
+    self->syslog.writeFmt(3, "\r\n");
+    self->unlock();
     return retVal;
   } else {
+    va_end(ap);
     return SdLiteStatus::NOT_READY;
   }
 }
 
-SdLiteStatus SdCard::logSyslogRaw (const char* fmt, ...)
+SdLiteStatus SdCard::logSyslog (const char* fmt, ...)
 {
   va_list ap;
   
@@ -607,10 +612,13 @@ SdLiteStatus SdCard::logSyslogRaw (const char* fmt, ...)
 #endif
   
   if (self != nullptr) {
-    auto retVal = sdLogvWriteLog(self->syslogFd, fmt, &ap);
+    self->lock();
+    auto retVal = self->syslog.writeFmt(160, fmt, &ap);
     va_end(ap);
+    self->unlock();
     return retVal;
   } else {
+    va_end(ap);
     return SdLiteStatus::NOT_READY;
   }
 }

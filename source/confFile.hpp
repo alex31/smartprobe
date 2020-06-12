@@ -53,13 +53,14 @@ class ConfigurationFile {
 public:
   ConfigurationFile(const char* m_fileName) : fileName(m_fileName) {};
   bool populate(void);
+  bool earlyReadConfFile(void);
   const value_variant_t& operator[] (const std::string_view key);
-  bool readConfFile(void);
 private:
   using dictionary_t = std::map<std::string, value_variant_t>;
   dictionary_t dictionary;
   const char *fileName;
   mutable MUTEX_DECL(mu);
+  bool readConfFile(void);
   bool writeConfFile(void);
   bool verifyNotFilledParameters(void);
   void syslogInfoParameters(void);

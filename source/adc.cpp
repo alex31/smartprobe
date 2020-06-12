@@ -131,6 +131,7 @@ bool Adc::loop()
   
   stopAllPeripherals();
   SdLiteLogBase::terminate(TerminateBehavior::DONT_WAIT);
+  f_mount(NULL, "", 0);
   chThdSleepMilliseconds(PowerLossAwakeTimeBeforeDeepSleep);
   systemDeepSleep();
   while (true);
