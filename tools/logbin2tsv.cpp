@@ -5,12 +5,23 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
-		
 #include "binaryLogFrame.hpp"
 
+#if defined USE_FMT
+#define FMT_HEADER_ONLY
+#include <fmt/format.h>		
+#endif
+
 /*
-g++ -Ofast --std=c++17 -Werror -Wall -Wextra -I../source logbin2tsv.cpp -o logbin2tsv
+g++-10 -DUSE_FMT  -Ofast --std=c++20 -Werror -Wall -Wextra -I../source \
+                  -I/home/alex/DEV/STM32/fmt/include logbin2tsv.cpp -o logbin2tsv
 */
+
+/*
+  TODO : if slowiness is a concern (30Mb/s on a 2013 intel 4770), can be rewrited using 
+         openMP to use all the cores. The bottleneck is the binary to ascii conversion
+ */
+
 
 constexpr uint32_t magicNumber = 0xFACEC0DE;
 
@@ -35,7 +46,7 @@ class BinaryElem {
 public:
   BinaryElem(const SerializerType m_type, double m_scale,
 	     std::ifstream& m_ifs,  std::ofstream& m_ofs) :
-    type(m_type), scale(m_scale), ofs(m_ofs), ifs(m_ifs) {if (scale == 0) scale = 1;}
+    type(m_type), scale(m_scale == 0 ? 1 : m_scale), ofs(m_ofs), ifs(m_ifs) {assert (scale != 0);}
   [[nodiscard]] bool translate(void) {return loadFromIstream() && writeToOstream();}
 private:
   [[nodiscard]] bool loadFromIstream(void);
@@ -129,7 +140,7 @@ bool BinaryLogReader::readHeader(void)
     ofs << sdi.description << ":" << sdi.unitName << "\t";
     elems.push_back(BinaryElem(sdi.type, sdi.scale, ifs, ofs));
   }
-  ofs << std::endl;
+  ofs << "\n";
   populate(magicEnd);
   if (magicEnd != magicNumber) {
     std::cerr << "file format error : magic number (END) not recognised\n";
@@ -143,12 +154,13 @@ bool BinaryLogReader::readHeader(void)
 bool BinaryLogReader::readData(void)
 {
   uint32_t magicEnd{};
+
   while (ifs.good()) {
     for (auto& e : elems)
       if (e.translate() == false) return false;
 
     ifs.ignore(paddingSize);
-    ofs << std::endl;
+    ofs << "\n";
     populate(magicEnd);
     if (magicEnd != magicNumber) {
       std::cerr << "file format error : magic number (END DATA) not recognised\n";
@@ -171,10 +183,17 @@ inline void BinaryElem::tmplWriteToOstream(const T& t)
   if constexpr (std::is_same_v<T, char>) {
     ofs << t << "\t";
   } else {
+#if defined USE_FMT
+    // more than two time faster than cstdio sprintf to convert binary to ascii
+    // need fmt library
+    std::string sfmt = fmt::format(FMT_STRING("{:.10g}\t"), t * scale);
+    ofs.write(sfmt.c_str(), sfmt.length());
+#else
+    // slower, do not need fmt library
     char f2str[64];
     const auto len = snprintf(f2str, sizeof(f2str), "%.10g\t",  t * scale);
-    
     ofs.write(f2str, len);
+#endif
   }
 }
 
@@ -222,7 +241,6 @@ int main(int argc, char* argv[])
     std::cerr << "usage " << argv[0] << " binaryIn tsvOut\n";
     exit(-1);
   }
-  
   BinaryLogReader blr(argv[1], argv[2]);
   
   return 0;
