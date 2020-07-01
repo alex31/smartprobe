@@ -76,10 +76,7 @@ bool Imu::init20600(const ImuKindOfInit kind)
 		    imuKindOfInitStr[kind_sc],
 		    res.factory, res.bias, res.passed);
   
-  if (res.bias && res.passed) {
-    SdCard::logSyslog(Severity::Info, "icm20600 factory test for %s OK",
-		      imuKindOfInitStr[kind_sc]);
-  } else {
+  if (not (res.bias && res.passed)) {
     SdCard::logSyslog(Severity::Fatal, "icm20600 factory test for %s FAIL",
 		      imuKindOfInitStr[kind_sc]);
     return false;
