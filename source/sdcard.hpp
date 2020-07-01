@@ -53,8 +53,8 @@ private:
 
   static SdCard *self;
   uint32_t 	freeSpaceInKo = 0;
-  SdLiteLog<38400> sensors;
-  SdLiteLog<512> syslog;
+  SdLiteLog<SENSORS_BUFFER_SIZE> sensors;
+  SdLiteLog<SYSLOG_BUFFER_SIZE> syslog;
   AhrsType 	ahrsType{};
   SerialMode 	serialMode{};
   bool     	logGps = false;

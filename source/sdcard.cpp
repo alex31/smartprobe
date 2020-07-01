@@ -553,7 +553,7 @@ SdLiteStatus SdCard::logSensors (const char* fmt, ...)
     self->sensors.writeFmt(16, highTimeStampPrecision ?
 			    "[%.4f] : " :  "[%.3f] : ",
 			    TIME_I2US(chVTGetSystemTimeX())/1e6);
-    auto retVal = self->sensors.writeFmt(240, fmt, &ap);
+    auto retVal = self->sensors.vwriteFmt(SYSLOG_BUFFER_SIZE/2, fmt, &ap);
     va_end(ap);
     self->sensors.writeFmt(3, "\r\n");
     self->unlock();
@@ -568,6 +568,7 @@ SdLiteStatus SdCard::logSyslog (const Severity severity, const char* fmt, ...)
 {
   va_list ap;
   va_start(ap, fmt);
+  char buffer[SYSLOG_BUFFER_SIZE/2];
   
 #ifdef TRACE 
 #include "printf.h"
@@ -581,19 +582,36 @@ SdLiteStatus SdCard::logSyslog (const Severity severity, const char* fmt, ...)
 #endif
   
   if (self != nullptr) {
-    self->lock();
-    self->syslog.writeFmt(32, "[%.3f] %s : ",
-			  TIME_I2MS(chVTGetSystemTimeX())/1000.0,
-			  severityName.at(severity).data());
-    auto retVal = self->syslog.writeFmt(160, fmt, &ap);
+    int charIdx = snprintf(buffer, sizeof buffer, "[%.3f] %s : ",
+			   TIME_I2MS(chVTGetSystemTimeX())/1000.0,
+			   severityName.at(severity).data());
+    if (charIdx >= static_cast<int>(sizeof buffer))
+      goto  message_to_big;
+
+    charIdx += vsnprintf(buffer + charIdx,
+			 sizeof buffer - charIdx - 1,
+			 fmt, ap);
     va_end(ap);
-    self->syslog.writeFmt(3, "\r\n");
+    if (charIdx >= static_cast<int>(sizeof buffer))
+      goto  message_to_big;
+   
+    charIdx += snprintf(buffer + charIdx,
+			sizeof buffer - charIdx - 1,
+			"\r\n");
+    if (charIdx >= static_cast<int>(sizeof buffer))
+      goto  message_to_big;
+
+    self->lock();
+    auto retVal = self->syslog.writeFmt(charIdx + 1, "%s", buffer);
     self->unlock();
     return retVal;
   } else {
     va_end(ap);
     return SdLiteStatus::NOT_READY;
   }
+
+ message_to_big:
+  return SdLiteStatus::TOO_BIG;
 }
 
 SdLiteStatus SdCard::logSyslog (const char* fmt, ...)
@@ -613,7 +631,7 @@ SdLiteStatus SdCard::logSyslog (const char* fmt, ...)
   
   if (self != nullptr) {
     self->lock();
-    auto retVal = self->syslog.writeFmt(160, fmt, &ap);
+    auto retVal = self->syslog.vwriteFmt(SYSLOG_BUFFER_SIZE/2, fmt, &ap);
     va_end(ap);
     self->unlock();
     return retVal;

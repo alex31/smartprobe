@@ -156,6 +156,8 @@ static constexpr char ROOTDIR[] = "SMARTPROBE";
 static constexpr char CONFIGURATION_FILENAME[] = "smartprobe.conf";
 static constexpr time_secs_t SYSLOG_SYNC_PERIOD = 0U;
 static constexpr time_secs_t SENSORS_SYNC_PERIOD = 60U;
+static constexpr time_secs_t SENSORS_BUFFER_SIZE = 38400U;
+static constexpr time_secs_t SYSLOG_BUFFER_SIZE = 512U;
 
 
 namespace TH_BLINKER {
