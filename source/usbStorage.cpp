@@ -17,7 +17,7 @@ namespace {
 /* Turns on a LED when there is I/O activity on the USB port */
 void usbActivity(bool active)
 {
-  palWriteLine(LINE_LED_GREEN, active ? PAL_HIGH : PAL_LOW);
+  fl.setError(active ? LedCode::UsbStorageOn : LedCode::UsbStorageOff);
 }
 
 USBMassStorageConfig msdConfig =
@@ -49,7 +49,7 @@ bool UsbStorage::loop()
     palWaitLineTimeout(LINE_USB_VBUS, TIME_INFINITE);
     chThdSleepMilliseconds(10);
   } while (palReadLine(LINE_USB_VBUS) == PAL_LOW);
-
+  fl.setError(LedCode::UsbStorageVBus);
   if (not emergency) {
     chRegSetThreadName("UsbStorage:wait dp join");
     dp.terminate().join();
@@ -62,7 +62,7 @@ bool UsbStorage::loop()
     chRegSetThreadName("UsbStorage:wait showBB join");
     showBB.terminate().join();
   }
-  
+  chRegSetThreadName("UsbStorage:wait SdLiteLogBase::terminate");
   SdLiteLogBase::terminate(TerminateBehavior::WAIT);
   chThdSleepMilliseconds(300);
   f_mount(NULL, "", 0); // umount

@@ -18,6 +18,7 @@
 #include "printf.h"
 
 
+
 /*
   Câbler une LED sur la broche C0
 
@@ -36,6 +37,7 @@ void _init_chibios() {
   initHeap ();
 }
 
+extern FrontLed IN_DMA_SECTION(fl);
 
 int main (void)
 {
@@ -44,7 +46,9 @@ int main (void)
   DynSwdio	dynSwdio(NORMALPRIO);
   TransmitPprzlink transmitPPL(NORMALPRIO);
   RtcSync	rtcSync(NORMALPRIO);
-  
+
+  fl.setError(LedCode::Optimal);
+
   bl.run(TIME_MS2I(1000));
   
 #ifdef TRACE
@@ -55,30 +59,42 @@ int main (void)
   // first time without loggin error to get early parameters
   if (not sdcard.initHardware()) {
     DebugTrace("sdcard.initHardware() has failed");
+    fl.setError(LedCode::HardFault);
   } else if (not confFile.earlyReadConfFile()) {
     DebugTrace("early confFile.readConfFile() has failed");
+    fl.setError(LedCode::ConfigError);
   } else if (not sdcard.run(TIME_IMMEDIATE)) {
     chprintf(chp, "SDCARD launch fail");
   } else if (chThdSleepMilliseconds(300); not confFile.populate()) { // second time to log errors
     chprintf(chp, "read CONFIGURATION file fail");
+    fl.setError(LedCode::ConfigError);
   } else if (not baro.run(TIME_IMMEDIATE)) {
     SdCard::logSyslog(Severity::Fatal, "BARO fail");
+    fl.setError(LedCode::HardFault);
   } else  if (not dp.run(PERIOD("thread.frequency.d_press"))) {
     SdCard::logSyslog(Severity::Fatal, "DIFF PRESS fail");
+    fl.setError(LedCode::HardFault);
    } else if (not imu.run(PERIOD("thread.frequency.imu"))) {
      SdCard::logSyslog(Severity::Fatal, "IMU fail");
+    fl.setError(LedCode::HardFault);
    } else if (not ahrs.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "Ahrs fail");
+    fl.setError(LedCode::HardFault);
    } else if (not relwind.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "relative wind fail");
+    fl.setError(LedCode::HardFault);
    } else if (not usbStorage.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "USB Storage fail");
+    fl.setError(LedCode::HardFault);
    } else if (not adc.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "ADC fail");
+    fl.setError(LedCode::HardFault);
   } else if (not dynSwdio.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "dynSwdio fail");
+    fl.setError(LedCode::HardFault);
   } else if (not rtcSync.run(TIME_S2I(60))) { // sync rtc with gps every minutes
      SdCard::logSyslog(Severity::Fatal, "rtcSync fail");
+    fl.setError(LedCode::HardFault);
   } else {
 #ifdef TRACE
     constexpr SerialMode smode = SHELL;
@@ -99,6 +115,7 @@ int main (void)
 #endif
       if (not showBB.run(TIME_IMMEDIATE)) {
 	SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
+	fl.setError(LedCode::HardFault);
    } 
 
       break;

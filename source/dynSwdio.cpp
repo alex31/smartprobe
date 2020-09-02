@@ -21,11 +21,11 @@ bool DynSwdio::loop()
   chRegSetThreadName("DynSwdio:polling");
 
 #if SWDIO_DETECTION == 0
-  chThdSleep(TIME_INFINITE);
+  chThdExit(0);
 #else
 
   palWaitLineTimeout(LINE_SWCLK, TIME_INFINITE);
-
+  
   chRegSetThreadName("DynSwdio:wait dp join");
   dp.terminate().join();
   chRegSetThreadName("DynSwdio:wait baro join");
@@ -37,13 +37,11 @@ bool DynSwdio::loop()
   chRegSetThreadName("DynSwdio:wait showBB join");
   showBB.terminate().join();
 
-  sdLogCloseAllLogs(LOG_FLUSH_BUFFER);
-  chThdSleepMilliseconds(300);
-  sdLogFinish();
-  chThdSleepMilliseconds(300);
-  
+  SdLiteLogBase::terminate(TerminateBehavior::WAIT);
+  f_mount(NULL, "", 0);
+  palSetLineMode(LINE_SWCLK, PAL_MODE_ALTERNATE(AF_LINE_SWCLK));
   DebugTrace("Enter SWDIO mode");
-  chThdSleepMilliseconds(100); // wait for dma buffer to be flushed to sdcard
+  chThdSleepMilliseconds(200); // wait for dma buffer to be flushed to sdcard
   palSetLineMode(LINE_SWCLK, PAL_MODE_ALTERNATE(AF_LINE_SWCLK));
   chSysHalt("swdio will take over");
  #endif

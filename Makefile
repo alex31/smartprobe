@@ -22,10 +22,10 @@ ifeq 	($(BUILD),)
 	BUILD := $(OPT_DEBUG)
 endif
 
-SWDIO_DETECTION := 0
+SWDIO_DETECTION := 1
 GCCVERSIONGTEQ10 := $(shell expr `arm-none-eabi-gcc -dumpversion | cut -f1 -d.` \>= 10)
 GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
-	    -Wno-error=cpp \
+	    -Wno-error=cpp -Wno-error=type-limits \
             -Wno-error=unused-function \
             -Wunused -Wpointer-arith \
             -Werror=sign-compare \
@@ -251,6 +251,7 @@ CSRC = $(ALLCSRC) \
        $(VARIOUS)/spiPeriphICM20600.c \
        $(VARIOUS)/rtcAccess.c \
        $(VARIOUS)/nmeaFrame.c \
+       $(VARIOUS)/hal_stm32_dma.c \
        $(EXTLIB)/fnmatch.c \
        $(PPRZ_MATH)/pprz_geodetic_float.c \
        $(USBD_LIB)/mass_storage/usb_msd.c
@@ -260,8 +261,8 @@ CSRC = $(ALLCSRC) \
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
 CPPSRC = $(ALLCPPSRC) \
-         $(VARIOUS)/sdLiteLog.cpp
-
+         $(VARIOUS)/sdLiteLog.cpp \
+	 $(VARIOUS)/smartLed.cpp
 
 # C sources to be compiled in ARM mode regardless of the global setting.
 # NOTE: Mixing ARM and THUMB mode enables the -mthumb-interwork compiler

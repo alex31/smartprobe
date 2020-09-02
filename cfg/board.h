@@ -52,7 +52,7 @@
 #define	PA00                           0U
 #define	PA01                           1U
 #define	PA02                           2U
-#define	PA03                           3U
+#define	PA03_BARO_DRDY                 3U
 #define	PA04                           4U
 #define	PA05                           5U
 #define	PA06                           6U
@@ -67,7 +67,7 @@
 #define	PA15_SPI1_NSS                  15U
 
 #define	PB00                           0U
-#define	PB01_VCC_MEAS                  1U
+#define	PB01_V5V_MEAS                  1U
 #define	PB02                           2U
 #define	PB03_IMU_SPI_SCK1              3U
 #define	PB04_IMU_SPI_MISO1             4U
@@ -85,12 +85,12 @@
 
 #define	PC00                           0U
 #define	PC01                           1U
-#define	PC02                           2U
+#define	PC02_V3V_MEAS                  2U
 #define	PC03                           3U
 #define	PC04                           4U
 #define	PC05                           5U
-#define	PC06                           6U
-#define	PC07                           7U
+#define	PC06_DBG_TX6                   6U
+#define	PC07_DBG_RX6                   7U
 #define	PC08_SDMMC1_D0                 8U
 #define	PC09_SDMMC1_D1                 9U
 #define	PC10_SDMMC1_D2                 10U
@@ -100,25 +100,25 @@
 #define	PC14_OSC32_IN                  14U
 #define	PC15_OSC32_OUT                 15U
 
-#define	PD00                           0U
-#define	PD01                           1U
+#define	PD00_CAN1_RX                   0U
+#define	PD01_CAN1_TX                   1U
 #define	PD02_SDMMC1_CMD                2U
 #define	PD03                           3U
 #define	PD04                           4U
 #define	PD05                           5U
 #define	PD06                           6U
-#define	PD07                           7U
-#define	PD08_LED_GREEN                 8U
+#define	PD07_IMU_INT1                  7U
+#define	PD08                           8U
 #define	PD09                           9U
 #define	PD10                           10U
 #define	PD11                           11U
-#define	PD12_LED_RED                   12U
-#define	PD13                           13U
+#define	PD12_LED_GREEN                 12U
+#define	PD13_LED_RED                   13U
 #define	PD14                           14U
 #define	PD15                           15U
 
 #define	PE00                           0U
-#define	PE01_BARO_DRDY                 1U
+#define	PE01                           1U
 #define	PE02                           2U
 #define	PE03                           3U
 #define	PE04                           4U
@@ -126,7 +126,7 @@
 #define	PE06                           6U
 #define	PE07                           7U
 #define	PE08                           8U
-#define	PE09                           9U
+#define	PE09_LED_RGB                   9U
 #define	PE10                           10U
 #define	PE11                           11U
 #define	PE12                           12U
@@ -239,6 +239,7 @@
 /*
  * IO lines assignments.
  */
+#define	LINE_BARO_DRDY                 PAL_LINE(GPIOA, 3U)
 #define	LINE_USB_VBUS                  PAL_LINE(GPIOA, 9U)
 #define	LINE_USB_DM                    PAL_LINE(GPIOA, 11U)
 #define	LINE_USB_DP                    PAL_LINE(GPIOA, 12U)
@@ -246,7 +247,7 @@
 #define	LINE_SWCLK                     PAL_LINE(GPIOA, 14U)
 #define	LINE_SPI1_NSS                  PAL_LINE(GPIOA, 15U)
 
-#define	LINE_VCC_MEAS                  PAL_LINE(GPIOB, 1U)
+#define	LINE_V5V_MEAS                  PAL_LINE(GPIOB, 1U)
 #define	LINE_IMU_SPI_SCK1              PAL_LINE(GPIOB, 3U)
 #define	LINE_IMU_SPI_MISO1             PAL_LINE(GPIOB, 4U)
 #define	LINE_IMU_SPI_MOSI1             PAL_LINE(GPIOB, 5U)
@@ -257,6 +258,9 @@
 #define	LINE_BARO_SCL2                 PAL_LINE(GPIOB, 10U)
 #define	LINE_BARO_SDA2                 PAL_LINE(GPIOB, 11U)
 
+#define	LINE_V3V_MEAS                  PAL_LINE(GPIOC, 2U)
+#define	LINE_DBG_TX6                   PAL_LINE(GPIOC, 6U)
+#define	LINE_DBG_RX6                   PAL_LINE(GPIOC, 7U)
 #define	LINE_SDMMC1_D0                 PAL_LINE(GPIOC, 8U)
 #define	LINE_SDMMC1_D1                 PAL_LINE(GPIOC, 9U)
 #define	LINE_SDMMC1_D2                 PAL_LINE(GPIOC, 10U)
@@ -265,11 +269,14 @@
 #define	LINE_OSC32_IN                  PAL_LINE(GPIOC, 14U)
 #define	LINE_OSC32_OUT                 PAL_LINE(GPIOC, 15U)
 
+#define	LINE_CAN1_RX                   PAL_LINE(GPIOD, 0U)
+#define	LINE_CAN1_TX                   PAL_LINE(GPIOD, 1U)
 #define	LINE_SDMMC1_CMD                PAL_LINE(GPIOD, 2U)
-#define	LINE_LED_GREEN                 PAL_LINE(GPIOD, 8U)
-#define	LINE_LED_RED                   PAL_LINE(GPIOD, 12U)
+#define	LINE_IMU_INT1                  PAL_LINE(GPIOD, 7U)
+#define	LINE_LED_GREEN                 PAL_LINE(GPIOD, 12U)
+#define	LINE_LED_RED                   PAL_LINE(GPIOD, 13U)
 
-#define	LINE_BARO_DRDY                 PAL_LINE(GPIOE, 1U)
+#define	LINE_LED_RGB                   PAL_LINE(GPIOE, 9U)
 
 #define	LINE_OSC_IN                    PAL_LINE(GPIOH, 0U)
 #define	LINE_OSC_OUT                   PAL_LINE(GPIOH, 1U)
@@ -300,7 +307,7 @@
 #define VAL_GPIOA_MODER                 (PIN_MODE_INPUT(PA00) | \
 					 PIN_MODE_INPUT(PA01) | \
 					 PIN_MODE_INPUT(PA02) | \
-					 PIN_MODE_INPUT(PA03) | \
+					 PIN_MODE_INPUT(PA03_BARO_DRDY) | \
 					 PIN_MODE_INPUT(PA04) | \
 					 PIN_MODE_INPUT(PA05) | \
 					 PIN_MODE_INPUT(PA06) | \
@@ -317,7 +324,7 @@
 #define VAL_GPIOA_OTYPER                (PIN_OTYPE_PUSHPULL(PA00) | \
 					 PIN_OTYPE_PUSHPULL(PA01) | \
 					 PIN_OTYPE_PUSHPULL(PA02) | \
-					 PIN_OTYPE_PUSHPULL(PA03) | \
+					 PIN_OTYPE_OPENDRAIN(PA03_BARO_DRDY) | \
 					 PIN_OTYPE_PUSHPULL(PA04) | \
 					 PIN_OTYPE_PUSHPULL(PA05) | \
 					 PIN_OTYPE_PUSHPULL(PA06) | \
@@ -334,7 +341,7 @@
 #define VAL_GPIOA_OSPEEDR               (PIN_OSPEED_SPEED_VERYLOW(PA00) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PA01) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PA02) | \
-					 PIN_OSPEED_SPEED_VERYLOW(PA03) | \
+					 PIN_OSPEED_SPEED_VERYLOW(PA03_BARO_DRDY) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PA04) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PA05) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PA06) | \
@@ -351,7 +358,7 @@
 #define VAL_GPIOA_PUPDR                 (PIN_PUPDR_PULLDOWN(PA00) | \
 					 PIN_PUPDR_PULLDOWN(PA01) | \
 					 PIN_PUPDR_PULLDOWN(PA02) | \
-					 PIN_PUPDR_PULLDOWN(PA03) | \
+					 PIN_PUPDR_PULLUP(PA03_BARO_DRDY) | \
 					 PIN_PUPDR_PULLDOWN(PA04) | \
 					 PIN_PUPDR_PULLDOWN(PA05) | \
 					 PIN_PUPDR_PULLDOWN(PA06) | \
@@ -368,7 +375,7 @@
 #define VAL_GPIOA_ODR                   (PIN_ODR_LEVEL_LOW(PA00) | \
 					 PIN_ODR_LEVEL_LOW(PA01) | \
 					 PIN_ODR_LEVEL_LOW(PA02) | \
-					 PIN_ODR_LEVEL_LOW(PA03) | \
+					 PIN_ODR_LEVEL_LOW(PA03_BARO_DRDY) | \
 					 PIN_ODR_LEVEL_LOW(PA04) | \
 					 PIN_ODR_LEVEL_LOW(PA05) | \
 					 PIN_ODR_LEVEL_LOW(PA06) | \
@@ -385,7 +392,7 @@
 #define VAL_GPIOA_AFRL			(PIN_AFIO_AF(PA00, 0) | \
 					 PIN_AFIO_AF(PA01, 0) | \
 					 PIN_AFIO_AF(PA02, 0) | \
-					 PIN_AFIO_AF(PA03, 0) | \
+					 PIN_AFIO_AF(PA03_BARO_DRDY, 0) | \
 					 PIN_AFIO_AF(PA04, 0) | \
 					 PIN_AFIO_AF(PA05, 0) | \
 					 PIN_AFIO_AF(PA06, 0) | \
@@ -401,7 +408,7 @@
 					 PIN_AFIO_AF(PA15_SPI1_NSS, 0))
 
 #define VAL_GPIOB_MODER                 (PIN_MODE_INPUT(PB00) | \
-					 PIN_MODE_ANALOG(PB01_VCC_MEAS) | \
+					 PIN_MODE_ANALOG(PB01_V5V_MEAS) | \
 					 PIN_MODE_INPUT(PB02) | \
 					 PIN_MODE_ALTERNATE(PB03_IMU_SPI_SCK1) | \
 					 PIN_MODE_ALTERNATE(PB04_IMU_SPI_MISO1) | \
@@ -418,7 +425,7 @@
 					 PIN_MODE_INPUT(PB15))
 
 #define VAL_GPIOB_OTYPER                (PIN_OTYPE_PUSHPULL(PB00) | \
-					 PIN_OTYPE_PUSHPULL(PB01_VCC_MEAS) | \
+					 PIN_OTYPE_PUSHPULL(PB01_V5V_MEAS) | \
 					 PIN_OTYPE_PUSHPULL(PB02) | \
 					 PIN_OTYPE_PUSHPULL(PB03_IMU_SPI_SCK1) | \
 					 PIN_OTYPE_PUSHPULL(PB04_IMU_SPI_MISO1) | \
@@ -435,7 +442,7 @@
 					 PIN_OTYPE_PUSHPULL(PB15))
 
 #define VAL_GPIOB_OSPEEDR               (PIN_OSPEED_SPEED_VERYLOW(PB00) | \
-					 PIN_OSPEED_SPEED_VERYLOW(PB01_VCC_MEAS) | \
+					 PIN_OSPEED_SPEED_VERYLOW(PB01_V5V_MEAS) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PB02) | \
 					 PIN_OSPEED_SPEED_HIGH(PB03_IMU_SPI_SCK1) | \
 					 PIN_OSPEED_SPEED_HIGH(PB04_IMU_SPI_MISO1) | \
@@ -452,7 +459,7 @@
 					 PIN_OSPEED_SPEED_VERYLOW(PB15))
 
 #define VAL_GPIOB_PUPDR                 (PIN_PUPDR_PULLDOWN(PB00) | \
-					 PIN_PUPDR_FLOATING(PB01_VCC_MEAS) | \
+					 PIN_PUPDR_FLOATING(PB01_V5V_MEAS) | \
 					 PIN_PUPDR_PULLDOWN(PB02) | \
 					 PIN_PUPDR_FLOATING(PB03_IMU_SPI_SCK1) | \
 					 PIN_PUPDR_FLOATING(PB04_IMU_SPI_MISO1) | \
@@ -469,7 +476,7 @@
 					 PIN_PUPDR_PULLDOWN(PB15))
 
 #define VAL_GPIOB_ODR                   (PIN_ODR_LEVEL_LOW(PB00) | \
-					 PIN_ODR_LEVEL_LOW(PB01_VCC_MEAS) | \
+					 PIN_ODR_LEVEL_LOW(PB01_V5V_MEAS) | \
 					 PIN_ODR_LEVEL_LOW(PB02) | \
 					 PIN_ODR_LEVEL_HIGH(PB03_IMU_SPI_SCK1) | \
 					 PIN_ODR_LEVEL_HIGH(PB04_IMU_SPI_MISO1) | \
@@ -486,7 +493,7 @@
 					 PIN_ODR_LEVEL_LOW(PB15))
 
 #define VAL_GPIOB_AFRL			(PIN_AFIO_AF(PB00, 0) | \
-					 PIN_AFIO_AF(PB01_VCC_MEAS, 0) | \
+					 PIN_AFIO_AF(PB01_V5V_MEAS, 0) | \
 					 PIN_AFIO_AF(PB02, 0) | \
 					 PIN_AFIO_AF(PB03_IMU_SPI_SCK1, 5) | \
 					 PIN_AFIO_AF(PB04_IMU_SPI_MISO1, 5) | \
@@ -505,12 +512,12 @@
 
 #define VAL_GPIOC_MODER                 (PIN_MODE_INPUT(PC00) | \
 					 PIN_MODE_INPUT(PC01) | \
-					 PIN_MODE_INPUT(PC02) | \
+					 PIN_MODE_ANALOG(PC02_V3V_MEAS) | \
 					 PIN_MODE_INPUT(PC03) | \
 					 PIN_MODE_INPUT(PC04) | \
 					 PIN_MODE_INPUT(PC05) | \
-					 PIN_MODE_INPUT(PC06) | \
-					 PIN_MODE_INPUT(PC07) | \
+					 PIN_MODE_ALTERNATE(PC06_DBG_TX6) | \
+					 PIN_MODE_ALTERNATE(PC07_DBG_RX6) | \
 					 PIN_MODE_ALTERNATE(PC08_SDMMC1_D0) | \
 					 PIN_MODE_ALTERNATE(PC09_SDMMC1_D1) | \
 					 PIN_MODE_ALTERNATE(PC10_SDMMC1_D2) | \
@@ -522,12 +529,12 @@
 
 #define VAL_GPIOC_OTYPER                (PIN_OTYPE_PUSHPULL(PC00) | \
 					 PIN_OTYPE_PUSHPULL(PC01) | \
-					 PIN_OTYPE_PUSHPULL(PC02) | \
+					 PIN_OTYPE_PUSHPULL(PC02_V3V_MEAS) | \
 					 PIN_OTYPE_PUSHPULL(PC03) | \
 					 PIN_OTYPE_PUSHPULL(PC04) | \
 					 PIN_OTYPE_PUSHPULL(PC05) | \
-					 PIN_OTYPE_PUSHPULL(PC06) | \
-					 PIN_OTYPE_PUSHPULL(PC07) | \
+					 PIN_OTYPE_PUSHPULL(PC06_DBG_TX6) | \
+					 PIN_OTYPE_PUSHPULL(PC07_DBG_RX6) | \
 					 PIN_OTYPE_PUSHPULL(PC08_SDMMC1_D0) | \
 					 PIN_OTYPE_PUSHPULL(PC09_SDMMC1_D1) | \
 					 PIN_OTYPE_PUSHPULL(PC10_SDMMC1_D2) | \
@@ -539,12 +546,12 @@
 
 #define VAL_GPIOC_OSPEEDR               (PIN_OSPEED_SPEED_VERYLOW(PC00) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PC01) | \
-					 PIN_OSPEED_SPEED_VERYLOW(PC02) | \
+					 PIN_OSPEED_SPEED_VERYLOW(PC02_V3V_MEAS) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PC03) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PC04) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PC05) | \
-					 PIN_OSPEED_SPEED_VERYLOW(PC06) | \
-					 PIN_OSPEED_SPEED_VERYLOW(PC07) | \
+					 PIN_OSPEED_SPEED_HIGH(PC06_DBG_TX6) | \
+					 PIN_OSPEED_SPEED_HIGH(PC07_DBG_RX6) | \
 					 PIN_OSPEED_SPEED_HIGH(PC08_SDMMC1_D0) | \
 					 PIN_OSPEED_SPEED_HIGH(PC09_SDMMC1_D1) | \
 					 PIN_OSPEED_SPEED_HIGH(PC10_SDMMC1_D2) | \
@@ -556,12 +563,12 @@
 
 #define VAL_GPIOC_PUPDR                 (PIN_PUPDR_PULLDOWN(PC00) | \
 					 PIN_PUPDR_PULLDOWN(PC01) | \
-					 PIN_PUPDR_PULLDOWN(PC02) | \
+					 PIN_PUPDR_FLOATING(PC02_V3V_MEAS) | \
 					 PIN_PUPDR_PULLDOWN(PC03) | \
 					 PIN_PUPDR_PULLDOWN(PC04) | \
 					 PIN_PUPDR_PULLDOWN(PC05) | \
-					 PIN_PUPDR_PULLDOWN(PC06) | \
-					 PIN_PUPDR_PULLDOWN(PC07) | \
+					 PIN_PUPDR_FLOATING(PC06_DBG_TX6) | \
+					 PIN_PUPDR_FLOATING(PC07_DBG_RX6) | \
 					 PIN_PUPDR_PULLUP(PC08_SDMMC1_D0) | \
 					 PIN_PUPDR_PULLUP(PC09_SDMMC1_D1) | \
 					 PIN_PUPDR_PULLUP(PC10_SDMMC1_D2) | \
@@ -573,12 +580,12 @@
 
 #define VAL_GPIOC_ODR                   (PIN_ODR_LEVEL_LOW(PC00) | \
 					 PIN_ODR_LEVEL_LOW(PC01) | \
-					 PIN_ODR_LEVEL_LOW(PC02) | \
+					 PIN_ODR_LEVEL_LOW(PC02_V3V_MEAS) | \
 					 PIN_ODR_LEVEL_LOW(PC03) | \
 					 PIN_ODR_LEVEL_LOW(PC04) | \
 					 PIN_ODR_LEVEL_LOW(PC05) | \
-					 PIN_ODR_LEVEL_LOW(PC06) | \
-					 PIN_ODR_LEVEL_LOW(PC07) | \
+					 PIN_ODR_LEVEL_HIGH(PC06_DBG_TX6) | \
+					 PIN_ODR_LEVEL_HIGH(PC07_DBG_RX6) | \
 					 PIN_ODR_LEVEL_HIGH(PC08_SDMMC1_D0) | \
 					 PIN_ODR_LEVEL_HIGH(PC09_SDMMC1_D1) | \
 					 PIN_ODR_LEVEL_HIGH(PC10_SDMMC1_D2) | \
@@ -590,12 +597,12 @@
 
 #define VAL_GPIOC_AFRL			(PIN_AFIO_AF(PC00, 0) | \
 					 PIN_AFIO_AF(PC01, 0) | \
-					 PIN_AFIO_AF(PC02, 0) | \
+					 PIN_AFIO_AF(PC02_V3V_MEAS, 0) | \
 					 PIN_AFIO_AF(PC03, 0) | \
 					 PIN_AFIO_AF(PC04, 0) | \
 					 PIN_AFIO_AF(PC05, 0) | \
-					 PIN_AFIO_AF(PC06, 0) | \
-					 PIN_AFIO_AF(PC07, 0))
+					 PIN_AFIO_AF(PC06_DBG_TX6, 8) | \
+					 PIN_AFIO_AF(PC07_DBG_RX6, 8))
 
 #define VAL_GPIOC_AFRH			(PIN_AFIO_AF(PC08_SDMMC1_D0, 12) | \
 					 PIN_AFIO_AF(PC09_SDMMC1_D1, 12) | \
@@ -606,111 +613,111 @@
 					 PIN_AFIO_AF(PC14_OSC32_IN, 0) | \
 					 PIN_AFIO_AF(PC15_OSC32_OUT, 0))
 
-#define VAL_GPIOD_MODER                 (PIN_MODE_INPUT(PD00) | \
-					 PIN_MODE_INPUT(PD01) | \
+#define VAL_GPIOD_MODER                 (PIN_MODE_ALTERNATE(PD00_CAN1_RX) | \
+					 PIN_MODE_ALTERNATE(PD01_CAN1_TX) | \
 					 PIN_MODE_ALTERNATE(PD02_SDMMC1_CMD) | \
 					 PIN_MODE_INPUT(PD03) | \
 					 PIN_MODE_INPUT(PD04) | \
 					 PIN_MODE_INPUT(PD05) | \
 					 PIN_MODE_INPUT(PD06) | \
-					 PIN_MODE_INPUT(PD07) | \
-					 PIN_MODE_OUTPUT(PD08_LED_GREEN) | \
+					 PIN_MODE_INPUT(PD07_IMU_INT1) | \
+					 PIN_MODE_INPUT(PD08) | \
 					 PIN_MODE_INPUT(PD09) | \
 					 PIN_MODE_INPUT(PD10) | \
 					 PIN_MODE_INPUT(PD11) | \
-					 PIN_MODE_OUTPUT(PD12_LED_RED) | \
-					 PIN_MODE_INPUT(PD13) | \
+					 PIN_MODE_OUTPUT(PD12_LED_GREEN) | \
+					 PIN_MODE_OUTPUT(PD13_LED_RED) | \
 					 PIN_MODE_INPUT(PD14) | \
 					 PIN_MODE_INPUT(PD15))
 
-#define VAL_GPIOD_OTYPER                (PIN_OTYPE_PUSHPULL(PD00) | \
-					 PIN_OTYPE_PUSHPULL(PD01) | \
+#define VAL_GPIOD_OTYPER                (PIN_OTYPE_PUSHPULL(PD00_CAN1_RX) | \
+					 PIN_OTYPE_PUSHPULL(PD01_CAN1_TX) | \
 					 PIN_OTYPE_PUSHPULL(PD02_SDMMC1_CMD) | \
 					 PIN_OTYPE_PUSHPULL(PD03) | \
 					 PIN_OTYPE_PUSHPULL(PD04) | \
 					 PIN_OTYPE_PUSHPULL(PD05) | \
 					 PIN_OTYPE_PUSHPULL(PD06) | \
-					 PIN_OTYPE_PUSHPULL(PD07) | \
-					 PIN_OTYPE_PUSHPULL(PD08_LED_GREEN) | \
+					 PIN_OTYPE_OPENDRAIN(PD07_IMU_INT1) | \
+					 PIN_OTYPE_PUSHPULL(PD08) | \
 					 PIN_OTYPE_PUSHPULL(PD09) | \
 					 PIN_OTYPE_PUSHPULL(PD10) | \
 					 PIN_OTYPE_PUSHPULL(PD11) | \
-					 PIN_OTYPE_PUSHPULL(PD12_LED_RED) | \
-					 PIN_OTYPE_PUSHPULL(PD13) | \
+					 PIN_OTYPE_PUSHPULL(PD12_LED_GREEN) | \
+					 PIN_OTYPE_PUSHPULL(PD13_LED_RED) | \
 					 PIN_OTYPE_PUSHPULL(PD14) | \
 					 PIN_OTYPE_PUSHPULL(PD15))
 
-#define VAL_GPIOD_OSPEEDR               (PIN_OSPEED_SPEED_VERYLOW(PD00) | \
-					 PIN_OSPEED_SPEED_VERYLOW(PD01) | \
+#define VAL_GPIOD_OSPEEDR               (PIN_OSPEED_SPEED_HIGH(PD00_CAN1_RX) | \
+					 PIN_OSPEED_SPEED_HIGH(PD01_CAN1_TX) | \
 					 PIN_OSPEED_SPEED_HIGH(PD02_SDMMC1_CMD) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD03) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD04) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD05) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD06) | \
-					 PIN_OSPEED_SPEED_VERYLOW(PD07) | \
-					 PIN_OSPEED_SPEED_VERYLOW(PD08_LED_GREEN) | \
+					 PIN_OSPEED_SPEED_VERYLOW(PD07_IMU_INT1) | \
+					 PIN_OSPEED_SPEED_VERYLOW(PD08) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD09) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD10) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD11) | \
-					 PIN_OSPEED_SPEED_VERYLOW(PD12_LED_RED) | \
-					 PIN_OSPEED_SPEED_VERYLOW(PD13) | \
+					 PIN_OSPEED_SPEED_VERYLOW(PD12_LED_GREEN) | \
+					 PIN_OSPEED_SPEED_VERYLOW(PD13_LED_RED) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD14) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PD15))
 
-#define VAL_GPIOD_PUPDR                 (PIN_PUPDR_PULLDOWN(PD00) | \
-					 PIN_PUPDR_PULLDOWN(PD01) | \
+#define VAL_GPIOD_PUPDR                 (PIN_PUPDR_FLOATING(PD00_CAN1_RX) | \
+					 PIN_PUPDR_FLOATING(PD01_CAN1_TX) | \
 					 PIN_PUPDR_PULLUP(PD02_SDMMC1_CMD) | \
 					 PIN_PUPDR_PULLDOWN(PD03) | \
 					 PIN_PUPDR_PULLDOWN(PD04) | \
 					 PIN_PUPDR_PULLDOWN(PD05) | \
 					 PIN_PUPDR_PULLDOWN(PD06) | \
-					 PIN_PUPDR_PULLDOWN(PD07) | \
-					 PIN_PUPDR_FLOATING(PD08_LED_GREEN) | \
+					 PIN_PUPDR_PULLUP(PD07_IMU_INT1) | \
+					 PIN_PUPDR_PULLDOWN(PD08) | \
 					 PIN_PUPDR_PULLDOWN(PD09) | \
 					 PIN_PUPDR_PULLDOWN(PD10) | \
 					 PIN_PUPDR_PULLDOWN(PD11) | \
-					 PIN_PUPDR_FLOATING(PD12_LED_RED) | \
-					 PIN_PUPDR_PULLDOWN(PD13) | \
+					 PIN_PUPDR_FLOATING(PD12_LED_GREEN) | \
+					 PIN_PUPDR_FLOATING(PD13_LED_RED) | \
 					 PIN_PUPDR_PULLDOWN(PD14) | \
 					 PIN_PUPDR_PULLDOWN(PD15))
 
-#define VAL_GPIOD_ODR                   (PIN_ODR_LEVEL_LOW(PD00) | \
-					 PIN_ODR_LEVEL_LOW(PD01) | \
+#define VAL_GPIOD_ODR                   (PIN_ODR_LEVEL_HIGH(PD00_CAN1_RX) | \
+					 PIN_ODR_LEVEL_HIGH(PD01_CAN1_TX) | \
 					 PIN_ODR_LEVEL_HIGH(PD02_SDMMC1_CMD) | \
 					 PIN_ODR_LEVEL_LOW(PD03) | \
 					 PIN_ODR_LEVEL_LOW(PD04) | \
 					 PIN_ODR_LEVEL_LOW(PD05) | \
 					 PIN_ODR_LEVEL_LOW(PD06) | \
-					 PIN_ODR_LEVEL_LOW(PD07) | \
-					 PIN_ODR_LEVEL_LOW(PD08_LED_GREEN) | \
+					 PIN_ODR_LEVEL_LOW(PD07_IMU_INT1) | \
+					 PIN_ODR_LEVEL_LOW(PD08) | \
 					 PIN_ODR_LEVEL_LOW(PD09) | \
 					 PIN_ODR_LEVEL_LOW(PD10) | \
 					 PIN_ODR_LEVEL_LOW(PD11) | \
-					 PIN_ODR_LEVEL_LOW(PD12_LED_RED) | \
-					 PIN_ODR_LEVEL_LOW(PD13) | \
+					 PIN_ODR_LEVEL_LOW(PD12_LED_GREEN) | \
+					 PIN_ODR_LEVEL_LOW(PD13_LED_RED) | \
 					 PIN_ODR_LEVEL_LOW(PD14) | \
 					 PIN_ODR_LEVEL_LOW(PD15))
 
-#define VAL_GPIOD_AFRL			(PIN_AFIO_AF(PD00, 0) | \
-					 PIN_AFIO_AF(PD01, 0) | \
+#define VAL_GPIOD_AFRL			(PIN_AFIO_AF(PD00_CAN1_RX, 9) | \
+					 PIN_AFIO_AF(PD01_CAN1_TX, 9) | \
 					 PIN_AFIO_AF(PD02_SDMMC1_CMD, 12) | \
 					 PIN_AFIO_AF(PD03, 0) | \
 					 PIN_AFIO_AF(PD04, 0) | \
 					 PIN_AFIO_AF(PD05, 0) | \
 					 PIN_AFIO_AF(PD06, 0) | \
-					 PIN_AFIO_AF(PD07, 0))
+					 PIN_AFIO_AF(PD07_IMU_INT1, 0))
 
-#define VAL_GPIOD_AFRH			(PIN_AFIO_AF(PD08_LED_GREEN, 0) | \
+#define VAL_GPIOD_AFRH			(PIN_AFIO_AF(PD08, 0) | \
 					 PIN_AFIO_AF(PD09, 0) | \
 					 PIN_AFIO_AF(PD10, 0) | \
 					 PIN_AFIO_AF(PD11, 0) | \
-					 PIN_AFIO_AF(PD12_LED_RED, 0) | \
-					 PIN_AFIO_AF(PD13, 0) | \
+					 PIN_AFIO_AF(PD12_LED_GREEN, 0) | \
+					 PIN_AFIO_AF(PD13_LED_RED, 0) | \
 					 PIN_AFIO_AF(PD14, 0) | \
 					 PIN_AFIO_AF(PD15, 0))
 
 #define VAL_GPIOE_MODER                 (PIN_MODE_INPUT(PE00) | \
-					 PIN_MODE_INPUT(PE01_BARO_DRDY) | \
+					 PIN_MODE_INPUT(PE01) | \
 					 PIN_MODE_INPUT(PE02) | \
 					 PIN_MODE_INPUT(PE03) | \
 					 PIN_MODE_INPUT(PE04) | \
@@ -718,7 +725,7 @@
 					 PIN_MODE_INPUT(PE06) | \
 					 PIN_MODE_INPUT(PE07) | \
 					 PIN_MODE_INPUT(PE08) | \
-					 PIN_MODE_INPUT(PE09) | \
+					 PIN_MODE_ALTERNATE(PE09_LED_RGB) | \
 					 PIN_MODE_INPUT(PE10) | \
 					 PIN_MODE_INPUT(PE11) | \
 					 PIN_MODE_INPUT(PE12) | \
@@ -727,7 +734,7 @@
 					 PIN_MODE_INPUT(PE15))
 
 #define VAL_GPIOE_OTYPER                (PIN_OTYPE_PUSHPULL(PE00) | \
-					 PIN_OTYPE_OPENDRAIN(PE01_BARO_DRDY) | \
+					 PIN_OTYPE_PUSHPULL(PE01) | \
 					 PIN_OTYPE_PUSHPULL(PE02) | \
 					 PIN_OTYPE_PUSHPULL(PE03) | \
 					 PIN_OTYPE_PUSHPULL(PE04) | \
@@ -735,7 +742,7 @@
 					 PIN_OTYPE_PUSHPULL(PE06) | \
 					 PIN_OTYPE_PUSHPULL(PE07) | \
 					 PIN_OTYPE_PUSHPULL(PE08) | \
-					 PIN_OTYPE_PUSHPULL(PE09) | \
+					 PIN_OTYPE_PUSHPULL(PE09_LED_RGB) | \
 					 PIN_OTYPE_PUSHPULL(PE10) | \
 					 PIN_OTYPE_PUSHPULL(PE11) | \
 					 PIN_OTYPE_PUSHPULL(PE12) | \
@@ -744,7 +751,7 @@
 					 PIN_OTYPE_PUSHPULL(PE15))
 
 #define VAL_GPIOE_OSPEEDR               (PIN_OSPEED_SPEED_VERYLOW(PE00) | \
-					 PIN_OSPEED_SPEED_VERYLOW(PE01_BARO_DRDY) | \
+					 PIN_OSPEED_SPEED_VERYLOW(PE01) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PE02) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PE03) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PE04) | \
@@ -752,7 +759,7 @@
 					 PIN_OSPEED_SPEED_VERYLOW(PE06) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PE07) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PE08) | \
-					 PIN_OSPEED_SPEED_VERYLOW(PE09) | \
+					 PIN_OSPEED_SPEED_HIGH(PE09_LED_RGB) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PE10) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PE11) | \
 					 PIN_OSPEED_SPEED_VERYLOW(PE12) | \
@@ -761,7 +768,7 @@
 					 PIN_OSPEED_SPEED_VERYLOW(PE15))
 
 #define VAL_GPIOE_PUPDR                 (PIN_PUPDR_PULLDOWN(PE00) | \
-					 PIN_PUPDR_PULLUP(PE01_BARO_DRDY) | \
+					 PIN_PUPDR_PULLDOWN(PE01) | \
 					 PIN_PUPDR_PULLDOWN(PE02) | \
 					 PIN_PUPDR_PULLDOWN(PE03) | \
 					 PIN_PUPDR_PULLDOWN(PE04) | \
@@ -769,7 +776,7 @@
 					 PIN_PUPDR_PULLDOWN(PE06) | \
 					 PIN_PUPDR_PULLDOWN(PE07) | \
 					 PIN_PUPDR_PULLDOWN(PE08) | \
-					 PIN_PUPDR_PULLDOWN(PE09) | \
+					 PIN_PUPDR_FLOATING(PE09_LED_RGB) | \
 					 PIN_PUPDR_PULLDOWN(PE10) | \
 					 PIN_PUPDR_PULLDOWN(PE11) | \
 					 PIN_PUPDR_PULLDOWN(PE12) | \
@@ -778,7 +785,7 @@
 					 PIN_PUPDR_PULLDOWN(PE15))
 
 #define VAL_GPIOE_ODR                   (PIN_ODR_LEVEL_LOW(PE00) | \
-					 PIN_ODR_LEVEL_LOW(PE01_BARO_DRDY) | \
+					 PIN_ODR_LEVEL_LOW(PE01) | \
 					 PIN_ODR_LEVEL_LOW(PE02) | \
 					 PIN_ODR_LEVEL_LOW(PE03) | \
 					 PIN_ODR_LEVEL_LOW(PE04) | \
@@ -786,7 +793,7 @@
 					 PIN_ODR_LEVEL_LOW(PE06) | \
 					 PIN_ODR_LEVEL_LOW(PE07) | \
 					 PIN_ODR_LEVEL_LOW(PE08) | \
-					 PIN_ODR_LEVEL_LOW(PE09) | \
+					 PIN_ODR_LEVEL_LOW(PE09_LED_RGB) | \
 					 PIN_ODR_LEVEL_LOW(PE10) | \
 					 PIN_ODR_LEVEL_LOW(PE11) | \
 					 PIN_ODR_LEVEL_LOW(PE12) | \
@@ -795,7 +802,7 @@
 					 PIN_ODR_LEVEL_LOW(PE15))
 
 #define VAL_GPIOE_AFRL			(PIN_AFIO_AF(PE00, 0) | \
-					 PIN_AFIO_AF(PE01_BARO_DRDY, 0) | \
+					 PIN_AFIO_AF(PE01, 0) | \
 					 PIN_AFIO_AF(PE02, 0) | \
 					 PIN_AFIO_AF(PE03, 0) | \
 					 PIN_AFIO_AF(PE04, 0) | \
@@ -804,7 +811,7 @@
 					 PIN_AFIO_AF(PE07, 0))
 
 #define VAL_GPIOE_AFRH			(PIN_AFIO_AF(PE08, 0) | \
-					 PIN_AFIO_AF(PE09, 0) | \
+					 PIN_AFIO_AF(PE09_LED_RGB, 1) | \
 					 PIN_AFIO_AF(PE10, 0) | \
 					 PIN_AFIO_AF(PE11, 0) | \
 					 PIN_AFIO_AF(PE12, 0) | \
@@ -1456,6 +1463,10 @@
 #define AF_LINE_BARO_SCL2                4U
 #define AF_PB11_BARO_SDA2                4U
 #define AF_LINE_BARO_SDA2                4U
+#define AF_PC06_DBG_TX6                  8U
+#define AF_LINE_DBG_TX6                  8U
+#define AF_PC07_DBG_RX6                  8U
+#define AF_LINE_DBG_RX6                  8U
 #define AF_PC08_SDMMC1_D0                12U
 #define AF_LINE_SDMMC1_D0                12U
 #define AF_PC09_SDMMC1_D1                12U
@@ -1466,8 +1477,14 @@
 #define AF_LINE_SDMMC1_D3                12U
 #define AF_PC12_SDMMC1_CK                12U
 #define AF_LINE_SDMMC1_CK                12U
+#define AF_PD00_CAN1_RX                  9U
+#define AF_LINE_CAN1_RX                  9U
+#define AF_PD01_CAN1_TX                  9U
+#define AF_LINE_CAN1_TX                  9U
 #define AF_PD02_SDMMC1_CMD               12U
 #define AF_LINE_SDMMC1_CMD               12U
+#define AF_PE09_LED_RGB                  1U
+#define AF_LINE_LED_RGB                  1U
 
 
 #if !defined(_FROM_ASM_)

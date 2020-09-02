@@ -5,18 +5,19 @@
 #include "adc.hpp"
 #include "sdLiteLog.hpp"	
 #include "sdcard.hpp"	
+#include "threadAndEventDecl.hpp"
 
 namespace {
   void adcErrorCb(ADCDriver *adcp, adcerror_t err);
   
   constexpr adcsample_t psVoltToSample(const float voltage)  {
-    return (voltage * SAMPLE_MAX * DIVIDER_R6) /
-      ((VCC_33 * (DIVIDER_R6 + DIVIDER_R7)));
+    return (voltage * SAMPLE_MAX * DIVIDER_R18) /
+      ((VCC_33 * (DIVIDER_R17 + DIVIDER_R18)));
   }
 
   constexpr float sampleToPsVoltage(const adcsample_t sample ) {
     return (VCC_33 * sample / SAMPLE_MAX) *
-      ((DIVIDER_R6+DIVIDER_R7) / DIVIDER_R7);
+      ((DIVIDER_R17+DIVIDER_R18) / DIVIDER_R18);
   }
   
   
@@ -80,7 +81,7 @@ bool Adc::init()
   adcStart(&ADCD1, NULL);
   adcSTM32EnableTSVREFE();
 
-  if (calculateThreshold() ==false)
+  if (calculateThreshold() == false)
     return false;
   
   adcgrpcfg.ltr = psThreshold;
@@ -101,20 +102,31 @@ bool Adc::calculateThreshold()
   }
   const float average = accum / (loop * 2.0f);
   const float averageVoltage = sampleToPsVoltage(average);
-  psThreshold = average *((100.0f -  PS_VOLTAGE_THRESHOLD_PERCENT) /
-			  100.0f);
+
+  // try to guess number of elements
+  const uint32_t numberOfElem = averageVoltage / NOMINAL_VOLTAGE_BY_ELEMENT;
+
+  // 2.9v by element is the absolute minium before bettery destruction
+  // 7V is the minimal voltage needed by the 5V regulator
+  const float minVoltageThreshold = std::max(VOLTAGE_ABSOLUTE_MINIMUM,
+			 numberOfElem * MINIMUM_VOLTAGE_BY_ELEMENT);
   
+  psThreshold = psVoltToSample(minVoltageThreshold);
+
   SdCard::logSyslog(Severity::Info, "Power supply Voltage = %.2f, "
-		    "shutdown threshold voltage  = %.2f", 
-		    double(averageVoltage), double(sampleToPsVoltage(psThreshold)));
+		    "shutdown threshold voltage  = %.2f, " 
+		    "ps ltr  = %u", 
+		    double(averageVoltage), double(minVoltageThreshold),
+		    psThreshold);
+
   
-  if (averageVoltage < PS_VOLTAGE_ABSOLUTE_MINIMUM) {
+  if (averageVoltage < VOLTAGE_ABSOLUTE_MINIMUM) {
     SdCard::logSyslog(Severity::Fatal, "Power supply Voltage = %.2f is "
 	      "less than absolute minimum %.2f", 
-	      double(averageVoltage), double(PS_VOLTAGE_ABSOLUTE_MINIMUM));
+	      double(averageVoltage), double(VOLTAGE_ABSOLUTE_MINIMUM));
     return false;
   }
-  
+  chThdSleepMilliseconds(200);
   return true;
 }
 
@@ -128,7 +140,7 @@ bool Adc::loop()
   */
 
   chBSemWait(&adcWatchDogSem); // wait for powerLoss event
-  
+  fl.powerOff(); // power off front rgb led
   stopAllPeripherals();
   SdLiteLogBase::terminate(TerminateBehavior::DONT_WAIT);
   f_mount(NULL, "", 0);

@@ -11,6 +11,7 @@
 #include "receivePprzlink.hpp"
 #include "receiveNmealink.hpp"
 #include "receiveUbxlink.hpp"
+#include "smartLed.hpp"
 
 #define CONF(k)  (ConfigurationFile_AT(confFile, k))
 
@@ -26,3 +27,4 @@ extern  Relwind			relwind;
 extern  ReceivePprzlink		receivePPL;
 extern  ReceiveNmealink		receiveNMEA;
 extern  ReceiveUbxlink		receiveUBX;
+extern  FrontLed                fl;
