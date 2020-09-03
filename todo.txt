@@ -25,7 +25,7 @@ A AMELIORER :
 	* segfault quand on met une carte vierge :
 	  	   mais ça marche à la deuxieme mise sous tension
 
-	* test seuil tension ADC à priori defaillant
+	* comportement buggué quand compilé sans traces ou en mode optimisé
 
 	* rationaliser utilisation d'allocateur dynamique  :
 	  celui de newlib ou tlsf, eliminuer celui de chibios
@@ -56,9 +56,9 @@ GRANDES LIGNES :
 
 	// SMARTPROBE V0.3
 
-	* utilisation de la liaison série dédiée SD6 pour le debug
-
-	* test du 3.3V capteurs
+        * port -> chibios 20.04
+	
+        * test du 3.3V capteurs
 
         * test du 3.3V MCU en utilisant VRefInt
 

@@ -88,7 +88,7 @@ bool SdCard::initInThreadContext()
   ahrsType = static_cast<AhrsType>(CONF("ahrs.type"));
   serialMode = static_cast<SerialMode>(CONF("uart.mode"));
   logFormat = static_cast<SensorslogFormat>(CONF("sensorslog.format"));
-  logGps =  (serialMode != SERIAL_NOT_USED) and (serialMode != SHELL) ;
+  logGps =  (serialMode != SERIAL_NOT_USED);
   highTimeStampPrecision = CONF("thread.frequency.d_press") >= 100;
   
   if (sdLogInit() != true)

@@ -96,28 +96,15 @@ int main (void)
      SdCard::logSyslog(Severity::Fatal, "rtcSync fail");
     fl.setError(LedCode::HardFault);
   } else {
-#ifdef TRACE
-    constexpr SerialMode smode = SHELL;
-#else
+    if (not showBB.run(TIME_IMMEDIATE)) {
+      SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
+      fl.setError(LedCode::HardFault);
+    } 
+
     const SerialMode smode = static_cast<SerialMode>(CONF("uart.mode"));
-#endif
     switch (smode) {
     case SERIAL_NOT_USED :
       SdCard::logSyslog(Severity::Warning, "mode serial line NOT USED");
-      break;
-      
-    case SHELL:
-#ifndef TRACE
-      consoleInit();    // initialisation des objets liés au shell
-      consoleLaunch();  // lancement du shell
-      SdCard::logSyslog(Severity::Warning, "mode shell : you should compile with "
-			"-DTRACE for more verbosity");
-#endif
-      if (not showBB.run(TIME_IMMEDIATE)) {
-	SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
-	fl.setError(LedCode::HardFault);
-   } 
-
       break;
     case PPRZ_IN_OUT:
       transmitPPL.run(TIME_IMMEDIATE);
