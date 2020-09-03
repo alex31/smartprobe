@@ -195,22 +195,20 @@ else
   RELATIVE=../..
 endif
 
-CHIBIOS = $(RELATIVE)/ChibiOS_20.3_stable
+CHIBIOS  := ./ext/chibios_svn_mirror
 CONFDIR  := ./cfg
 BUILDDIR := ./build
 DEPDIR   := ./.dep
+VARIOUS  := ./ext//chibios_enac_various_common
+USBD_LIB := $(VARIOUS)/Chibios-USB-Devices
+TOOLDIR  := $(VARIOUS)/TOOLS
 
-STMSRC = $(RELATIVE)/COMMON/stm
-VARIOUS = $(RELATIVE)/COMMON/various
-USBD_LIB = $(VARIOUS)/Chibios-USB-Devices
 FROZEN_LIB = ../../../../frozen/include
 CTRE_LIB = ../../../.././compile-time-regular-expressions/single-header
 EIGEN_LIB = ../../../.././eigen
 ETL_LIB = ../../../../etl/include
 EXTLIB = ext
 PPRZ_MATH = $(VARIOUS)/paparazzi/math
-
-
 # Licensing files.
 include $(CHIBIOS)/os/license/license.mk
 # Startup files.
@@ -363,23 +361,28 @@ ULIBS = -lstdc++ -lm
 # End of user defines
 ##############################################################################
 
+##############################################################################
+# Common rules
+#
 
 RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk
 include $(RULESPATH)/arm-none-eabi.mk
 include $(RULESPATH)/rules.mk
-$(OBJS): cfg/board.h compiler_flags
+$(OBJS): $(CONFDIR)/board.h
 
-cfg/board.h: cfg/board.cfg Makefile
-	boardGen.pl --no-pp-line --no-adcp-in	$<  $@
 
-stflash:        all
+$(CONFDIR)/board.h: $(CONFDIR)/board.cfg
+	$(TOOLDIR)/boardGen.pl --no-adcp-in --no-pp-line	$<  $@
+
+
+stflash: all
 	@echo write $(BUILDDIR)/$(PROJECT).bin to flash memory
-	/usr/local/bin/st-flash write  $(BUILDDIR)/$(PROJECT).bin 0x08000000
+	st-flash write  $(BUILDDIR)/$(PROJECT).bin 0x08000000
 	@echo Done
 
 flash: all
 	@echo write $(BUILDDIR)/$(PROJECT).bin to flash memory
-	bmpflash  $(BUILDDIR)/$(PROJECT).elf
+	$(TOOLDIR)/bmpflash  $(BUILDDIR)/$(PROJECT).elf
 	@echo Done
 
 

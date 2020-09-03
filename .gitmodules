@@ -1,0 +1,6 @@
+[submodule "chibios_svn_mirror"]
+	path = ext/chibios_svn_mirror
+	url = https://github.com/alex31/chibios_svn_mirror.git
+[submodule "chibios_enac_various_common"]
+	path = ext/chibios_enac_various_common
+	url = https://github.com/alex31/chibios_enac_various_common.git
