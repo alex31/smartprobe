@@ -36,6 +36,10 @@ namespace {
   constexpr uint32_t magicNumber = 0xFACEC0DE;
 
   bool highTimeStampPrecision;
+
+  static inline time_conv_t time_i2us_64(time_conv_t interval) {
+    return (((interval * (time_conv_t)1000000UL) + (time_conv_t)CH_CFG_ST_FREQUENCY - (time_conv_t)1UL) / (time_conv_t)CH_CFG_ST_FREQUENCY);
+  }
 }
 
 static constexpr uint32_t operator"" _seconde (unsigned long long int duration)
@@ -495,7 +499,7 @@ bool SdCard::writeBinarySensorlog(void)
 
     auto [s, framedData] = sensors.borrow<FramedBinaryRecord>();
     if (s == SdLiteStatus::OK) {
-      framedData.data.systime = TIME_I2US(chVTGetSystemTimeX())/100; //1
+      framedData.data.systime = time_i2us_64(chVTGetSystemTimeX())/100UL; //1
       framedData.data.baro_pressure = baroData.pressure; //2
       framedData.data.diff_pressure_central = diffPressData[0].pressure;//3
       framedData.data.diff_pressure_horizontal = diffPressData[1].pressure;//4
@@ -552,10 +556,9 @@ SdLiteStatus SdCard::logSensors (const char* fmt, ...)
     self->lock();
     self->sensors.writeFmt(16, highTimeStampPrecision ?
 			    "[%.4f] : " :  "[%.3f] : ",
-			    TIME_I2US(chVTGetSystemTimeX())/1e6);
+			    time_i2us_64(chVTGetSystemTimeX())/1e6);
     auto retVal = self->sensors.vwriteFmt(SYSLOG_BUFFER_SIZE/2, fmt, &ap);
     va_end(ap);
-    self->sensors.writeFmt(3, "\r\n");
     self->unlock();
     return retVal;
   } else {
