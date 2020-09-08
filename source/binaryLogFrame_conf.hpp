@@ -2,8 +2,8 @@
 
 #define PT1 uint32_t	
 #define PM1 systime		
-#define SC1 0.1		
-#define DC1 "millisecond"	
+#define SC1 0.0001		
+#define DC1 "second"	
 
 #define PT2 float	       
 #define PM2 baro_pressure  
@@ -72,8 +72,8 @@
 
 #define PT15  uint32_t		
 #define PM15  rtc_time		
-#define SC15  1			
-#define DC15  "millisecond"		
+#define SC15  0.001			
+#define DC15  "second"		
 	                             
 #define PT16  int32_t		
 #define PM16  utm_east		

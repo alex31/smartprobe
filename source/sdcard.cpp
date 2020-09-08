@@ -192,7 +192,7 @@ SdLiteStatus SdCard::writeTSVSensorlog_RAW_AND_GPS(void)
 		      "%.2f\t%.2f\t%.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
 		      "%.4f\t%.4f\t%.4f\t"
-		      "%u\t%lu\t%lu\t%u\t"
+		      "%.3f\t%lu\t%lu\t%u\t"
 		      "%ld\t%d\t%u\t%d\t"
 		      "%.2f\t%.1f\t",
 		      baroData.pressure,
@@ -212,7 +212,7 @@ SdLiteStatus SdCard::writeTSVSensorlog_RAW_AND_GPS(void)
 		      imuData.gyro.v[0],
 		      imuData.gyro.v[1],
 		      imuData.gyro.v[2],
-		      gpsData.rtcTime.millisecond,
+		      gpsData.rtcTime.millisecond / 1000.0f,
 		      gpsData.utm_east,
 		      gpsData.utm_north,
 		      gpsData.utm_zone,
@@ -261,7 +261,7 @@ SdLiteStatus SdCard::writeTSVSensorlog_HEADLESS_AND_GPS(void)
 		      "%.2f\t%.2f\t%.2f\t"
 		      "%.2f\t%.2f\t%.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
-		      "%u\t%lu\t%lu\t%u\t"
+		      "%.3f\t%lu\t%lu\t%u\t"
 		      "%ld\t%d\t%u\t%d\t"
 		      "%.2f\t%.1f\t",
 		      baroData.pressure, baroData.temp,
@@ -275,7 +275,7 @@ SdLiteStatus SdCard::writeTSVSensorlog_HEADLESS_AND_GPS(void)
 		      relAirSpeed.alpha,
 		      relAirSpeed.beta,
 		      rad2deg(attitude.v[0]), rad2deg(attitude.v[1]), rad2deg(attitude.v[2]),
-		      gpsData.rtcTime.millisecond,
+		      gpsData.rtcTime.millisecond / 1000.0f,
 		      gpsData.utm_east,
 		      gpsData.utm_north,
 		      gpsData.utm_zone,
