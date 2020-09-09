@@ -96,11 +96,12 @@ int main (void)
      SdCard::logSyslog(Severity::Fatal, "rtcSync fail");
     fl.setError(LedCode::HardFault);
   } else {
+#ifdef TRACE
     if (not showBB.run(TIME_IMMEDIATE)) {
       SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
       fl.setError(LedCode::HardFault);
     } 
-
+#endif
     const SerialMode smode = static_cast<SerialMode>(CONF("uart.mode"));
     switch (smode) {
     case SERIAL_NOT_USED :
