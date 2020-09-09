@@ -141,7 +141,7 @@
 #define DC28 "m/s"						     
 	                                                          
 #define PT29 int16_t						     
-#define PM29 ps_5V						     
+#define PM29 ps_voltage						     
 #define SC29 0.001						     
 #define DC29 "volts"						     
 	                                                          

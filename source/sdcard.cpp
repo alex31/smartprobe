@@ -527,7 +527,7 @@ bool SdCard::writeBinarySensorlog(void)
       framedData.data.course = gpsData.course; // 26
       framedData.data.speed = gpsData.speed; // 27
       framedData.data.climb_speed = gpsData.climb; // 28
-      framedData.data.ps_5V = adc.getPowerSupplyVoltage() * OINV(SC29); // 29
+      framedData.data.ps_voltage = adc.getPowerSupplyVoltage() * OINV(SC29); // 29
       framedData.data.core_temperature = adc.getCoreTemp() * OINV(SC30); // 30
       framedData.data.utm_zone = gpsData.utm_zone; // 31
       framedData.magicEnd = magicNumber;
