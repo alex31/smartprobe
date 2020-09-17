@@ -110,7 +110,7 @@ bool Adc::calculateThreshold()
   uint32_t accum[ADC_GRP1_NUM_CHANNELS] = {0U};
   for (size_t i=0; i<loop; i++) {
     adcConvert(&ADCD1, &adcgrpcfgThreshold, samples, ADC_GRP1_BUF_DEPTH);
-    for (size_t j=0; j<loop; j++) {
+    for (size_t j=0; j<Adc::ADC_GRP1_NUM_CHANNELS; j++) {
       accum[j] += samples[j];
     }
   }
