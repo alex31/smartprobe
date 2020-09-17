@@ -94,7 +94,7 @@ ifeq ($(BUILD),$(OPT_DNT))
 endif
 
 
-ifeq ($(BUILD),$(OPT_SPEED)) 
+ifeq ($(BUILD), DO_NOT_USE_NOW) 
   USE_OPT =  -Ofast -fno-fast-math -flto=4  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	     $(GCC_DIAG)
@@ -102,6 +102,17 @@ ifeq ($(BUILD),$(OPT_SPEED))
   USE_PROCESS_STACKSIZE = 0x3800
   UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
         -DCH_DBG_ENABLE_ASSERTS=0
+  USE_LTO = yes
+endif
+
+ifeq ($(BUILD),$(OPT_SPEED)) 
+  USE_OPT =  -Ofast -fno-fast-math -flto=4  -Wall -Wextra \
+	    -falign-functions=16 -fomit-frame-pointer \
+	     $(GCC_DIAG)
+  PROJECT = smartprobe_speed
+  USE_PROCESS_STACKSIZE = 0x3800
+  UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 -DCH_DBG_ENABLE_CHECKS=1 \
+        -DCH_DBG_ENABLE_ASSERTS=1
   USE_LTO = yes
 endif
 

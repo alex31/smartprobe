@@ -22,7 +22,7 @@ A AMELIORER :
 
   ° fix
 
-	* comportement buggué quand compilé sans traces ou en mode optimisé
+	* comportement buggué quand compilé sans traces ou en mode optimiséen mode BUILD=SPEED
 
 	* rationaliser utilisation d'allocateur dynamique  :
 	  celui de newlib ou tlsf, eliminuer celui de chibios
