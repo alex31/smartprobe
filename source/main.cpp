@@ -47,7 +47,7 @@ int main (void)
   TransmitPprzlink transmitPPL(NORMALPRIO);
   RtcSync	rtcSync(NORMALPRIO);
 
-  fl.setError(LedCode::Optimal);
+  fl.setError(LedCode::Starting);
 
   bl.run(TIME_MS2I(1000));
   
@@ -119,6 +119,7 @@ int main (void)
       break;
     }
     // if all went ok, main thead now can rest
+    fl.setError(LedCode::Optimal);
     chThdSleep(TIME_INFINITE);
   }
 
