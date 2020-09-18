@@ -208,3 +208,6 @@ static constexpr size_t threadStackSize = 512U;
 namespace TH_RTCSYNC {
 static constexpr size_t threadStackSize = 1024U;
 }
+namespace TH_HEALTHCHECK {
+static constexpr size_t threadStackSize = 2048U;
+}

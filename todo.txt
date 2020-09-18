@@ -13,8 +13,6 @@ A CODER:
 
 	* utilisation du buscan pour chainer les smartprobes
 
-	* syslog periodique de la charge de calcul et occupation mémoire (piles)
-	
 	* ahrs complet qui donne 3 angles si la donnée cap est disponible 
 
 	* calcul d'un vecteur vent dans le repaire terrestre si l'ahrs est

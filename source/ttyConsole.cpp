@@ -15,7 +15,7 @@
 #include "cpp_heap_alloc.hpp"
 #include "tlsf_malloc.h"
 #include "threadAndEventDecl.hpp"
-
+#include "healthCheck.hpp"
 
 
 #pragma GCC diagnostic push
@@ -216,33 +216,8 @@ static void cmd_restart(BaseSequentialStream *lchp, int argc,const char* const a
 
 #define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(4096)
 
-
-
-
 #ifndef CONSOLE_DEV_USB
 #define  CONSOLE_DEV_USB 0
-#endif
-
-
-
-#define MAX_CPU_INFO_ENTRIES 20
-
-typedef struct _ThreadCpuInfo {
-  float    ticks[MAX_CPU_INFO_ENTRIES];
-  float    cpu[MAX_CPU_INFO_ENTRIES];
-  float    totalTicks;
-  _ThreadCpuInfo () {
-    for (auto i=0; i< MAX_CPU_INFO_ENTRIES; i++) {
-      ticks[i] = 0.0f;
-      cpu[i] = -1.0f;
-    }
-    totalTicks = 0.0f;
-  }
-} ThreadCpuInfo ;
-  
-#if CH_DBG_THREADS_PROFILING
-static void stampThreadCpuInfo (ThreadCpuInfo *ti);
-static float stampThreadGetCpuPercent (const ThreadCpuInfo *ti, const uint32_t idx);
 #endif
 
 static void cmd_uid(BaseSequentialStream *lchp, int argc,const char* const argv[]) {
@@ -371,7 +346,7 @@ static void cmd_rtc(BaseSequentialStream *lchp, int argc,const char* const argv[
 
 #if  CH_DBG_THREADS_PROFILING
 static void cmd_threads(BaseSequentialStream *lchp, int argc,const char* const argv[]) {
-  static const char *states[] = {THD_STATE_NAMES};
+  static const char *states[] = {CH_STATE_NAMES};
   Thread *tp = chRegFirstThread();
   (void)argv;
   (void)argc;
@@ -474,41 +449,5 @@ void consoleLaunch (void)
 
 }
 
-#if  CH_DBG_THREADS_PROFILING
-static void stampThreadCpuInfo (ThreadCpuInfo *ti)
-{
-  const Thread *tp =  chRegFirstThread();
-  uint32_t idx=0;
-  
-  float totalTicks =0;
-  do {
-    totalTicks+= (float) tp->time;
-    ti->cpu[idx] = (float) tp->time - ti->ticks[idx];;
-    ti->ticks[idx] = (float) tp->time;
-    tp = chRegNextThread ((Thread *)tp);
-    idx++;
-  } while ((tp != NULL) && (idx < MAX_CPU_INFO_ENTRIES));
-  
-  const float diffTotal = totalTicks- ti->totalTicks;
-  ti->totalTicks = totalTicks;
-  
-  tp =  chRegFirstThread();
-  idx=0;
-  do {
-    ti->cpu[idx] =  (ti->cpu[idx]*100.f)/diffTotal;
-    tp = chRegNextThread ((Thread *)tp);
-    idx++;
-  } while ((tp != NULL) && (idx < MAX_CPU_INFO_ENTRIES));
-}
-
-
-static float stampThreadGetCpuPercent (const ThreadCpuInfo *ti, const uint32_t idx)
-{
-  if (idx >= MAX_CPU_INFO_ENTRIES) 
-    return -1.f;
-
-  return ti->cpu[idx];
-}
-#endif
 
 #pragma GCC diagnostic pop
