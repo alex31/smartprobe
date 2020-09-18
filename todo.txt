@@ -9,33 +9,10 @@
 
 A CODER:
 
-  ° amélioration des perfos :
-    + utiliser c++ fmt au lieu de cstdio dans le cas du log texte
+	* récupération des données IMU sous interruption (broche INT1)
 
+	* utilisation du buscan pour chainer les smartprobes
 
-A TESTER :
-    
-  ° verifier les tailles des piles des threads
-
-  
-A AMELIORER :
-
-  ° fix
-
-	* comportement buggué quand compilé sans traces ou en mode optimiséen mode BUILD=SPEED
-
-	* rationaliser utilisation d'allocateur dynamique  :
-	  celui de newlib ou tlsf, eliminuer celui de chibios
-	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour
-	             les I/O sur la liaison série ?
-
-
-
-GRANDES LIGNES : 
-
-	  
-        * watchdog IWDG -> test au boot, si il y a eu hardfault -> log
-	
 	* syslog periodique de la charge de calcul et occupation mémoire (piles)
 	
 	* ahrs complet qui donne 3 angles si la donnée cap est disponible 
@@ -45,37 +22,36 @@ GRANDES LIGNES :
 	   1/ l'autopilote fournit un vecteur vitesse en 3D
 	   ou
 	   2/ un gps est connecté et permet de calculer le vecteur vitesse en 3D
-   
+
+
+
+  
+A AMELIORER :
+
+  ° fix
+
+	* rationaliser utilisation d'allocateur dynamique  :
+	  celui de newlib ou tlsf, eliminuer celui de chibios
+	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour
+	             les I/O sur la liaison série ?
+
+        * watchdog IWDG -> test au boot, si il y a eu hardfault -> log
 	
-	  
-        
+	* amélioration des perfos :
+    	  + utiliser c++ fmt au lieu de cstdio dans le cas du log texte
 
 
-	// SMARTPROBE V0.3
+GRANDES LIGNES : 
 
-        * test du 3.3V capteurs
-
-        * test du 3.3V MCU en utilisant VRefInt
-
-	* récupération des données IMU sous interruption (broche INT1)
-
-	* utilisation du buscan pour chainer les smartprobes
-
-	
-
-	  
-	    
-
-
+   ° mettre toutes les dépendences externes en sous modules git	  
+ 
    ° integration de librairies externes
-	* module pprz_link
 	* coder du comportement via le fichier de conf sans avoir à reflasher :
 	  +  micro python ?
 	     OU
 	  + langage adhoc en utilisant un parser et un lexer ?
 	  
-	* quand le projet devra être distribué : mettre toutes les
-	  dépendences externes en sous modules git
+
 	
 
 

@@ -14,6 +14,7 @@
 #include "receivePprzlink.hpp"
 #include "receiveNmealink.hpp"
 #include "rtcSync.hpp"
+#include "healthCheck.hpp"
 #include "util.hpp"
 #include "printf.h"
 
@@ -46,7 +47,8 @@ int main (void)
   DynSwdio	dynSwdio(NORMALPRIO);
   TransmitPprzlink transmitPPL(NORMALPRIO);
   RtcSync	rtcSync(NORMALPRIO);
-
+  HealthCheck   healthCheck(NORMALPRIO-1);
+  
   fl.setError(LedCode::Starting);
 
   bl.run(TIME_MS2I(1000));
@@ -91,6 +93,9 @@ int main (void)
     fl.setError(LedCode::HardFault);
   } else if (not dynSwdio.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "dynSwdio fail");
+    fl.setError(LedCode::HardFault);
+  } else if (not healthCheck.run(TIME_S2I(1))) { // check internal voltage, thread memory, cpu usage
+     SdCard::logSyslog(Severity::Fatal, "healthCheck fail");
     fl.setError(LedCode::HardFault);
   } else if (not rtcSync.run(TIME_S2I(60))) { // sync rtc with gps every minutes
      SdCard::logSyslog(Severity::Fatal, "rtcSync fail");
