@@ -7,13 +7,14 @@
 #include "confFile.hpp"
 #include "workerClass.hpp"
 #include "threadAndEventDecl.hpp"
-#include "blinker.hpp"
+//#include "blinker.hpp"
 #include "usbStorage.hpp"
 #include "dynSwdio.hpp"
 #include "transmitPprzlink.hpp"
 #include "receivePprzlink.hpp"
 #include "receiveNmealink.hpp"
 #include "rtcSync.hpp"
+#include "healthCheck.hpp"
 #include "util.hpp"
 #include "printf.h"
 
@@ -41,15 +42,16 @@ extern FrontLed IN_DMA_SECTION(fl);
 
 int main (void)
 {
-  Blinker       bl(NORMALPRIO+1);
+  //  Blinker       bl(NORMALPRIO+1);
   UsbStorage    usbStorage(NORMALPRIO);
   DynSwdio	dynSwdio(NORMALPRIO);
   TransmitPprzlink transmitPPL(NORMALPRIO);
   RtcSync	rtcSync(NORMALPRIO);
+  HealthCheck   healthCheck(NORMALPRIO-1);
+  
+  fl.setError(LedCode::Starting);
 
-  fl.setError(LedCode::Optimal);
-
-  bl.run(TIME_MS2I(1000));
+  //  bl.run(TIME_MS2I(1000));
   
 #ifdef TRACE
   consoleInit();    // initialisation des objets liés au shell
@@ -92,15 +94,19 @@ int main (void)
   } else if (not dynSwdio.run(TIME_IMMEDIATE)) {
      SdCard::logSyslog(Severity::Fatal, "dynSwdio fail");
     fl.setError(LedCode::HardFault);
+  } else if (not healthCheck.run(TIME_S2I(1))) { // check internal voltage, thread memory, cpu usage
+     SdCard::logSyslog(Severity::Fatal, "healthCheck fail");
+    fl.setError(LedCode::HardFault);
   } else if (not rtcSync.run(TIME_S2I(60))) { // sync rtc with gps every minutes
      SdCard::logSyslog(Severity::Fatal, "rtcSync fail");
     fl.setError(LedCode::HardFault);
   } else {
+#ifdef TRACE
     if (not showBB.run(TIME_IMMEDIATE)) {
       SdCard::logSyslog(Severity::Fatal, "Show Blackboard fail");
       fl.setError(LedCode::HardFault);
     } 
-
+#endif
     const SerialMode smode = static_cast<SerialMode>(CONF("uart.mode"));
     switch (smode) {
     case SERIAL_NOT_USED :
@@ -118,6 +124,7 @@ int main (void)
       break;
     }
     // if all went ok, main thead now can rest
+    fl.setError(LedCode::Optimal);
     chThdSleep(TIME_INFINITE);
   }
 

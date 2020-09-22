@@ -417,8 +417,8 @@ bool ConfigurationFile::earlyReadConfFile(void)
   chMtxLock(&mu);
 
   bool success = readConfFile();
-  if (not success)
-    success = writeConfFile();
+  if (not success) 
+    success = writeConfFile() && readConfFile();
 
   chMtxUnlock(&mu);
   return success;

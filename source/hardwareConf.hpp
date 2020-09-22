@@ -69,6 +69,8 @@ static constexpr uint32_t operator"" _percent (unsigned long long int freq)
 
 static constexpr float DIVIDER_R17 = 12.0_kohm;
 static constexpr float DIVIDER_R18 = 2.2_kohm;
+static constexpr float DIVIDER_R16 = 2.2_kohm;
+static constexpr float DIVIDER_R19 = 2.2_kohm;
 static constexpr float VCC_33 = 3.3f;
 static constexpr size_t ADC_RESOLUTION_IN_BITS = 12U;
 static constexpr uint32_t SAMPLE_MAX = (1<<ADC_RESOLUTION_IN_BITS) - 1;
@@ -104,8 +106,8 @@ static constexpr SerialConfig serialDebugConsoleCfg =  {
 							0
 };
 
-
-
+static inline const adcsample_t* const vrefCalib33Ptr =
+		       reinterpret_cast<adcsample_t *>(0x1FF0F44AU);
 static constexpr uint32_t PowerLossAwakeTimeBeforeDeepSleep = 60U;
 
 static const std::array<ioline_t, 12>
@@ -152,6 +154,8 @@ static inline void stopAllPeripherals (void) {
 */
 static constexpr float VOLTAGE_THRESHOLD = 10.0f;
 static constexpr float VOLTAGE_ABSOLUTE_MINIMUM = 7.0f;
+static constexpr float VOLTAGE_3_3_MINIMUM = 3.1f;
+static constexpr float VOLTAGE_3_3_MAXIMUM = 3.5f;
 static constexpr float NOMINAL_VOLTAGE_BY_ELEMENT = 3.6f;
 static constexpr float MINIMUM_VOLTAGE_BY_ELEMENT = 2.9f;
 static constexpr char ROOTDIR[] = "SMARTPROBE";
@@ -203,4 +207,7 @@ static constexpr size_t threadStackSize = 512U;
 }
 namespace TH_RTCSYNC {
 static constexpr size_t threadStackSize = 1024U;
+}
+namespace TH_HEALTHCHECK {
+static constexpr size_t threadStackSize = 2048U;
 }

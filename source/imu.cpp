@@ -27,6 +27,7 @@ namespace {
 bool Imu::init()
 {
   spiStart(&ImuSPID, &spiCfg);
+  palEnableLineEvent(LINE_IMU_INT1, PAL_EVENT_MODE_FALLING_EDGE);
   bool success = init20600(ImuKindOfInit::BiasEstimation);
   if (success) 
     success = estimateBiasAndPosition();
@@ -47,7 +48,14 @@ bool Imu::init20600(const ImuKindOfInit kind)
      .gyroConfig = Icm20600_gyroConf(CONF("sensor.imu.fchoicerate")) |
      Icm20600_gyroConf(CONF("sensor.imu.gyrorange")),
      .accelConf = Icm20600_accelConf(CONF("sensor.imu.accrange")),
-     .accelConf2 = Icm20600_accelConf2(CONF("sensor.imu.accrate"))
+     .accelConf2 = Icm20600_accelConf2(CONF("sensor.imu.accrate")),
+     .interruptStatus = ICM20600_DATA_RDY_INT,
+     .pinControl =  Icm20600_pinControl(ICM20600_INT2_DISABLE |
+					ICM20600_FSYNC_ITR_DISABLE |
+					ICM20600_CLEAR_ITR_READ_ANY |
+					ICM20600_PULSE_50_US |
+					ICM20600_PUSHPULL |
+					ICM20600_ACTIVE_LOW)
   } : // (kind == ImuKindOfInit::BiasEstimation)
   Icm20600Config {
    .spid = &ImuSPID,
@@ -55,7 +63,14 @@ bool Imu::init20600(const ImuKindOfInit kind)
    .config = ICM20600_GYRO_RATE_8K_BW_3281,
    .gyroConfig = ICM20600_RANGE_250_DPS,
    .accelConf = ICM20600_RANGE_2G,
-   .accelConf2 = ICM20600_ACC_RATE_4K_BW_1046
+   .accelConf2 = ICM20600_ACC_RATE_4K_BW_1046,
+   .interruptStatus = ICM20600_DATA_RDY_INT,
+   .pinControl =  Icm20600_pinControl(ICM20600_INT2_DISABLE |
+				      ICM20600_FSYNC_ITR_DISABLE |
+				      ICM20600_CLEAR_ITR_READ_ANY |
+				      ICM20600_PULSE_50_US |
+				      ICM20600_PUSHPULL |
+				      ICM20600_ACTIVE_LOW)
   };
 
   const size_t kind_sc = static_cast<size_t>(kind);
@@ -116,6 +131,7 @@ bool Imu::estimateBiasAndPosition(void)
 
 bool Imu::loop()
 {
+  palWaitLineTimeout(LINE_IMU_INT1, TIME_INFINITE);
   icm20600_fetch(&icmd);
   icm20600_getVal(&icmd, &wdata.temp, &wdata.gyro, &wdata.acc);
   wdata.gyro = wdata.gyro - bias.gyro;

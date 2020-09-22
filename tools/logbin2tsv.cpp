@@ -13,8 +13,13 @@
 #endif
 
 /*
+LINUX:
 g++-10 -DUSE_FMT  -Ofast --std=c++20 -Werror -Wall -Wextra -I../source \
                   -I/home/alex/DEV/STM32/fmt/include logbin2tsv.cpp -o logbin2tsv
+
+OSX:
+g++-mp-10 -static-libgcc -static-libstdc++ -DUSE_FMT -Ofast --std=c++20 -Werror -Wall -Wextra -I../source -I/Users/alex/DEV/STM32/fmt/include logbin2tsv.cpp -o logbin2tsv
+
 */
 
 /*

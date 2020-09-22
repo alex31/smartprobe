@@ -25,7 +25,8 @@ bool DynSwdio::loop()
 #else
 
   palWaitLineTimeout(LINE_SWCLK, TIME_INFINITE);
-  
+  fl.setError(LedCode::SwdioModeStart);
+
   chRegSetThreadName("DynSwdio:wait dp join");
   dp.terminate().join();
   chRegSetThreadName("DynSwdio:wait baro join");
@@ -43,7 +44,9 @@ bool DynSwdio::loop()
   DebugTrace("Enter SWDIO mode");
   chThdSleepMilliseconds(200); // wait for dma buffer to be flushed to sdcard
   palSetLineMode(LINE_SWCLK, PAL_MODE_ALTERNATE(AF_LINE_SWCLK));
-  chSysHalt("swdio will take over");
+  // swdio will take over
+  fl.setError(LedCode::SwdioModeWait);
+  chThdSleep(TIME_INFINITE);
  #endif
   
   return true;

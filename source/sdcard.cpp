@@ -36,6 +36,10 @@ namespace {
   constexpr uint32_t magicNumber = 0xFACEC0DE;
 
   bool highTimeStampPrecision;
+
+  static inline time_conv_t time_i2us_64(time_conv_t interval) {
+    return (((interval * (time_conv_t)1000000UL) + (time_conv_t)CH_CFG_ST_FREQUENCY - (time_conv_t)1UL) / (time_conv_t)CH_CFG_ST_FREQUENCY);
+  }
 }
 
 static constexpr uint32_t operator"" _seconde (unsigned long long int duration)
@@ -188,7 +192,7 @@ SdLiteStatus SdCard::writeTSVSensorlog_RAW_AND_GPS(void)
 		      "%.2f\t%.2f\t%.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
 		      "%.4f\t%.4f\t%.4f\t"
-		      "%u\t%lu\t%lu\t%u\t"
+		      "%.3f\t%lu\t%lu\t%u\t"
 		      "%ld\t%d\t%u\t%d\t"
 		      "%.2f\t%.1f\t",
 		      baroData.pressure,
@@ -208,7 +212,7 @@ SdLiteStatus SdCard::writeTSVSensorlog_RAW_AND_GPS(void)
 		      imuData.gyro.v[0],
 		      imuData.gyro.v[1],
 		      imuData.gyro.v[2],
-		      gpsData.rtcTime.millisecond,
+		      gpsData.rtcTime.millisecond / 1000.0f,
 		      gpsData.utm_east,
 		      gpsData.utm_north,
 		      gpsData.utm_zone,
@@ -257,7 +261,7 @@ SdLiteStatus SdCard::writeTSVSensorlog_HEADLESS_AND_GPS(void)
 		      "%.2f\t%.2f\t%.2f\t"
 		      "%.2f\t%.2f\t%.2f\t"
 		      "%.4f\t%.4f\t%.4f\t"
-		      "%u\t%lu\t%lu\t%u\t"
+		      "%.3f\t%lu\t%lu\t%u\t"
 		      "%ld\t%d\t%u\t%d\t"
 		      "%.2f\t%.1f\t",
 		      baroData.pressure, baroData.temp,
@@ -271,7 +275,7 @@ SdLiteStatus SdCard::writeTSVSensorlog_HEADLESS_AND_GPS(void)
 		      relAirSpeed.alpha,
 		      relAirSpeed.beta,
 		      rad2deg(attitude.v[0]), rad2deg(attitude.v[1]), rad2deg(attitude.v[2]),
-		      gpsData.rtcTime.millisecond,
+		      gpsData.rtcTime.millisecond / 1000.0f,
 		      gpsData.utm_east,
 		      gpsData.utm_north,
 		      gpsData.utm_zone,
@@ -495,7 +499,7 @@ bool SdCard::writeBinarySensorlog(void)
 
     auto [s, framedData] = sensors.borrow<FramedBinaryRecord>();
     if (s == SdLiteStatus::OK) {
-      framedData.data.systime = TIME_I2US(chVTGetSystemTimeX())/100; //1
+      framedData.data.systime = time_i2us_64(chVTGetSystemTimeX())/100UL; //1
       framedData.data.baro_pressure = baroData.pressure; //2
       framedData.data.diff_pressure_central = diffPressData[0].pressure;//3
       framedData.data.diff_pressure_horizontal = diffPressData[1].pressure;//4
@@ -523,7 +527,7 @@ bool SdCard::writeBinarySensorlog(void)
       framedData.data.course = gpsData.course; // 26
       framedData.data.speed = gpsData.speed; // 27
       framedData.data.climb_speed = gpsData.climb; // 28
-      framedData.data.ps_5V = adc.getPowerSupplyVoltage() * OINV(SC29); // 29
+      framedData.data.ps_voltage = adc.getPowerSupplyVoltage() * OINV(SC29); // 29
       framedData.data.core_temperature = adc.getCoreTemp() * OINV(SC30); // 30
       framedData.data.utm_zone = gpsData.utm_zone; // 31
       framedData.magicEnd = magicNumber;
@@ -552,10 +556,9 @@ SdLiteStatus SdCard::logSensors (const char* fmt, ...)
     self->lock();
     self->sensors.writeFmt(16, highTimeStampPrecision ?
 			    "[%.4f] : " :  "[%.3f] : ",
-			    TIME_I2US(chVTGetSystemTimeX())/1e6);
+			    time_i2us_64(chVTGetSystemTimeX())/1e6);
     auto retVal = self->sensors.vwriteFmt(SYSLOG_BUFFER_SIZE/2, fmt, &ap);
     va_end(ap);
-    self->sensors.writeFmt(3, "\r\n");
     self->unlock();
     return retVal;
   } else {
