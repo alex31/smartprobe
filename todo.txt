@@ -9,7 +9,6 @@
 
 A CODER:
 
-	* récupération des données IMU sous interruption (broche INT1)
 
 	* utilisation du buscan pour chainer les smartprobes
 
@@ -21,23 +20,30 @@ A CODER:
 	   ou
 	   2/ un gps est connecté et permet de calculer le vecteur vitesse en 3D
 
-
+	* implementer une directive include dans confFile
+	  * mettre les données de calibration dans cet include en rajoutant
+	    un parametre "nom de calibration"
 
   
 A AMELIORER :
 
-  ° fix
+  	* couleurs de led, mieux categoriser les erreurs qui empèchent le log:
+	  + hardfault : rouge, rapide
+	  + user fault : no sd or conf file error : rouge et jaune
+	  + vert que si tout va bien
 
+  	* aligner le numéro de version du syslog avec celui du sensorsLog
+  
 	* rationaliser utilisation d'allocateur dynamique  :
 	  celui de newlib ou tlsf, eliminuer celui de chibios
 	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour
 	             les I/O sur la liaison série ?
 
-        * watchdog IWDG -> test au boot, si il y a eu hardfault -> log
-	
 	* amélioration des perfos :
     	  + utiliser c++ fmt au lieu de cstdio dans le cas du log texte
 
+        * watchdog IWDG -> test au boot, si il y a eu hardfault -> log
+	
 
 GRANDES LIGNES : 
 

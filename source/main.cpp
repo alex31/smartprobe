@@ -7,7 +7,7 @@
 #include "confFile.hpp"
 #include "workerClass.hpp"
 #include "threadAndEventDecl.hpp"
-#include "blinker.hpp"
+//#include "blinker.hpp"
 #include "usbStorage.hpp"
 #include "dynSwdio.hpp"
 #include "transmitPprzlink.hpp"
@@ -42,7 +42,7 @@ extern FrontLed IN_DMA_SECTION(fl);
 
 int main (void)
 {
-  Blinker       bl(NORMALPRIO+1);
+  //  Blinker       bl(NORMALPRIO+1);
   UsbStorage    usbStorage(NORMALPRIO);
   DynSwdio	dynSwdio(NORMALPRIO);
   TransmitPprzlink transmitPPL(NORMALPRIO);
@@ -51,7 +51,7 @@ int main (void)
   
   fl.setError(LedCode::Starting);
 
-  bl.run(TIME_MS2I(1000));
+  //  bl.run(TIME_MS2I(1000));
   
 #ifdef TRACE
   consoleInit();    // initialisation des objets liés au shell
