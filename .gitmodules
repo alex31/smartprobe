@@ -1,6 +1,13 @@
 [submodule "chibios_svn_mirror"]
 	path = ext/chibios_svn_mirror
 	url = https://github.com/alex31/chibios_svn_mirror.git
+	branch = stable_20.3.x_with_ext_and_local_fixes
 [submodule "chibios_enac_various_common"]
 	path = ext/chibios_enac_various_common
 	url = https://github.com/alex31/chibios_enac_various_common.git
+[submodule "ext/STMems_Standard_C_drivers"]
+	path = ext/STMems_Standard_C_drivers
+	url = https://github.com/STMicroelectronics/STMems_Standard_C_drivers.git
+[submodule "ext/eigen"]
+	path = ext/eigen
+	url = https://gitlab.com/libeigen/eigen.git

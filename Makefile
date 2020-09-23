@@ -212,13 +212,13 @@ CHIBIOS  := ./ext/chibios_svn_mirror
 CONFDIR  := ./cfg
 BUILDDIR := ./build
 DEPDIR   := ./.dep
-VARIOUS  := ./ext//chibios_enac_various_common
+VARIOUS  := ./ext/chibios_enac_various_common
 USBD_LIB := $(VARIOUS)/Chibios-USB-Devices
 TOOLDIR  := $(VARIOUS)/TOOLS
+EIGEN_LIB = ext/eigen
 
 FROZEN_LIB = ../../../../frozen/include
 CTRE_LIB = ../../../.././compile-time-regular-expressions/single-header
-EIGEN_LIB = ../../../.././eigen
 ETL_LIB = ../../../../etl/include
 EXTLIB = ext
 PPRZ_MATH = $(VARIOUS)/paparazzi/math
@@ -239,7 +239,7 @@ include $(CHIBIOS)/tools/mk/autobuild.mk
 # Other files (optional).
 include $(CHIBIOS)/os/various/fatfs_bindings/fatfs.mk
 include $(VARIOUS)/tlsf_bku/tlsf.mk
-include $(STMSRC)/STMems.mk
+include $(EXTLIB)/STMems.mk
 
 
 # Define linker script file here
