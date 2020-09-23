@@ -47,8 +47,6 @@ A AMELIORER :
 
 GRANDES LIGNES : 
 
-   ° mettre toutes les dépendences externes en sous modules git	  
- 
    ° integration de librairies externes
 	* coder du comportement via le fichier de conf sans avoir à reflasher :
 	  +  micro python ?

@@ -11,3 +11,17 @@
 [submodule "ext/eigen"]
 	path = ext/eigen
 	url = https://gitlab.com/libeigen/eigen.git
+[submodule "ext/etl"]
+	path = ext/etl
+	url = https://github.com/ETLCPP/etl.git
+[submodule "ext/-b"]
+	path = ext/-b
+	url = https://github.com/alex31/frozen.git
+[submodule "ext/frozen"]
+	path = ext/frozen
+	url = https://github.com/alex31/frozen.git
+	branch = init_from_string_view
+[submodule "ext/compile-time-regular-expressions"]
+	path = ext/compile-time-regular-expressions
+	url = https://github.com/alex31/compile-time-regular-expressions.git
+	branch = shadow_fixe

@@ -201,25 +201,20 @@ endif
 MCU  = cortex-m7
 
 # Imported source files and paths
-MY_DIRNAME=../../../ChibiOS_stable
-ifneq "$(wildcard $(MY_DIRNAME) )" ""
-   RELATIVE=../../..
-else
-  RELATIVE=../..
-endif
 
-CHIBIOS  := ./ext/chibios_svn_mirror
-CONFDIR  := ./cfg
-BUILDDIR := ./build
-DEPDIR   := ./.dep
-VARIOUS  := ./ext/chibios_enac_various_common
-USBD_LIB := $(VARIOUS)/Chibios-USB-Devices
-TOOLDIR  := $(VARIOUS)/TOOLS
-EIGEN_LIB = ext/eigen
+CHIBIOS    := ./ext/chibios_svn_mirror
+CONFDIR    := ./cfg
+BUILDDIR   := ./build
+DEPDIR     := ./.dep
+VARIOUS    := ext/chibios_enac_various_common
+USBD_LIB   := $(VARIOUS)/Chibios-USB-Devices
+TOOLDIR    := $(VARIOUS)/TOOLS
+EIGEN_LIB  := ext/eigen
+ETL_LIB    := ext/etl/include
+FROZEN_LIB := ext/frozen/include
+CTRE_LIB   := ext/compile-time-regular-expressions/single-header
 
-FROZEN_LIB = ../../../../frozen/include
-CTRE_LIB = ../../../.././compile-time-regular-expressions/single-header
-ETL_LIB = ../../../../etl/include
+
 EXTLIB = ext
 PPRZ_MATH = $(VARIOUS)/paparazzi/math
 # Licensing files.
