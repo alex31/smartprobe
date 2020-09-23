@@ -94,17 +94,6 @@ ifeq ($(BUILD),$(OPT_DNT))
 endif
 
 
-ifeq ($(BUILD), DO_NOT_USE_NOW) 
-  USE_OPT =  -Ofast -fno-fast-math -flto=4  -Wall -Wextra \
-	    -falign-functions=16 -fomit-frame-pointer \
-	     $(GCC_DIAG)
-  PROJECT = smartprobe_speed
-  USE_PROCESS_STACKSIZE = 0x3800
-  UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
-        -DCH_DBG_ENABLE_ASSERTS=0
-  USE_LTO = yes
-endif
-
 ifeq ($(BUILD),$(OPT_SPEED)) 
   USE_OPT =  -Ofast -fno-fast-math -flto=4  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
@@ -122,9 +111,9 @@ ifeq ($(BUILD),$(OPT_SIZE))
             --specs=nano.specs \
 	     $(GCC_DIAG)
   PROJECT = smartprobe_size
-  USE_PROCESS_STACKSIZE = 0x2000
-  UDEFS = -DCH_DBG_STATISTICS=0 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
-        -DCH_DBG_ENABLE_ASSERTS=0
+  USE_PROCESS_STACKSIZE = 0x3800
+  UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 -DCH_DBG_ENABLE_CHECKS=1 \
+        -DCH_DBG_ENABLE_ASSERTS=1
   USE_LTO = yes
 endif
 
@@ -384,13 +373,18 @@ $(CONFDIR)/board.h: $(CONFDIR)/board.cfg
         cp -v cfg/board_template.h cfg/board.h
 
 
+dfuflash: all
+	@echo write $(BUILDDIR)/$(PROJECT).bin to flash memory
+	dfu-util -d 0483:df11 -c 1 -i 0 -a 0 -s 0x08000000:leave $(BUILDDIR)/$(PROJECT).bin
+	@echo Done
+
 stflash: all
 	@echo write $(BUILDDIR)/$(PROJECT).bin to flash memory
 	st-flash write  $(BUILDDIR)/$(PROJECT).bin 0x08000000
 	@echo Done
 
 flash: all
-	@echo write $(BUILDDIR)/$(PROJECT).bin to flash memory
+	@echo write $(BUILDDIR)/$(PROJECT).elf to flash memory
 	$(TOOLDIR)/bmpflash  $(BUILDDIR)/$(PROJECT).elf
 	@echo Done
 
