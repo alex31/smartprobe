@@ -1,12 +1,11 @@
 # SMARTPROBE PITOT3D device
 
 Smartprobe is an autonomous pitot3d tube that is designed to be mount on a drone.
-It record relative wind speed and angle, store it on sdcard, and stream data on a serial line.
+It records relative wind speed and angle, store it on sdcard, and stream data on a serial line.
 If a gps or an autopilot give furnish it gps positions, it can calculate on board wind
 in a terrestrial reference frame.
 
-### Installation od needed tools
-
+### Dependancies installation 
 
 
 >cross compilation and perl library for the boardGen.pl tool :
@@ -15,7 +14,7 @@ in a terrestrial reference frame.
 sudo apt install build-essential gcc-arm-none-eabi gdb-multiarch \
          default-jre libmodern-perl-perl \
 	 libxml-libxml-perl libfile-which-perl \
-	 stlink-tools screen openocd
+	 dfu-util
 	 
 sudo cpan -i String/LCSS.pm
 ```
