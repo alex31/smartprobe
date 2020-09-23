@@ -380,7 +380,8 @@ $(OBJS): $(CONFDIR)/board.h
 
 
 $(CONFDIR)/board.h: $(CONFDIR)/board.cfg
-	$(TOOLDIR)/boardGen.pl --no-adcp-in --no-pp-line	$<  $@
+	$(TOOLDIR)/boardGen.pl --no-adcp-in --no-pp-line $<  $@ || \
+        cp -v cfg/board_template.h cfg/board.h
 
 
 stflash: all
