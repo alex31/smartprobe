@@ -108,7 +108,7 @@ static constexpr SerialConfig serialDebugConsoleCfg =  {
 
 static inline const adcsample_t* const vrefCalib33Ptr =
 		       reinterpret_cast<adcsample_t *>(0x1FF0F44AU);
-static constexpr uint32_t PowerLossAwakeTimeBeforeDeepSleep = 60U;
+static constexpr uint32_t PowerLossAwakeTimeBeforeDeepSleep = 30U;
 
 static const std::array<ioline_t, 12>
 LineToStopInCaseOfPowerFailure= {LINE_LED_GREEN,	

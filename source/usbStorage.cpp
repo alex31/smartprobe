@@ -45,10 +45,12 @@ bool UsbStorage::loop()
 {
   chRegSetThreadName("UsbStorage:polling");
   
-  do {
-    palWaitLineTimeout(LINE_USB_VBUS, TIME_INFINITE);
-    chThdSleepMilliseconds(10);
-  } while (palReadLine(LINE_USB_VBUS) == PAL_LOW);
+  if (palReadLine(LINE_USB_VBUS) == PAL_LOW)
+    do {
+      palWaitLineTimeout(LINE_USB_VBUS, TIME_INFINITE);
+      chThdSleepMilliseconds(10);
+    } while (palReadLine(LINE_USB_VBUS) == PAL_LOW);
+  
   fl.setError(LedCode::UsbStorageVBus);
   if (not emergency) {
     chRegSetThreadName("UsbStorage:wait dp join");

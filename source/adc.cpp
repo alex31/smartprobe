@@ -170,20 +170,14 @@ bool Adc::calculateThreshold()
 [[noreturn]]
 bool Adc::loop()
 {
-  /*
-    Do no try to flush file, with 4.5 volts as condensator voltage, there is
-    only 20 ms before hitting 3V, not enough time to flush buffer, but enough to
-    cleanly umount to avoid dirty bit
-  */
-
   chBSemWait(&adcWatchDogSem); // wait for powerLoss event
   fl.powerOff(); // power off front rgb led
   stopAllPeripherals();
-  SdLiteLogBase::terminate(TerminateBehavior::DONT_WAIT);
+  SdLiteLogBase::terminate(TerminateBehavior::WAIT);
   f_mount(NULL, "", 0);
   chThdSleepMilliseconds(PowerLossAwakeTimeBeforeDeepSleep);
   systemDeepSleep();
-  while (true);
+  while(true);
 }
 
   
