@@ -108,6 +108,7 @@ endif
 ifeq ($(BUILD),$(OPT_SIZE)) 
   USE_OPT =  -Os  -flto=4  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
+            --specs=nano.specs \
 	     $(GCC_DIAG)
   PROJECT = smartprobe_size
   USE_PROCESS_STACKSIZE = 0x3800
@@ -385,6 +386,10 @@ stflash: all
 flash: all
 	@echo write $(BUILDDIR)/$(PROJECT).elf to flash memory
 	$(TOOLDIR)/bmpflash  $(BUILDDIR)/$(PROJECT).elf
+ifeq ($(SWDIO_DETECTION),1)
+	sleep 1
+	$(TOOLDIR)/bmpflash  $(BUILDDIR)/$(PROJECT).elf	
+endif
 	@echo Done
 
 
