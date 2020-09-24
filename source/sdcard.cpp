@@ -320,13 +320,16 @@ bool  SdCard::sdLogInit(void)
   SdLiteStatus se;
   std::string syslogN(syslogName.data(), syslogName.size());
   std::string sensorN(sensorlogName.data(), sensorlogName.size());
-
+  size_t syncIndex=0;
 
   if (logFormat == SENSORS_BINARY)
     sensorN += "_BIN_";
 
-  
-  se = syslog.openLog(ROOTDIR, syslogN.c_str());
+  // synchronize sensor and syslog index
+  se = syslog.getFileNameIndex(ROOTDIR, syslogN.c_str(), &syncIndex);
+  se = syslog.getFileNameIndex(ROOTDIR, sensorN.c_str(), &syncIndex);
+  se = syslog.openLog(ROOTDIR, syslogN.c_str(), syncIndex);
+
   switch (se) {
   case SdLiteStatus::OK : DebugTrace("sdOpenLog syslog Ok"); break;
   case SdLiteStatus::FATFS_ERROR : DebugTrace("sdOpenLog syslog: Fatfs error");
@@ -336,7 +339,7 @@ bool  SdCard::sdLogInit(void)
   default: break;
   }
 
-  se = sensors.openLog(ROOTDIR, sensorN.c_str());
+  se = sensors.openLog(ROOTDIR, sensorN.c_str(), syncIndex);
   switch (se) {
   case SdLiteStatus::OK : DebugTrace("sdOpenLog sensors Ok"); break;
   case SdLiteStatus::FATFS_ERROR : DebugTrace("sdOpenLog sensors: Fatfs error");
