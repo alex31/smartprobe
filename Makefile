@@ -108,7 +108,6 @@ endif
 ifeq ($(BUILD),$(OPT_SIZE)) 
   USE_OPT =  -Os  -flto=4  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
-            --specs=nano.specs \
 	     $(GCC_DIAG)
   PROJECT = smartprobe_size
   USE_PROCESS_STACKSIZE = 0x3800
