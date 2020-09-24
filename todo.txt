@@ -27,8 +27,6 @@ A CODER:
   
 A AMELIORER :
 
-  	* aligner le numéro de version du syslog avec celui du sensorsLog
-  
 	* rationaliser utilisation d'allocateur dynamique  :
 	  celui de newlib ou tlsf, eliminuer celui de chibios
 	* (LOW PRIO) utiliser module UART (DMA) au lieu de serial pour
