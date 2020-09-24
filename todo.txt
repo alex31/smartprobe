@@ -10,6 +10,10 @@
 A CODER:
 
 
+	* implementer une directive include dans confFile
+	  * mettre les données de calibration dans cet include en rajoutant
+	    un parametre "nom de calibration"
+
 	* utilisation du buscan pour chainer les smartprobes
 
 	* ahrs complet qui donne 3 angles si la donnée cap est disponible 
@@ -20,9 +24,6 @@ A CODER:
 	   ou
 	   2/ un gps est connecté et permet de calculer le vecteur vitesse en 3D
 
-	* implementer une directive include dans confFile
-	  * mettre les données de calibration dans cet include en rajoutant
-	    un parametre "nom de calibration"
 
   
 A AMELIORER :
