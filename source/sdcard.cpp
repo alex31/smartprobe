@@ -358,8 +358,12 @@ void  SdCard::writeSyslogHeader(void)
 {
   logSyslog(Severity::Info, "syslog start");
   logSyslog(Severity::Info, XSTR(GIT_VERSION));
-  
-    logSyslog(Severity::Info, "Kernel:       %s", CH_KERNEL_VERSION);
+
+#if defined(__DATE__) && defined(__TIME__)
+  logSyslog(Severity::Info, "Build time:   %s%s%s", __DATE__, " - ", __TIME__);
+#endif
+
+  logSyslog(Severity::Info, "Kernel:       %s", CH_KERNEL_VERSION);
 #ifdef HAL_VERSION
   logSyslog(Severity::Info, "Hal:          %s", HAL_VERSION);
 #endif
@@ -386,10 +390,7 @@ void  SdCard::writeSyslogHeader(void)
   logSyslog(Severity::Info, "Core Variant: %s", PORT_CORE_VARIANT_NAME);
 #endif
 #ifdef STM32_SYSCLK
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdouble-promotion"
-  logSyslog(Severity::Info, "Main STM32_SYSCLK frequency %.2f Mhz", STM32_SYSCLK/1e6f);
-#pragma GCC diagnostic pop
+  logSyslog(Severity::Info, "Main STM32_SYSCLK frequency %.2f Mhz", STM32_SYSCLK/1e6);
 #endif
 
 #ifdef CH_PORT_INFO
@@ -408,11 +409,6 @@ void  SdCard::writeSyslogHeader(void)
 #endif
 
   
-#ifdef __DATE__
-#ifdef __TIME__
-  logSyslog(Severity::Info, "Build time:   %s%s%s", __DATE__, " - ", __TIME__);
-#endif
-#endif
 }
 
 void  SdCard::writeTSVSensorlogHeader(void)
