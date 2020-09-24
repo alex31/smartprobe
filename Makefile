@@ -256,8 +256,8 @@ CSRC = $(ALLCSRC) \
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
 CPPSRC = $(ALLCPPSRC) \
-         $(VARIOUS)/sdLiteLog.cpp \
-	 $(VARIOUS)/smartLed.cpp
+         $(VARIOUS)/sdLiteLog.cpp
+
 
 # C sources to be compiled in ARM mode regardless of the global setting.
 # NOTE: Mixing ARM and THUMB mode enables the -mthumb-interwork compiler
@@ -381,6 +381,11 @@ dfuflash: all
 stflash: all
 	@echo write $(BUILDDIR)/$(PROJECT).bin to flash memory
 	st-flash write  $(BUILDDIR)/$(PROJECT).bin 0x08000000
+	@echo Done
+
+oneflash: all
+	@echo write $(BUILDDIR)/$(PROJECT).elf to flash memory
+	$(TOOLDIR)/bmpflash  $(BUILDDIR)/$(PROJECT).elf
 	@echo Done
 
 flash: all

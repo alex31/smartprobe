@@ -61,7 +61,7 @@ int main (void)
   // first time without loggin error to get early parameters
   if (not sdcard.initHardware()) {
     DebugTrace("sdcard.initHardware() has failed");
-    fl.setError(LedCode::HardFault);
+    fl.setError(LedCode::NoSdCard);
   } else if (not confFile.earlyReadConfFile()) {
     DebugTrace("early confFile.readConfFile() has failed");
     fl.setError(LedCode::ConfigError);

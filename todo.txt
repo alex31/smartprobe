@@ -27,11 +27,6 @@ A CODER:
   
 A AMELIORER :
 
-  	* couleurs de led, mieux categoriser les erreurs qui empèchent le log:
-	  + hardfault : rouge, rapide
-	  + user fault : no sd or conf file error : orange et blanc
-	  + vert que si tout va bien
-
   	* aligner le numéro de version du syslog avec celui du sensorsLog
   
 	* rationaliser utilisation d'allocateur dynamique  :
