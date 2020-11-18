@@ -104,7 +104,7 @@ bool Relwind::loop()
   const Vector3f X = cal * vec;
   const float q = X[0] + bias[0];
   
-  if ((q < 0.0f) || isnan(X[0]) or isnan(X[1]) or isnan(X[2])) {
+  if ((q < 0.0f) or isnan(X[0]) or isnan(X[1]) or isnan(X[2])) {
     airSpeed.velocity =  airSpeed.beta = airSpeed.alpha = 0.0f;
   } else {
     airSpeed.velocity = sqrtf(q / (0.5f * rho));

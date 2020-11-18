@@ -68,7 +68,7 @@ bool TransmitPprzlink::loop()
 
   if (chVTIsSystemTimeWithin(now, then)) {
     sumCount++;
-    attitudeSum = vec3fAdd(&attitudeSum, &attitude);
+    attitudeSum += attitude;
     relAirSpeedSum += relAirSpeed;
   } else {
     now = chVTGetSystemTimeX();
@@ -85,7 +85,8 @@ bool TransmitPprzlink::loop()
     int32_t dynamic_p =  diffPressData[0].pressure * 100;	 	
     int32_t static_p =   baroData.pressure * 100U; // pascal	 	    	
     uint8_t checksum =   0;
-
+    relAirSpeedSum.clear();
+    
     pprzlink_msg_send_AEROPROBE(&dev_tx,
      				0U, /* sender_id */
      				0U, /* receiver_id */

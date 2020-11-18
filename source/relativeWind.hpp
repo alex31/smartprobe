@@ -15,6 +15,12 @@ struct AirSpeed {
     return (velocity != other.velocity) || (alpha != other.alpha) || (beta != other.beta);
   };
 
+  const AirSpeed& clear(void) {
+    velocity = 0;
+    alpha = 0;
+    beta = 0;
+    return *this;
+  }
   const AirSpeed& operator /=(const float divisor) {
     velocity /= divisor;
     alpha /= divisor;
