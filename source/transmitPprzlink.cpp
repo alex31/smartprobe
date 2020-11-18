@@ -13,7 +13,7 @@ namespace {
   BarometerData    baroData{};
   DiffPressureData diffPressData{};
   ImuData  imuData{};
-  Vec3f    attitude{},    attitudeSum{};
+  Vec3f    attitude{} /*,    attitudeSum{}*/;
   AirSpeed relAirSpeed{}, relAirSpeedSum{};
   size_t   sumCount;
   event_listener_t diffPressEvent;
@@ -68,12 +68,12 @@ bool TransmitPprzlink::loop()
 
   if (chVTIsSystemTimeWithin(now, then)) {
     sumCount++;
-    attitudeSum += attitude;
+    //    attitudeSum += attitude;
     relAirSpeedSum += relAirSpeed;
   } else {
     now = chVTGetSystemTimeX();
     then = chTimeAddX(now, delay);
-    attitudeSum = vec3fDiv(&attitudeSum, sumCount);
+    //    attitudeSum = vec3fDiv(&attitudeSum, sumCount);
     relAirSpeedSum /= sumCount;
     sumCount = 0;
 
