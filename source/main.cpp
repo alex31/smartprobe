@@ -67,6 +67,7 @@ int main (void)
     fl.setError(LedCode::ConfigError);
   } else if (not sdcard.run(TIME_IMMEDIATE)) {
     chprintf(chp, "SDCARD launch fail");
+    fl.setError(LedCode::NoSdCard);
   } else if (chThdSleepMilliseconds(300); not confFile.populate()) { // second time to log errors
     chprintf(chp, "read CONFIGURATION file fail");
     fl.setError(LedCode::ConfigError);
