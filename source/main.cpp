@@ -132,8 +132,6 @@ int main (void)
   // if something goes wrong, control finish here
   // still offer usb storage facility, so in case of configuration file
   // error, one can still mount the device to read syslog and fix conf file
-
-  
   palSetLine(LINE_LED_RED);
   usbStorage.setModeEmergency();
   usbStorage.run(TIME_IMMEDIATE);

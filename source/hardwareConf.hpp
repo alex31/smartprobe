@@ -152,12 +152,11 @@ static inline void stopAllPeripherals (void) {
 #                |  __/ | (_| |  | |  \ |_   | (_| | | |_) | | |  |  __/        
 #                 \___|  \__,_|  |_|   \__|   \__,_| |_.__/  |_|   \___|        
 */
-static constexpr float VOLTAGE_THRESHOLD = 10.0f;
 static constexpr float VOLTAGE_ABSOLUTE_MINIMUM = 7.0f;
 static constexpr float VOLTAGE_3_3_MINIMUM = 3.1f;
 static constexpr float VOLTAGE_3_3_MAXIMUM = 3.5f;
 static constexpr float NOMINAL_VOLTAGE_BY_ELEMENT = 3.6f;
-static constexpr float MINIMUM_VOLTAGE_BY_ELEMENT = 2.9f;
+static constexpr float MINIMUM_VOLTAGE_BY_ELEMENT = 2.7f;
 static constexpr char ROOTDIR[] = "SMARTPROBE";
 static constexpr char CONFIGURATION_FILENAME[] = "smartprobe.conf";
 static constexpr time_secs_t SYSLOG_SYNC_PERIOD = 0U;
