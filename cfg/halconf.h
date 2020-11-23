@@ -155,6 +155,8 @@
 #if !defined(HAL_USE_SDC) || defined(__DOXYGEN__)
 #define HAL_USE_SDC                         TRUE
 #endif
+#define STM32_SDC_SDMMC_50MHZ		    FALSE
+#define  STM32_SDC_SDMMC_PWRSAV             FALSE
 
 /**
  * @brief   Enables the SERIAL subsystem.
