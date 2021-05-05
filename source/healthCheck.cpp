@@ -55,7 +55,7 @@ void HealthCheck::logThreadInfos(void)
       SdCard::logSyslog(Severity::Warning, "%.8lx %.8lx %6lu %4lu %4lu %9s %9lu   %.1f    \t%s\r\n",
 			(uint32_t)tp, (uint32_t)tp->ctx.sp,
 			get_stack_free(tp),
-			(uint32_t)tp->prio, (uint32_t)(tp->refs - 1),
+			(uint32_t)tp->hdr.pqueue.prio, (uint32_t)(tp->refs - 1),
 			states[tp->state], (uint32_t)tp->time, 
 			(double) stampThreadGetCpuPercent (&threadCpuInfo, idx),
 			chRegGetThreadName(tp));
