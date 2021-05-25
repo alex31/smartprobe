@@ -1,10 +1,6 @@
 #include "threadAndEventDecl.hpp"
 #include "hardwareConf.hpp"
 
-extern "C" {
-__attribute__((used))
-void _fini(void) { }
-}
 
 ConfigurationFile confFile(CONFIGURATION_FILENAME);
 DifferentialPressure dp(NORMALPRIO);
