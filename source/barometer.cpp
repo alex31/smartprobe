@@ -52,11 +52,11 @@ bool Barometer::loop()
   tempAverage.push(tempToInt(wdata.temp));
   estimateRho();
   blackBoard.write(wdata);
-  DebugTrace("P=%.1f -> %.1f ** T = %.2f -> %.2f",
+  /*  DebugTrace("P=%.1f -> %.1f ** T = %.2f -> %.2f",
 	     (double) wdata.pressure, 
 	     (double) pressToFloat(pressAverage.getMean()),
 	     (double) wdata.temp, 
-	     (double) tempToFloat(tempAverage.getMean()));
+	     (double) tempToFloat(tempAverage.getMean())); */
 	     
 
   return true;
