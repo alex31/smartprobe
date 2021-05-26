@@ -38,7 +38,9 @@ namespace {
   bool highTimeStampPrecision;
 
   static inline time_conv_t time_i2us_64(time_conv_t interval) {
-    return (((interval * (time_conv_t)1000000UL) + (time_conv_t)CH_CFG_ST_FREQUENCY - (time_conv_t)1UL) / (time_conv_t)CH_CFG_ST_FREQUENCY);
+    return (((interval * (time_conv_t)1000000UL) +
+	     (time_conv_t)CH_CFG_ST_FREQUENCY -
+	     (time_conv_t)1UL) / (time_conv_t)CH_CFG_ST_FREQUENCY);
   }
 }
 

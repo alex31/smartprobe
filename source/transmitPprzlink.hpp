@@ -18,6 +18,8 @@ private:
   bool init(void) final;
   bool initInThreadContext(void) final;
   bool loop(void) final;
+  void aeroprobeLoop(void);
+  void smartprobeLoop(void);
 };
 
 

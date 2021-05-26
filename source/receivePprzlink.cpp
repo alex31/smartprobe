@@ -7,7 +7,7 @@
 #include "threadAndEventDecl.hpp"
 #include "ttyConsole.hpp"
 #include "sdcard.hpp"
-#include "pprzlink/pprzlink_smartprobe.h"
+#include "pprzlink/pprzlink_gps.h"
 #include "util.hpp"
 
 struct PprzGpsData {
