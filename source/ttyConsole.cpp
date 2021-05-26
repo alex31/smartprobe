@@ -30,7 +30,7 @@
 using cmd_func_t =  void  (BaseSequentialStream *lchp, int argc,const char * const argv[]);
 static cmd_func_t cmd_mem, cmd_uid, cmd_restart, cmd_param, cmd_close, 
   cmd_rtc, cmd_toggleSendSerialMessages, cmd_eigen, cmd_conf;
-#if CH_DBG_THREADS_PROFILING
+#if CH_DBG_STATISTICS
 static cmd_func_t cmd_threads;
 #endif
 
@@ -43,7 +43,7 @@ bool shouldSendSerialMessages(void)
 
 static const ShellCommand commands[] = {
   {"mem", cmd_mem},		// affiche la mémoire libre/occupée
-#if  CH_DBG_THREADS_PROFILING
+#if  CH_DBG_STATISTICS
   {"threads", cmd_threads},	// affiche pour chaque thread le taux d'utilisation de la pile et du CPU
 #endif
   {"rtc", cmd_rtc},		// affiche l'heure contenue par la RTC
@@ -344,39 +344,44 @@ static void cmd_rtc(BaseSequentialStream *lchp, int argc,const char* const argv[
 
 
 
-#if  CH_DBG_THREADS_PROFILING
-static void cmd_threads(BaseSequentialStream *lchp, int argc,const char* const argv[]) {
+#if  CH_DBG_STATISTICS
+static void cmd_threads(BaseSequentialStream *lchp, int argc,const char * const argv[]) {
   static const char *states[] = {CH_STATE_NAMES};
-  Thread *tp = chRegFirstThread();
+  thread_t *tp = chRegFirstThread();
   (void)argv;
   (void)argc;
   float totalTicks=0;
   float idleTicks=0;
 
-  static ThreadCpuInfo threadCpuInfo ;
+  static ThreadCpuInfo threadCpuInfo;
   
   stampThreadCpuInfo (&threadCpuInfo);
   
-  chprintf(lchp, "    addr    stack  frestk prio refs  state        time \t percent        name\r\n");
+  chprintf (lchp, "    addr    stack  frestk prio refs  state        time \t percent        name\r\n");
   uint32_t idx=0;
   do {
-    chprintf(lchp, "%.8lx %.8lx %6lu %4lu %4lu %9s %9lu   %.1f    \t%s\r\n",
+    chprintf (lchp, "%.8lx %.8lx %6lu %4lu %4lu %9s %9lu   %.2f%%    \t%s\r\n",
 	      (uint32_t)tp, (uint32_t)tp->ctx.sp,
 	      get_stack_free (tp),
 	      (uint32_t)tp->hdr.pqueue.prio, (uint32_t)(tp->refs - 1),
-	      states[tp->state], (uint32_t)tp->time, 
+	      states[tp->state],
+	      (uint32_t)RTC2MS(STM32_SYSCLK, tp->stats.cumulative),
 	      stampThreadGetCpuPercent (&threadCpuInfo, idx),
-	      chRegGetThreadName(tp));
-    totalTicks+= (float) tp->time;
-    if (strcmp (chRegGetThreadName(tp), "idle") == 0)
-      idleTicks =  (float) tp->time;
-    tp = chRegNextThread ((Thread *)tp);
+	      chRegGetThreadNameX(tp));
+
+    totalTicks+= (float)tp->stats.cumulative;
+    if (strcmp(chRegGetThreadNameX(tp), "idle") == 0)
+    idleTicks = (float)tp->stats.cumulative;
+    tp = chRegNextThread ((thread_t *)tp);
     idx++;
   } while (tp != NULL);
 
   const float idlePercent = (idleTicks*100.f)/totalTicks;
   const float cpuPercent = 100.f - idlePercent;
-  chprintf(lchp, "\r\ncpu load = %.2f%%\r\n", cpuPercent);
+  chprintf (lchp, "Interrupt Service Routine \t\t     %9lu   %.2f%%    \tISR\r\n",
+	    (uint32_t)RTC2MS(STM32_SYSCLK,threadCpuInfo.totalISRTicks),
+	    stampISRGetCpuPercent(&threadCpuInfo));
+  chprintf (lchp, "\r\ncpu load = %.2f%%\r\n", cpuPercent);
 }
 #endif
 

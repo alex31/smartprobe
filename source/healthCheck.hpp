@@ -6,25 +6,28 @@
 #include "hardwareConf.hpp"
 
 
-#if CH_DBG_THREADS_PROFILING
+#if CH_DBG_STATISTICS
 #define MAX_CPU_INFO_ENTRIES 30
 
 typedef struct _ThreadCpuInfo {
   float    ticks[MAX_CPU_INFO_ENTRIES];
   float    cpu[MAX_CPU_INFO_ENTRIES];
   float    totalTicks;
+  float    totalISRTicks;
   _ThreadCpuInfo () {
     for (auto i=0; i< MAX_CPU_INFO_ENTRIES; i++) {
       ticks[i] = 0.0f;
       cpu[i] = -1.0f;
     }
     totalTicks = 0.0f;
+    totalISRTicks = 0.0f;
   }
 } ThreadCpuInfo ;
 
 
 void stampThreadCpuInfo (ThreadCpuInfo *ti);
 float stampThreadGetCpuPercent (const ThreadCpuInfo *ti, const uint32_t idx);
+float stampISRGetCpuPercent (const ThreadCpuInfo *ti);
 #endif
 
 

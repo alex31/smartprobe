@@ -34,7 +34,7 @@ bool HealthCheck::loop()
 
 void HealthCheck::logThreadInfos(void)
 {
-#if  CH_DBG_THREADS_PROFILING
+#if  CH_DBG_STATISTICS
   static const char *states[] = {CH_STATE_NAMES};
   Thread *tp = chRegFirstThread();
   float totalTicks=0;
@@ -46,9 +46,9 @@ void HealthCheck::logThreadInfos(void)
   
   uint32_t idx=0;
   do {
-       totalTicks+= (float) tp->time;
+       totalTicks+= (float) tp->stats.cumulative;
     if (strcmp (chRegGetThreadName(tp), "idle") == 0) {
-      idleTicks =  (float) tp->time;
+      idleTicks =  (float) tp->stats.cumulative;
     } else if (get_stack_free(tp) < 300) {
       SdCard::logSyslog(Severity::Info, "    addr    stack  frestk prio refs  "
 			"state        time \t percent        name\r\n");
@@ -56,7 +56,7 @@ void HealthCheck::logThreadInfos(void)
 			(uint32_t)tp, (uint32_t)tp->ctx.sp,
 			get_stack_free(tp),
 			(uint32_t)tp->hdr.pqueue.prio, (uint32_t)(tp->refs - 1),
-			states[tp->state], (uint32_t)tp->time, 
+			states[tp->state], (uint32_t)tp->stats.cumulative, 
 			(double) stampThreadGetCpuPercent (&threadCpuInfo, idx),
 			chRegGetThreadName(tp));
     }
@@ -103,33 +103,29 @@ void HealthCheck::logInternalVoltageInfo(void)
 }
 
 
-#if  CH_DBG_THREADS_PROFILING
+#if  CH_DBG_STATISTICS
 void stampThreadCpuInfo (ThreadCpuInfo *ti)
 {
-  const Thread *tp =  chRegFirstThread();
+  const thread_t *tp =  chRegFirstThread();
   uint32_t idx=0;
   
-  float totalTicks =0;
+  ti->totalTicks =0;
   do {
-    totalTicks+= (float) tp->time;
-    ti->cpu[idx] = (float) tp->time - ti->ticks[idx];;
-    ti->ticks[idx] = (float) tp->time;
-    tp = chRegNextThread ((Thread *)tp);
+    ti->ticks[idx] = (float) tp->stats.cumulative;
+    ti->totalTicks += ti->ticks[idx];
+    tp = chRegNextThread ((thread_t *)tp);
     idx++;
   } while ((tp != NULL) && (idx < MAX_CPU_INFO_ENTRIES));
-  
-  const float diffTotal = totalTicks- ti->totalTicks;
-  ti->totalTicks = totalTicks;
-  
+  ti->totalISRTicks = ch.kernel_stats.m_crit_isr.cumulative;
+  ti->totalTicks += ti->totalISRTicks;
   tp =  chRegFirstThread();
   idx=0;
   do {
-    ti->cpu[idx] =  (ti->cpu[idx]*100.f)/diffTotal;
-    tp = chRegNextThread ((Thread *)tp);
+    ti->cpu[idx] =  (ti->ticks[idx]*100.f) / ti->totalTicks;
+    tp = chRegNextThread ((thread_t *)tp);
     idx++;
   } while ((tp != NULL) && (idx < MAX_CPU_INFO_ENTRIES));
 }
-
 
 float stampThreadGetCpuPercent (const ThreadCpuInfo *ti, const uint32_t idx)
 {
@@ -137,5 +133,10 @@ float stampThreadGetCpuPercent (const ThreadCpuInfo *ti, const uint32_t idx)
     return -1.f;
 
   return ti->cpu[idx];
+}
+
+float stampISRGetCpuPercent (const ThreadCpuInfo *ti)
+{
+  return ti->totalISRTicks * 100.0f / ti->totalTicks;
 }
 #endif
