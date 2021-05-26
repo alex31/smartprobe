@@ -7,6 +7,7 @@ using namespace std::literals;
 enum AhrsType {RAW_IMU=0, HEADLESS_AHRS, COMPLETE_AHRS};
 enum DPressureFetchedParameter {PRESSURE_ONLY=0, PRESSURE_TEMPERATURE};
 enum SerialMode {SERIAL_NOT_USED, PPRZ_IN_OUT, NMEA_IN, UBX_IN};
+enum PprzMsgType {AEROPROBE, SMARTPROBE};
 enum CanbusMode {CAN_NOT_USED, CAN_MASTER, CAN_SLAVE};
 enum SensorslogFormat {SENSORS_TSV, SENSORS_BINARY};
 constexpr double ESTIMATE_ROW = 0.0;
@@ -39,10 +40,12 @@ constexpr double ESTIMATE_ROW = 0.0;
 			    {PPRZ_IN_OUT, "pprz"}, \
 			    {NMEA_IN, "nmea_in"}, \
 			    {UBX_IN, "ubx_in"}) }}, \
+  {"pprz.msg", {0, NAMESET({AEROPROBE, "aeroprobe"},			  \
+			   {SMARTPROBE, "smartprobe"}) }}, \
   {"uart.baud", {115200, RANGEINT(9600, 460800) }},	\
   {"canbus.mode", {0, NAMESET({CAN_NOT_USED, "not_used"}, \
-			    {CAN_MASTER, "shell"},	  \
-			    {CAN_SLAVE, "pprz_in_out"}) }}, \
+			    {CAN_MASTER, "can_master"},	  \
+			    {CAN_SLAVE, "can_slave"}) }}, \
   {"canbus.id", {1, RANGEINT(1, 8) }},	\
   {"sensor.barometer.temperatureBias", {-5.0, RANGEDOUBLE(-15.0, 0.0) }}, \
   {"sensor.barometer.odr", {4, NAMESET({LPS33HW_POWER_DOWN, "powerdown"}, {LPS33HW_ODR_1_Hz, "1hz"}, \
