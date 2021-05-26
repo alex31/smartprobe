@@ -205,7 +205,7 @@ SdLiteStatus SdCard::writeTSVSensorlog_RAW_AND_GPS(void)
 		      diffPressData[0].temp,
 		      diffPressData[1].temp,
 		      diffPressData[2].temp,
-		      relAirSpeed.velocity,
+		      relAirSpeed.tas,
 		      relAirSpeed.alpha,
 		      relAirSpeed.beta,
 		      imuData.acc.v[0],
@@ -243,7 +243,7 @@ SdLiteStatus SdCard::writeTSVSensorlog_RAW_NO_GPS(void)
 		      diffPressData[0].temp,
 		      diffPressData[1].temp,
 		      diffPressData[2].temp,
-		      relAirSpeed.velocity,
+		      relAirSpeed.tas,
 		      relAirSpeed.alpha,
 		      relAirSpeed.beta,
 		      imuData.acc.v[0],
@@ -273,7 +273,7 @@ SdLiteStatus SdCard::writeTSVSensorlog_HEADLESS_AND_GPS(void)
 		      diffPressData[0].temp,
 		      diffPressData[1].temp,
 		      diffPressData[2].temp,
-		      relAirSpeed.velocity,
+		      relAirSpeed.tas,
 		      relAirSpeed.alpha,
 		      relAirSpeed.beta,
 		      rad2deg(attitude.v[0]), rad2deg(attitude.v[1]), rad2deg(attitude.v[2]),
@@ -304,7 +304,7 @@ SdLiteStatus SdCard::writeTSVSensorlog_HEADLESS_NO_GPS(void)
 		      diffPressData[0].temp,
 		      diffPressData[1].temp,
 		      diffPressData[2].temp,
-		      relAirSpeed.velocity,
+		      relAirSpeed.tas,
 		      relAirSpeed.alpha,
 		      relAirSpeed.beta,
 		      rad2deg(attitude.v[0]), rad2deg(attitude.v[1]), rad2deg(attitude.v[2]),
@@ -425,7 +425,7 @@ void  SdCard::writeTSVSensorlogHeader(void)
     "dp[0].t\t"
     "dp[1].t\t"
     "dp[2].t\t"
-    "velocity\t";
+    "tas\t";
 
   if (ahrsType == RAW_IMU) {
     header += "alpha\t"
@@ -505,7 +505,7 @@ bool SdCard::writeBinarySensorlog(void)
       framedData.data.diff_pressure_central = diffPressData[0].pressure;//3
       framedData.data.diff_pressure_horizontal = diffPressData[1].pressure;//4
       framedData.data.diff_pressure_vertical = diffPressData[2].pressure;//5
-      framedData.data.air_velocity = relAirSpeed.velocity;//6
+      framedData.data.air_velocity = relAirSpeed.tas;//6
       framedData.data.alpha_angle = relAirSpeed.alpha;//7
       framedData.data.beta_angle = relAirSpeed.beta;//8
       framedData.data.accel_x = imuData.acc.v[0];//9

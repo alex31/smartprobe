@@ -81,7 +81,7 @@ bool ShowBlackboard::loop()
 		diffPressData[2].temp,
 		rad2deg(attitudeSum.v[0]),
 		rad2deg(attitudeSum.v[1]),
-		relAirSpeedSum.velocity,
+		relAirSpeedSum.tas,
 		relAirSpeedSum.alpha,
 		relAirSpeedSum.beta,
 		adc.getPowerSupplyVoltage(),

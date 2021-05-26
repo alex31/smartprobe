@@ -81,9 +81,10 @@ bool Relwind::initInThreadContext()
 
 bool Relwind::loop()
 {
+  constexpr float isaRho =1.225f; // (density at sea level in ISA condition)
+  float rho;
   chEvtWaitOne(PDIF_EVT);
   dp.blackBoard.read(dpData);
-  float rho;
   
   if (stdRho == 0.0f) {
     baro.blackBoard.read(baroData);
@@ -105,9 +106,10 @@ bool Relwind::loop()
   const float q = X[0] + bias[0];
   
   if ((q < 0.0f) or isnan(X[0]) or isnan(X[1]) or isnan(X[2])) {
-    airSpeed.velocity =  airSpeed.beta = airSpeed.alpha = 0.0f;
+    airSpeed.tas =  airSpeed.beta = airSpeed.alpha = 0.0f;
   } else {
-    airSpeed.velocity = sqrtf(q / (0.5f * rho));
+    airSpeed.tas = sqrtf(q / (0.5f * rho));
+    airSpeed.eas = sqrtf(q / (0.5f * isaRho));
     airSpeed.beta = X[1] + bias[1];
     airSpeed.alpha = X[2] + bias[2];
   }

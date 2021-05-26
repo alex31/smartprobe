@@ -6,10 +6,11 @@
 
 namespace {
   static THD_WORKING_AREA(waLed, 512);
-
-  constexpr std::array<float, 20> getSinPowTable(void)
+  constexpr size_t tableSize = 20U;
+  
+  constexpr std::array<float, tableSize> getSinPowTable(void)
   {
-    std::array<float, 20> ret{};
+    std::array<float, tableSize> ret{};
     const float inc = 3.1415726  / ret.size();
     float angle = 0;
     for (auto &e : ret) {
@@ -19,7 +20,15 @@ namespace {
     return ret;
   }
 
+  constexpr std::array<float, tableSize> getSinShortFlashesTable(void)
+  {
+    std::array<float, tableSize> ret{};
+    ret[0] = 1.0f;
+    return ret;
+  }
+
   constexpr auto sinPowTable = getSinPowTable();
+  constexpr auto shortFlashTable = getSinShortFlashesTable();
   
   static void ledPeriodic (void *arg)
   {
@@ -30,16 +39,19 @@ namespace {
     
     while (!chThdShouldTerminateX()) {
       if (fl->getPeriod() != 0) {
-	const float &f = sinPowTable[periodic];
+	// flash only after 15 seconds and if mode is optimal
+	const float &f = (TIME_I2S(chVTGetSystemTimeX()) < 15) or
+			 (fl->getPeriod() <= 50) ?   sinPowTable[periodic] :
+					             shortFlashTable[periodic];
 	fl->leds[0].setRGB(fl->ledColor.c[colIndex][0] * f * 255,
 			   fl->ledColor.c[colIndex][1] * f * 255,
 			   fl->ledColor.c[colIndex][2] * f * 255);
 	fl->leds.emitFrame();
 	chThdSleepMilliseconds (fl->getPeriod());
-	if (periodic == sinPowTable.size()-1) {
+	if (periodic == tableSize-1) {
 	  colIndex = (colIndex+1)%2;
 	}
-	periodic = (periodic+1)%sinPowTable.size();
+	periodic = (periodic+1)%tableSize;
       } else { // led demo mode at start : cycle over colors until initialisation is done
 	fl->leds[0].setHSV(hsv);
 	fl->leds.emitFrame();
@@ -75,7 +87,7 @@ void FrontLed::setError(const LedCode code)
     period = 0;
     break;
   case LedCode::Optimal :
-    period = 50;
+    period = 100;
     ledColor = {{0, 1, 0}, {0, 1, 0}};
     break;
   case LedCode::DirtyBit :

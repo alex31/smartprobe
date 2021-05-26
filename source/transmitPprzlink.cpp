@@ -40,7 +40,7 @@ bool TransmitPprzlink::initInThreadContext()
 bool TransmitPprzlink::init()
 {
   delay = PERIOD("thread.frequency.transmit_uart");
-  msgType = static_cast<PprzMsgType>(CONF("pprz.msg"));
+  msgType = static_cast<PprzMsgType>(CONF("pprz.message"));
   sumCount = 0;
   dev_tx = pprzlink_device_tx_init(
 				[] ([[maybe_unused]] uint8_t n) -> int  {return true;},
@@ -91,7 +91,7 @@ bool TransmitPprzlink::loop()
 
 void TransmitPprzlink::aeroprobeLoop()
 {
-  int16_t velocity =   relAirSpeedSum.velocity * 100U; 	 	
+  int16_t velocity =   relAirSpeedSum.tas * 100U; 	 	
   int16_t a_attack =   relAirSpeedSum.alpha * 100; 	 		
   int16_t a_sideslip = relAirSpeedSum.beta * 100U; 	 		
   int32_t altitude =   0;	 	
@@ -115,27 +115,6 @@ void TransmitPprzlink::aeroprobeLoop()
   
 }
 
-
-
-/*
-<field name="accel" type="float[3]" unit="m/s^2">internal accelerometer</field>
-     gyro type="float[3]" unit="rad/s">internal gyrometer</field>
-     attitude type="float[4]">attitude in normalized quaternion or euler in radians 
-                               (when last field is lower than -2)</field>
-     tas type="float" unit="m/s">true airspeed</field>
-     eas type="float" unit="m/s">equivalent airspeed</field>
-     alpha type="float" unit="rad">angle of attack</field>
-     beta type="float" unit="rad">andgle of sideslip</field>
-     pressure type="float" unit="Pa">static absolute pressure</field>
-     temperature type="float" unit="Celcius">static temperature</field>
-     rho type="float" unit="kg/m^3">air density</field>
-     p_diff_C_ra type="float" unit="Pa">raw differential pressure for central sensor</field>
-     t_diff_C_ra type="float" unit="Celcius">raw temperature for central sensor</field>
-     p_diff_H_ra type="float" unit="Pa">raw differential pressure for horizontal sensor</field>
-     t_diff_H_ra type="float" unit="Celcius">raw temperature for horizontal sensor</field>
-     p_diff_V_ra type="float" unit="Pa">raw differential pressure for vertical sensor</field>
-     t_diff_V_ra type="float" unit="Celcius">raw temperature for vertical sensor</field>	 
- */
 struct SmartprobePayload {
   float accel[3];
   float gyro[3];
@@ -163,8 +142,8 @@ void TransmitPprzlink::smartprobeLoop()
 			       .gyro = {imuData.gyro.v[0], imuData.gyro.v[1], imuData.gyro.v[2]},
 			       .attitude = {attitude.v[0], attitude.v[1], attitude.v[2], -1000.0f},
 			       .airSpeed =  {
-					     .tas = relAirSpeedSum.velocity,
-					     .eas = 1000.0f, // todo : calculate eas
+					     .tas = relAirSpeedSum.tas,
+					     .eas = relAirSpeedSum.eas,
 					     .alpha =  relAirSpeedSum.alpha,
 					     .beta = relAirSpeedSum.beta,
 					     .pressure = baroData.pressure * 100,

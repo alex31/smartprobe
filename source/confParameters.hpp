@@ -40,7 +40,7 @@ constexpr double ESTIMATE_ROW = 0.0;
 			    {PPRZ_IN_OUT, "pprz"}, \
 			    {NMEA_IN, "nmea_in"}, \
 			    {UBX_IN, "ubx_in"}) }}, \
-  {"pprz.msg", {0, NAMESET({AEROPROBE, "aeroprobe"},			  \
+  {"pprz.message", {0, NAMESET({AEROPROBE, "aeroprobe"},			  \
 			   {SMARTPROBE, "smartprobe"}) }}, \
   {"uart.baud", {115200, RANGEINT(9600, 460800) }},	\
   {"canbus.mode", {0, NAMESET({CAN_NOT_USED, "not_used"}, \

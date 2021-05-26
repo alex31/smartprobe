@@ -7,28 +7,32 @@
 
 
 struct AirSpeed {
-  float velocity;
+  float tas;
+  float eas;
   float alpha;
   float beta;
   
   bool operator != (const AirSpeed &other) {
-    return (velocity != other.velocity) || (alpha != other.alpha) || (beta != other.beta);
+    return (tas != other.tas) || (alpha != other.alpha) || (beta != other.beta);
   };
 
   const AirSpeed& clear(void) {
-    velocity = 0;
+    tas = 0;
+    eas = 0;
     alpha = 0;
     beta = 0;
     return *this;
   }
   const AirSpeed& operator /=(const float divisor) {
-    velocity /= divisor;
+    tas /= divisor;
+    eas /= divisor;
     alpha /= divisor;
     beta /= divisor;
     return *this;
   }
   const AirSpeed& operator +=(const AirSpeed& other) {
-    velocity += other.velocity;
+    tas += other.tas;
+    eas += other.eas;
     alpha    += other.alpha;
     beta     += other.beta;
     return *this;
