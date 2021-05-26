@@ -163,6 +163,7 @@ static constexpr time_secs_t SYSLOG_SYNC_PERIOD = 0U;
 static constexpr time_secs_t SENSORS_SYNC_PERIOD = 60U;
 static constexpr time_secs_t SENSORS_BUFFER_SIZE = 38400U;
 static constexpr time_secs_t SYSLOG_BUFFER_SIZE = 512U;
+static constexpr size_t BARO_TEMP_WINDOW_AVERAGE_SIZE = 1000U; // 4KB, 20 secondes
 
 
 namespace TH_BLINKER {

@@ -48,6 +48,8 @@ bool Barometer::loop()
   }
   wdata.pressure = lps33GetPressure(&lpsDriver);
   wdata.temp = lps33GetTemp(&lpsDriver);
+  pressAverage.push(pressToInt(wdata.pressure));
+  tempAverage.push(tempToInt(wdata.temp));
   estimateRho();
   blackBoard.write(wdata);
 
@@ -67,9 +69,11 @@ where:
  */
 
 constexpr float Rspecific =  287.058f;
-const float kelvinDiff = 273.15f;
+constexpr float kelvinDiff = 273.15f;
 void Barometer::estimateRho(void)
 {
-  const float kelvinCorrectedTemp = kelvinDiff + wdata.temp + airSensorDelta;
-  wdata.rho =  (wdata.pressure * 100) / (Rspecific * kelvinCorrectedTemp);
+  const float meanPress = pressToFloat(pressAverage.getMean());
+  const float meanTemp = tempToFloat(tempAverage.getMean());
+  const float kelvinCorrectedTemp = kelvinDiff + meanTemp + airSensorDelta;
+  wdata.rho =  (meanPress * 100) / (Rspecific * kelvinCorrectedTemp);
 }
