@@ -300,15 +300,15 @@ MCU  = cortex-m7
 
 #TRGT = arm-elf-
 TRGT = arm-none-eabi-
-CC   = $(TRGT)gcc
-CPPC = $(TRGT)g++
+CC   = $(TRGT)gcc -pipe
+CPPC = $(TRGT)g++ -pipe
 # Enable loading with g++ only if you need C++ runtime support.
 # NOTE: You can use C++ even without C++ support if you are careful. C++
 #       runtime support makes code size explode.
 #LD   = $(TRGT)gcc
-LD   = $(TRGT)g++ 
+LD   = $(TRGT)g++ -pipe
 CP   = $(TRGT)objcopy
-AS   = $(TRGT)gcc -x assembler-with-cpp
+AS   = $(TRGT)gcc -x assembler-with-cpp -pipe
 AR   = $(TRGT)ar
 OD   = $(TRGT)objdump
 SZ   = $(TRGT)size
