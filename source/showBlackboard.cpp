@@ -13,7 +13,8 @@ namespace {
   BarometerData    baroData{};
   DiffPressureData diffPressData{};
   ImuData  imuData{};
-  Vec3f    attitude{},    attitudeSum{};
+  AttitudeEQ  attitude{};
+  Vec3f attitudeSum{};
   AirSpeed relAirSpeed{}, relAirSpeedSum{};
   size_t   sumCount;
   event_listener_t diffPressEvent;
@@ -55,7 +56,7 @@ bool ShowBlackboard::loop()
 
   if (chVTIsSystemTimeWithin(now, then)) {
     sumCount++;
-    attitudeSum = vec3fAdd(&attitudeSum, &attitude);
+    attitudeSum = vec3fAdd(&attitudeSum, &attitude.euler);
     relAirSpeedSum += relAirSpeed;
   } else if (shouldSendSerialMessages()) {
     now = chVTGetSystemTimeX();

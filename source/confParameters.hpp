@@ -8,6 +8,7 @@ enum AhrsType {RAW_IMU=0, HEADLESS_AHRS, COMPLETE_AHRS};
 enum DPressureFetchedParameter {PRESSURE_ONLY=0, PRESSURE_TEMPERATURE};
 enum SerialMode {SERIAL_NOT_USED, PPRZ_IN_OUT, NMEA_IN, UBX_IN};
 enum PprzMsgType {AEROPROBE, SMARTPROBE};
+enum AhrsOutput  {EULER, QUATERNION};
 enum CanbusMode {CAN_NOT_USED, CAN_MASTER, CAN_SLAVE};
 enum SensorslogFormat {SENSORS_TSV, SENSORS_BINARY};
 constexpr double ESTIMATE_ROW = 0.0;
@@ -36,6 +37,8 @@ constexpr double ESTIMATE_ROW = 0.0;
   {"ahrs.type", {1, NAMESET({RAW_IMU, "raw_imu"}, \
 			    {HEADLESS_AHRS, "headless_ahrs"}, \
 			    {COMPLETE_AHRS, "complete_ahrs"}) }}, \
+  {"ahrs.output", {0, NAMESET({EULER, "euler"},			  \
+			   {QUATERNION, "quaternion"}) }}, \
   {"uart.mode", {1, NAMESET({SERIAL_NOT_USED, "not_used"},			  \
 			    {PPRZ_IN_OUT, "pprz"}, \
 			    {NMEA_IN, "nmea_in"}, \

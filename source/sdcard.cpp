@@ -18,7 +18,7 @@ namespace {
   BarometerData baroData{};
   DiffPressureData diffPressData{};
   ImuData imuData{};
-  Vec3f   attitude{};
+  AttitudeEQ   attitude{};
   AirSpeed relAirSpeed{};
   CommonGpsData gpsData{};
   SensorslogFormat logFormat{};
@@ -276,7 +276,7 @@ SdLiteStatus SdCard::writeTSVSensorlog_HEADLESS_AND_GPS(void)
 		      relAirSpeed.tas,
 		      relAirSpeed.alpha,
 		      relAirSpeed.beta,
-		      rad2deg(attitude.v[0]), rad2deg(attitude.v[1]), rad2deg(attitude.v[2]),
+		      rad2deg(attitude.euler.v[0]), rad2deg(attitude.euler.v[1]), rad2deg(attitude.euler.v[2]),
 		      gpsData.rtcTime.millisecond / 1000.0f,
 		      gpsData.utm_east,
 		      gpsData.utm_north,
@@ -307,7 +307,7 @@ SdLiteStatus SdCard::writeTSVSensorlog_HEADLESS_NO_GPS(void)
 		      relAirSpeed.tas,
 		      relAirSpeed.alpha,
 		      relAirSpeed.beta,
-		      rad2deg(attitude.v[0]), rad2deg(attitude.v[1]), rad2deg(attitude.v[2]),
+		      rad2deg(attitude.euler.v[0]), rad2deg(attitude.euler.v[1]), rad2deg(attitude.euler.v[2]),
 		      adc.getPowerSupplyVoltage(),
 		      adc.getCoreTemp());
 }
@@ -522,9 +522,9 @@ bool SdCard::writeBinarySensorlog(void)
       framedData.data.diff_temperature_central = diffPressData[0].temp * OINV(SC20); // 20
       framedData.data.diff_temperature_horizontal = diffPressData[1].temp * OINV(SC21); // 21
       framedData.data.diff_temperature_vertical = diffPressData[2].temp * OINV(SC22); // 22
-      framedData.data.attitude_x = rad2deg(attitude.v[0]) * OINV(SC23); // 23
-      framedData.data.attitude_y = rad2deg(attitude.v[1]) * OINV(SC24); // 24
-      framedData.data.attitude_z = rad2deg(attitude.v[2]) * OINV(SC25); // 25
+      framedData.data.attitude_x = rad2deg(attitude.euler.v[0]) * OINV(SC23); // 23
+      framedData.data.attitude_y = rad2deg(attitude.euler.v[1]) * OINV(SC24); // 24
+      framedData.data.attitude_z = rad2deg(attitude.euler.v[2]) * OINV(SC25); // 25
       framedData.data.course = gpsData.course; // 26
       framedData.data.speed = gpsData.speed; // 27
       framedData.data.climb_speed = gpsData.climb; // 28

@@ -14,7 +14,7 @@ namespace {
   BarometerData    baroData{};
   DiffPressureData diffPressData{};
   ImuData  imuData{};
-  Vec3f    attitude{};
+  AttitudeEQ  attitude{};
   AirSpeed relAirSpeed{}, relAirSpeedSum{};
   size_t   sumCount;
   event_listener_t diffPressEvent;
@@ -24,6 +24,7 @@ namespace {
   struct pprzlink_device_tx dev_tx;
   uint32_t freeCounter = 0U;
   PprzMsgType msgType;
+  AhrsOutput  ahrsOutput;
 };
 
 
@@ -41,6 +42,7 @@ bool TransmitPprzlink::init()
 {
   delay = PERIOD("thread.frequency.transmit_uart");
   msgType = static_cast<PprzMsgType>(CONF("pprz.message"));
+  ahrsOutput = static_cast<AhrsOutput>(CONF("ahrs.output"));
   sumCount = 0;
   dev_tx = pprzlink_device_tx_init(
 				[] ([[maybe_unused]] uint8_t n) -> int  {return true;},
@@ -137,10 +139,19 @@ struct SmartprobePayload {
 
 void TransmitPprzlink::smartprobeLoop()
 {
+  float att[4];
+  if (ahrsOutput == EULER) {
+    for(size_t i=0; i<3; i++)
+      att[i] = attitude.euler.v[i];
+    att[3] = -1000.0f;
+  } else {
+    for(size_t i=0; i<4; i++)
+      att[i] = attitude.quat.v[i];
+  }
   SmartprobePayload payload = {
 			       .accel = {imuData.acc.v[0], imuData.acc.v[1], imuData.acc.v[2]},
 			       .gyro = {imuData.gyro.v[0], imuData.gyro.v[1], imuData.gyro.v[2]},
-			       .attitude = {attitude.v[0], attitude.v[1], attitude.v[2], -1000.0f},
+			       .attitude = {att[0], att[1], att[2], att[3]},
 			       .airSpeed =  {
 					     .tas = relAirSpeedSum.tas,
 					     .eas = relAirSpeedSum.eas,

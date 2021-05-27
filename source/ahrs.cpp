@@ -72,7 +72,13 @@ bool Ahrs::loop()
   sensfusion6UpdateQ(imuData.gyro.v[0], imuData.gyro.v[1], imuData.gyro.v[2],
 		     imuData.acc.v[0], imuData.acc.v[1], imuData.acc.v[2],
 		     TIME_I2US(timeStamp-lastTimeStamp) / 1e6);
-  sensfusion6GetEulerRPY(&attitude.v[0], &attitude.v[1], &attitude.v[2]);
+  sensfusion6GetEulerRPY(&attitude.euler.v[0], &attitude.euler.v[1], &attitude.euler.v[2]);
+  quaternion_t q;
+  sensfusion6GetQuaternion(&q);
+  attitude.quat.v[0] = q.q0;
+  attitude.quat.v[1] = q.q1;
+  attitude.quat.v[2] = q.q2;
+  attitude.quat.v[3] = q.q3;
   blackBoard.write(attitude);
 
   // if (chVTTimeElapsedSinceX(dbgTimeStamp) > TIME_MS2I(1000)) {
