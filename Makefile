@@ -24,6 +24,7 @@ endif
 
 SWDIO_DETECTION := 1
 GCCVERSIONGTEQ10 := $(shell expr `arm-none-eabi-gcc -dumpversion | cut -f1 -d.` \>= 10)
+GCCVERSIONGTEQ11 := $(shell expr `arm-none-eabi-gcc -dumpversion | cut -f1 -d.` \>= 11)
 GCC_DIAG =  -Werror -Wno-error=unused-variable -Wno-error=format \
 	    -Wno-error=cpp -Wno-error=type-limits \
             -Wno-error=unused-function \
@@ -42,6 +43,10 @@ G++_DIAG =   -Wnon-virtual-dtor -Woverloaded-virtual   \
 ifeq "$(GCCVERSIONGTEQ10)" "1"
     GCC_DIAG += -Wno-error=volatile 
     G++_DIAG += -Wno-volatile -Wno-error=deprecated-declarations
+endif
+
+ifeq "$(GCCVERSIONGTEQ11)" "1"
+    G++_DIAG += -Wno-deprecated-enum-enum-conversion -Wno-psabi
 endif
 
 UNUSED_DIAGS = -Wcast-align -Wsign-conversion -Wconversion
