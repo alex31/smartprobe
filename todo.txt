@@ -10,9 +10,9 @@
 A CODER:
 
         * en fonction du choix du format de sortie de l'ahrs :
-	  + sortir dans le bon format pour sd (masi pas terminal qui reste en euler)
+	  + sortir dans le bon format pour sd (mais pas terminal qui reste en euler)
 	  + sortir en pascal au lieu de hPa partout (sd et serial) mais pas terminal qui reste en hPa
-	  + dortir en radian partout mais pas terminal qui reste en degrés
+	  + sortir en radian partout mais pas terminal qui reste en degrés
 
 	* implementer une directive include dans confFile
 	  * mettre les données de calibration dans cet include en rajoutant
