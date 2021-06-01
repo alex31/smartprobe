@@ -23,7 +23,7 @@ namespace {
   constexpr std::array<float, tableSize> getSinShortFlashesTable(void)
   {
     std::array<float, tableSize> ret{};
-    ret[0] = 1.0f;
+    ret[0] = 0.25f;
     return ret;
   }
 
