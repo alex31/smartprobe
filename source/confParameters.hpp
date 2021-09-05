@@ -31,7 +31,7 @@ constexpr double ESTIMATE_ROW = 0.0;
   {"thread.frequency.d_press", {100, RANGEINT(10, 2000) }},	\
   {"thread.frequency.imu", {100, RANGEINT(10, 4000) }},		\
   {"thread.frequency.stream_console", {10, RANGEINT(1, 100) }},		\
-  {"thread.frequency.transmit_uart", {10, RANGEINT(1, 100) }},		\
+  {"thread.frequency.transmit_uart", {10, RANGEINT(1, 200) }},		\
   {"sensor.barometer.lpf", {0, NAMESET({ LPS33HW_LPF_ODR_DIV_2, "div2"}, {LPS33HW_LPF_ODR_DIV_9, "div9"}, \
 				       {LPS33HW_LPF_ODR_DIV_20, "div20"}) }}, \
   {"ahrs.type", {1, NAMESET({RAW_IMU, "raw_imu"}, \

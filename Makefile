@@ -61,9 +61,7 @@ ifeq ($(BUILD),$(OPT_DEBUG))
   UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
           -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1 -DTRACE
   USE_LTO = no
-endif
-
-ifeq ($(BUILD),$(OPT_DMAX)) 
+else ifeq ($(BUILD),$(OPT_DMAX)) 
   USE_OPT =  -O0 -g -ggdb3  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	    $(GCC_DIAG)
@@ -72,11 +70,8 @@ ifeq ($(BUILD),$(OPT_DMAX))
   UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
           -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1 -DTRACE
   USE_LTO = no
-endif
-
-
-ifeq ($(BUILD),$(OPT_DSPEED)) 
-  USE_OPT =  -Ofast -flto=4 -fno-fast-math -g -ggdb3  -Wall -Wextra \
+else ifeq ($(BUILD),$(OPT_DSPEED)) 
+  USE_OPT =  -Ofast -flto=8 -fno-fast-math -g -ggdb3  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	    $(GCC_DIAG)
   PROJECT = smartprobe_debug
@@ -84,10 +79,7 @@ ifeq ($(BUILD),$(OPT_DSPEED))
   UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
           -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1 -DTRACE
   USE_LTO = yes
-endif
-
-
-ifeq ($(BUILD),$(OPT_DNT)) 
+else ifeq ($(BUILD),$(OPT_DNT)) 
   USE_OPT =  -Og -ggdb3  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	    $(GCC_DIAG)
@@ -96,11 +88,8 @@ ifeq ($(BUILD),$(OPT_DNT))
   UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=1 \
           -DCH_DBG_ENABLE_CHECKS=1 -DCH_DBG_ENABLE_ASSERTS=1 -DTLSF_DEBUG=1 -D_DEBUG=1
   USE_LTO = no
-endif
-
-
-ifeq ($(BUILD),$(OPT_SPEED)) 
-  USE_OPT =  -Ofast -fno-fast-math -flto=4  -Wall -Wextra \
+else ifeq ($(BUILD),$(OPT_SPEED)) 
+  USE_OPT =  -Ofast -fno-fast-math -flto=8  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
 	     $(GCC_DIAG)
   PROJECT = smartprobe_speed
@@ -108,10 +97,8 @@ ifeq ($(BUILD),$(OPT_SPEED))
   UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
         -DCH_DBG_ENABLE_ASSERTS=0
   USE_LTO = yes
-endif
-
-ifeq ($(BUILD),$(OPT_SIZE)) 
-  USE_OPT =  -Os  -flto=4  -Wall -Wextra \
+else ifeq ($(BUILD),$(OPT_SIZE)) 
+  USE_OPT =  -Os  -flto=8  -Wall -Wextra \
 	    -falign-functions=16 -fomit-frame-pointer \
             --specs=nano.specs \
 	     $(GCC_DIAG)
@@ -120,6 +107,8 @@ ifeq ($(BUILD),$(OPT_SIZE))
   UDEFS = -DCH_DBG_STATISTICS=1 -DCH_DBG_SYSTEM_STATE_CHECK=0 -DCH_DBG_ENABLE_CHECKS=0 \
         -DCH_DBG_ENABLE_ASSERTS=0
   USE_LTO = yes
+else
+  $(error BUILD option ${BUILD} not recognised)
 endif
 
 
