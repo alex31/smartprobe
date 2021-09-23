@@ -211,3 +211,6 @@ static constexpr size_t threadStackSize = 1024U;
 namespace TH_HEALTHCHECK {
 static constexpr size_t threadStackSize = 2048U;
 }
+namespace TH_DEMOLED {
+static constexpr size_t threadStackSize = 1024U;
+}

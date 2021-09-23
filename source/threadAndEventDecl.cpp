@@ -14,4 +14,5 @@ Relwind		  relwind(NORMALPRIO);
 ReceivePprzlink   receivePPL(NORMALPRIO);
 ReceiveNmealink	  receiveNMEA(NORMALPRIO);
 ReceiveUbxlink	  receiveUBX(NORMALPRIO);
+DemoLed		  demoled(NORMALPRIO);
 FrontLed IN_DMA_SECTION(fl);

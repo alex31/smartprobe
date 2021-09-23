@@ -16,7 +16,7 @@ rouge à 60 hertz :  (sleep 16ms) : problème hardware à l'init
 */
 
 enum class LedCode {Starting, Optimal, DirtyBit, NoSdCard, ConfigError, HardFault, UsbStorageVBus,
-		    UsbStorageOff, UsbStorageOn, SwdioModeStart, SwdioModeWait};
+		    UsbStorageOff, UsbStorageOn, SwdioModeStart, SwdioModeWait, DirectColorSetting};
 
 static constexpr PWMDriver *ledPwm = &PWMD1;
 static constexpr LedTiming ledTiming = getClockByTimer(ledPwm);
@@ -35,10 +35,12 @@ public:
   };
   FrontLed();
   void setError(const LedCode code);
+  void setDirectHsv(const HSV &lhsv) {directHsv = lhsv;}
   void powerOff(void);
-  uint32_t getPeriod(void) const {return period;};
+  uint32_t getPeriod(void) const {return period;}
   Led2812Strip<1, Led_t> leds;
   Colors ledColor;
+  HSV	 directHsv;
 private:
   uint32_t period;
   static  thread_t *tp;

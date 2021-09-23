@@ -12,6 +12,7 @@
 #include "receiveNmealink.hpp"
 #include "receiveUbxlink.hpp"
 #include "smartLed.hpp"
+#include "demoLed.hpp"
 
 #define CONF(k)  (ConfigurationFile_AT(confFile, k))
 
@@ -28,3 +29,4 @@ extern  ReceivePprzlink		receivePPL;
 extern  ReceiveNmealink		receiveNMEA;
 extern  ReceiveUbxlink		receiveUBX;
 extern  FrontLed                fl;
+extern  DemoLed                 demoled;

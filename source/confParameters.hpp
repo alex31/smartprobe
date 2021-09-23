@@ -11,6 +11,7 @@ enum PprzMsgType {AEROPROBE, SMARTPROBE};
 enum AhrsOutput  {EULER, QUATERNION};
 enum CanbusMode {CAN_NOT_USED, CAN_MASTER, CAN_SLAVE};
 enum SensorslogFormat {SENSORS_TSV, SENSORS_BINARY};
+enum LedMode {LED_STATUS, LED_AIRSPEED};
 constexpr double ESTIMATE_ROW = 0.0;
 
 #ifdef OLD_EXAMPLE
@@ -103,4 +104,6 @@ constexpr double ESTIMATE_ROW = 0.0;
   {"airspeed.calibration.m35", {0.0, NONAMESET}}, \
   {"airspeed.calibration.bias.velocity", {0.0, NONAMESET}}, \
   {"airspeed.calibration.bias.alpha", {0.0, NONAMESET}}, \
-  {"airspeed.calibration.bias.beta", {0.0, NONAMESET}}
+  {"airspeed.calibration.bias.beta", {0.0, NONAMESET}} , \
+  {"led.mode", {0, NAMESET({LED_STATUS, "status"}, \
+			   {LED_AIRSPEED, "airspeed"}) }}

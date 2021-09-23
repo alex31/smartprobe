@@ -38,7 +38,7 @@ namespace {
     HSV hsv{0,1,1};
     
     while (!chThdShouldTerminateX()) {
-      if (fl->getPeriod() != 0) {
+      if (fl->getPeriod() >= 1) {
 	// flash only after 15 seconds and if mode is optimal
 	const float &f = (TIME_I2S(chVTGetSystemTimeX()) < 15) or
 			 (fl->getPeriod() <= 50) ?   sinPowTable[periodic] :
@@ -52,11 +52,16 @@ namespace {
 	  colIndex = (colIndex+1)%2;
 	}
 	periodic = (periodic+1)%tableSize;
-      } else { // led demo mode at start : cycle over colors until initialisation is done
+      } else if (fl->getPeriod() == 0) { // led demo mode at start :
+	                                   // cycle over colors until initialisation is done
 	fl->leds[0].setHSV(hsv);
 	fl->leds.emitFrame();
 	hsv.h = fmod(hsv.h + 0.005f, 1.0f);
 	chThdSleepMilliseconds(10);
+      } else { // fl->getPeriod() == 1, special value for direct mode
+	fl->leds[0].setHSV(fl->directHsv);
+	fl->leds.emitFrame();
+	chThdSleepMilliseconds(16);
       }
     }
     chThdExit(0);
@@ -125,6 +130,9 @@ void FrontLed::setError(const LedCode code)
   case LedCode::SwdioModeWait :
     period = 16;
     ledColor = {{1, 0.5, 0}, {1, 0.5, 0}};
+    break;
+  case LedCode::DirectColorSetting :
+    period = 0;
     break;
   }
 }
