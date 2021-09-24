@@ -265,9 +265,11 @@ sub getSerial()
 sub serialCb()
 {
     my $line = readline($serialHandle);
+    $line =~ s/[\[\]]//g;
     my ($bp, $bt, $rho, $dp1, $dp2, $dp3, $dt1, $dt2, $dt3, $roll, $pitch,
 	$velo, $alpha, $beta, $vcc, $mcut) = split (/\s+/, $line);
 
+    
     return unless defined $mcut;
     
     $varDataIn{'baroTemp'} = $bt;

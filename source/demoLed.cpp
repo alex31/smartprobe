@@ -36,7 +36,7 @@ bool DemoLed::loop()
   //  DebugTrace("cur = %.2f sum = %.2f", (double) relAirSpeed.tas, (double) relAirSpeedSum.tas);
   if ((relAirSpeed.tas > 5.0f) && (relAirSpeed.alpha > -20.0f) && (relAirSpeed.alpha < 20.0f)) {
     chVTReset(&vt);
-    relAirSpeedSum =  (relAirSpeedSum * 0.95) + (relAirSpeed * 0.05);
+    relAirSpeedSum =  (relAirSpeedSum * 0.99) + (relAirSpeed * 0.01);
     float alpha = fmodf(360.0, relAirSpeedSum.alpha+30); // [ -20 ... 20 ]
     hsv.h = std::min(1.0f, alpha / 50.0f);
     hsv.s = 1.0f;
