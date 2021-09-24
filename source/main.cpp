@@ -131,7 +131,7 @@ int main (void)
     } else {
       // demo mode where led reflect 3D airspeed measures
       fl.setError(LedCode::DirectColorSetting);
-      demoled.run(TIME_S2I(60));
+      demoled.run(TIME_MS2I(30));
     }
     chThdSleep(TIME_INFINITE);
   }

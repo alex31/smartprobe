@@ -38,7 +38,7 @@ namespace {
     HSV hsv{0,1,1};
     
     while (!chThdShouldTerminateX()) {
-      if (fl->getPeriod() >= 1) {
+      if (fl->getPeriod() > 1) {
 	// flash only after 15 seconds and if mode is optimal
 	const float &f = (TIME_I2S(chVTGetSystemTimeX()) < 15) or
 			 (fl->getPeriod() <= 50) ?   sinPowTable[periodic] :
@@ -132,7 +132,7 @@ void FrontLed::setError(const LedCode code)
     ledColor = {{1, 0.5, 0}, {1, 0.5, 0}};
     break;
   case LedCode::DirectColorSetting :
-    period = 0;
+    period = 1;
     break;
   }
 }

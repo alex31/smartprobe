@@ -69,7 +69,7 @@ bool ShowBlackboard::loop()
 		"%.4f\t%.4f\t%.4f\t"
 		"%.2f\t%.2f\t%.2f\t"
 		"%.2f\t%.2f\t"
-		"%.2f\t%.2f\t%.2f\t"
+		"[%.2f\t%.2f\t%.2f]\t"
 		"%.2f\t%.1f\t\r\n",
 		baroData.pressure,
 		baroData.temp,

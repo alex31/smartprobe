@@ -37,6 +37,22 @@ struct AirSpeed {
     beta     += other.beta;
     return *this;
   }
+  AirSpeed operator +(const AirSpeed& other) {
+    AirSpeed res = *this;
+    res.tas += other.tas;
+    res.eas += other.eas;
+    res.alpha    += other.alpha;
+    res.beta     += other.beta;
+    return res;
+  }
+  AirSpeed operator *(const float mult) {
+    AirSpeed res = *this;
+    res.tas *= mult;
+    res.eas *= mult;
+    res.alpha    *= mult;
+    res.beta     *= mult;
+    return res;
+  }
 };
 
 
