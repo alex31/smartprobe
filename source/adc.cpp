@@ -79,7 +79,7 @@ namespace {
 {
   (void) adcp;
 
-  if (err == ADC_ERR_WATCHDOG) {
+  if (err == ADC_ERR_AWD) {
     chSysLockFromISR();
     chBSemSignalI(&adcWatchDogSem);
     chSysUnlockFromISR();

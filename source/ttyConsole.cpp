@@ -244,7 +244,7 @@ static void cmd_mem(BaseSequentialStream *lchp, int argc,const char* const argv[
   chprintf(lchp, "ENTRY tlsf check = %d (0 is ok)\r\n",
 	   tlsf_check_r(&HEAP_DEFAULT));
 
-  chprintf(lchp, "core free memory : %u bytes\r\n", chCoreStatus());
+  chprintf(lchp, "core free memory : %u bytes\r\n", chCoreGetStatusX());
   chprintf(lchp, "heap free memory : %u bytes\r\n", getHeapFree());
 
   void * ptr1 = malloc_m (100);
@@ -419,7 +419,7 @@ void consoleInit (void)
 
 void consoleLaunch (void)
 {
-  Thread *shelltp = NULL;
+  thread_t *shelltp = NULL;
 
  
 #if CONSOLE_DEV_USB != 0
@@ -444,7 +444,7 @@ void consoleLaunch (void)
 
    if (!shelltp) {
      shelltp = shellCreate(&shell_cfg1, SHELL_WA_SIZE, NORMALPRIO);
-   } else if (chThdTerminated(shelltp)) {
+   } else if (chThdTerminatedX(shelltp)) {
      chThdRelease(shelltp);    /* Recovers memory of the previous shell.   */
      shelltp = NULL;           /* Triggers spawning of a new shell.        */
    }

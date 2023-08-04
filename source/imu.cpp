@@ -13,7 +13,9 @@
 namespace {
   const SPIConfig spiCfg = {
 			    .circular = false,
-			    .end_cb = NULL,
+			    .slave = false,
+			    .data_cb = nullptr,
+			    .error_cb = nullptr,
 			    /* HW dependent part.*/
 			    .ssline = LINE_SPI1_NSS,
 			    /* 6.25 Mhz, 8 bits word, CPHA= second (rising) edge, 

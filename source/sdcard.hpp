@@ -61,7 +61,7 @@ private:
   bool		hardareInitialised{false};
 
   event_listener_t baroEvent, diffPressEvent, imuEvent;
-  mutable mutex_t mutLog = _MUTEX_DATA(mutLog);
+  mutable mutex_t mutLog = __MUTEX_DATA(mutLog);
 };
 
 

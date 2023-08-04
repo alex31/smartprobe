@@ -50,7 +50,7 @@ bool DemoLed::loop()
     if (not vtArmed) {
       vtArmed = true;
       chVTSet(&vt, TIME_S2I(1),
-	      []([[maybe_unused]] void *arg) {
+	      [](ch_virtual_timer *, void *) {
 		fl.setDirectHsv(hsvzero);
 	      }
 	      , NULL);

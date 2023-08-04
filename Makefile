@@ -120,12 +120,17 @@ endif
 
 # C++ specific options here (added to USE_OPT).
 ifeq ($(USE_CPPOPT),)
-  USE_CPPOPT = -std=gnu++2a -fno-rtti -fno-exceptions -fno-threadsafe-statics $(G++_DIAG)
+  USE_CPPOPT = -std=gnu++23 -fno-rtti -fno-exceptions -fno-threadsafe-statics $(G++_DIAG)
 endif
 
 # Enable this if you want the linker to remove unused code and data
 ifeq ($(USE_LINK_GC),)
   USE_LINK_GC = yes
+endif
+
+# Linker extra options here.
+ifeq ($(USE_LDOPT),)
+  USE_LDOPT = --no-warn-rwx-segments
 endif
 
 # If enabled, this option allows to compile the application in THUMB mode.
@@ -185,11 +190,13 @@ MCU  = cortex-m7
 
 # Imported source files and paths
 
-CHIBIOS    := ./ext/chibios_svn_mirror
+#CHIBIOS    := ./ext/chibios_svn_mirror
+CHIBIOS    := /home/alex/DEV/STM32/CHIBIOS/ChibiOS_21.11_stable
 CONFDIR    := ./cfg
 BUILDDIR   := ./build
 DEPDIR     := ./.dep
-VARIOUS    := ext/chibios_enac_various_common
+#VARIOUS    := ext/chibios_enac_various_common
+VARIOUS    := /home/alex/DEV/STM32/CHIBIOS/COMMON/various
 USBD_LIB   := $(VARIOUS)/Chibios-USB-Devices
 TOOLDIR    := $(VARIOUS)/TOOLS
 EIGEN_LIB  := ext/eigen
@@ -211,7 +218,7 @@ include cfg/board.mk
 include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
-include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
+include $(CHIBIOS)/os/common/ports/ARMv7-M/compilers/GCC/mk/port.mk
 # Auto-build files in ./source recursively.
 include $(CHIBIOS)/tools/mk/autobuild.mk
 # Other files (optional).

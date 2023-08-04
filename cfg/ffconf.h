@@ -2,10 +2,10 @@
 #include "ch.h"
 
 /*---------------------------------------------------------------------------/
-/  FatFs - FAT file system module configuration file
+/  FatFs Functional Configurations
 /---------------------------------------------------------------------------*/
 
-#define FFCONF_DEF	86606	/* Revision ID */
+#define FFCONF_DEF	86631	/* Revision ID */
 
 /*---------------------------------------------------------------------------/
 / Function Configurations
@@ -67,13 +67,35 @@
 /* This option switches f_forward() function. (0:Disable or 1:Enable) */
 
 
+#define FF_PRINT_LLI	0
+#define FF_PRINT_FLOAT	0
+/* FF_USE_STRFUNC switches string functions, f_gets(), f_putc(), f_puts() and
+/  f_printf().
+/
+/   0: Disable. FF_PRINT_LLI, FF_PRINT_FLOAT and FF_STRF_ENCODE have no effect.
+/   1: Enable without LF-CRLF conversion.
+/   2: Enable with LF-CRLF conversion.
+/
+/  FF_PRINT_LLI = 1 makes f_printf() support long long argument and FF_PRINT_FLOAT = 1/2
+   makes f_printf() support floating point argument. These features want C99 or later.
+/  When FF_LFN_UNICODE >= 1 with LFN enabled, string functions convert the character
+/  encoding in it. FF_STRF_ENCODE selects assumption of character encoding ON THE FILE
+/  to be read/written via those functions.
+/
+/   0: ANSI/OEM in current CP
+/   1: Unicode in UTF-16LE
+/   2: Unicode in UTF-16BE
+/   3: Unicode in UTF-8
+*/
+
+
 /*---------------------------------------------------------------------------/
 / Locale and Namespace Configurations
 /---------------------------------------------------------------------------*/
 
-#define FF_CODE_PAGE      850
+#define FF_CODE_PAGE    850
 /* This option specifies the OEM code page to be used on the target system.
-/  Incorrect setting of the code page can cause a file open failure.
+/  Incorrect code page setting can cause a file open failure.
 /
 /   1   - ASCII (No extended character. Non-LFN cfg. only)
 /   437 - U.S.
@@ -97,6 +119,7 @@
 /   936 - Simplified Chinese (DBCS)
 /   949 - Korean (DBCS)
 /   950 - Traditional Chinese (DBCS)
+/     0 - Include all code pages above and configured by f_setcp()
 */
 
 

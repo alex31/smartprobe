@@ -36,7 +36,7 @@ void HealthCheck::logThreadInfos(void)
 {
 #if  CH_DBG_STATISTICS
   static const char *states[] = {CH_STATE_NAMES};
-  Thread *tp = chRegFirstThread();
+  thread_t *tp = chRegFirstThread();
   float totalTicks=0;
   float idleTicks=0;
   
@@ -47,7 +47,7 @@ void HealthCheck::logThreadInfos(void)
   uint32_t idx=0;
   do {
        totalTicks+= (float) tp->stats.cumulative;
-    if (strcmp (chRegGetThreadName(tp), "idle") == 0) {
+    if (strcmp (chRegGetThreadNameX(tp), "idle") == 0) {
       idleTicks =  (float) tp->stats.cumulative;
     } else if (get_stack_free(tp) < 300) {
       SdCard::logSyslog(Severity::Info, "    addr    stack  frestk prio refs  "
@@ -58,9 +58,9 @@ void HealthCheck::logThreadInfos(void)
 			(uint32_t)tp->hdr.pqueue.prio, (uint32_t)(tp->refs - 1),
 			states[tp->state], (uint32_t)tp->stats.cumulative, 
 			(double) stampThreadGetCpuPercent (&threadCpuInfo, idx),
-			chRegGetThreadName(tp));
+			chRegGetThreadNameX(tp));
     }
-    tp = chRegNextThread ((Thread *)tp);
+    tp = chRegNextThread ((thread_t *)tp);
     idx++;
   } while (tp != NULL);
   
@@ -116,7 +116,7 @@ void stampThreadCpuInfo (ThreadCpuInfo *ti)
     tp = chRegNextThread ((thread_t *)tp);
     idx++;
   } while ((tp != NULL) && (idx < MAX_CPU_INFO_ENTRIES));
-  ti->totalISRTicks = ch.kernel_stats.m_crit_isr.cumulative;
+  ti->totalISRTicks = tp->stats.cumulative;
   ti->totalTicks += ti->totalISRTicks;
   tp =  chRegFirstThread();
   idx=0;
