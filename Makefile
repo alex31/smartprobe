@@ -190,13 +190,11 @@ MCU  = cortex-m7
 
 # Imported source files and paths
 
-#CHIBIOS    := ./ext/chibios_svn_mirror
-CHIBIOS    := /home/alex/DEV/STM32/CHIBIOS/ChibiOS_21.11_stable
+CHIBIOS    := ./ext/chibios_svn_mirror
 CONFDIR    := ./cfg
 BUILDDIR   := ./build
 DEPDIR     := ./.dep
-#VARIOUS    := ext/chibios_enac_various_common
-VARIOUS    := /home/alex/DEV/STM32/CHIBIOS/COMMON/various
+VARIOUS    := ext/chibios_enac_various_common
 USBD_LIB   := $(VARIOUS)/Chibios-USB-Devices
 TOOLDIR    := $(VARIOUS)/TOOLS
 EIGEN_LIB  := ext/eigen
