@@ -41,15 +41,16 @@ G++_DIAG =   -Wnon-virtual-dtor -Woverloaded-virtual   \
 	     -Wnull-dereference
 
 ifeq "$(GCCVERSIONGTEQ10)" "1"
-    GCC_DIAG += -Wno-error=volatile 
     G++_DIAG += -Wno-volatile -Wno-error=deprecated-declarations
 endif
 
 ifeq "$(GCCVERSIONGTEQ11)" "1"
-    G++_DIAG += -Wno-deprecated-enum-enum-conversion -Wno-psabi
+    G++_DIAG += -Wno-psabi
 endif
 
-UNUSED_DIAGS = -Wcast-align -Wsign-conversion -Wconversion
+DISCARDED_DIAGS = -Wcast-align -Wsign-conversion -Wconversion \
+                  -Wno-error=volatile 
+
 
 ifeq ($(BUILD),$(OPT_DEBUG)) 
   USE_OPT =  -Og -ggdb3  -Wall -Wextra \
