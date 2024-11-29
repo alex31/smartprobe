@@ -12,7 +12,7 @@ enum AhrsOutput  {EULER, QUATERNION};
 enum CanbusMode {CAN_NOT_USED, CAN_MASTER, CAN_SLAVE};
 enum SensorslogFormat {SENSORS_TSV, SENSORS_BINARY};
 enum LedMode {LED_STATUS, LED_AIRSPEED};
-constexpr double ESTIMATE_ROW = 0.0;
+constexpr double ESTIMATE_RHO = 0.0;
 
 #ifdef OLD_EXAMPLE
  #define PARAMETERS_MAP                                         \
@@ -86,7 +86,7 @@ constexpr double ESTIMATE_ROW = 0.0;
 				      {ICM20600_RANGE_8G, "8g"}, \
 				      {ICM20600_RANGE_16G, "16g"}) }}, \
   {"sensor.imu.estimationLoopDuration_ms", {500, RANGEINT(10, 4000) }}, \
-  {"airspeed.rho", {ESTIMATE_ROW, RANGEDOUBLE(0.0, 2.0)}},			\
+  {"airspeed.rho", {ESTIMATE_RHO, RANGEDOUBLE(0.0, 2.0)}},			\
   {"airspeed.calibration.m11", {1.15, NONAMESET}}, \
   {"airspeed.calibration.m12", {0.0, NONAMESET}}, \
   {"airspeed.calibration.m13", {0.0, NONAMESET}}, \
