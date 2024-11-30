@@ -149,8 +149,19 @@ Smartprobe should be calibrated in a wind tunnel before use. The calibration mat
 
 
 ## Development tool
-there is a SWD connector on the PCB for connecting a debug probe (Black Magic Probe or STlink V2/V3) which permits debugging with gdb and access to a shell console
+there is a SWD connector on the PCB for connecting a debug probe (Black Magic Probe or STlink V2/V3) which permits debugging with gdb and access to a shell console where errors messages are shown.
 
+## troubleshooting
+The led color reflect status of operation (see details below). When error occurs, the error details are logged in the syslog file, on the sdcard, and on debug console if a probe is attached to the internal swd+serial connector.
+
+#### error codes :
+- blink green : OK
+- blink green and orange : sd card file system is dirty, operation will try to continue, but ultimately, there is a need for filesystem check or reformating
+- blink orange : sd card mount has failed
+- blink green and white : configuration file error
+- blink red : hardware fault detected
+
+..
 ## Ideas for future developments 
 - If external componant (autopilot) stream gps positions and heading, wind in a terrestrial reference frame could be calculated on board
 - add USB CDC endoint to the existing USB storage endpoint to output serial console shell via USB
